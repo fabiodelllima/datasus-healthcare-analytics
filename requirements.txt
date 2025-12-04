@@ -1,0 +1,49 @@
+# ============================================================================
+# DataSUS Analytics - Requirements
+# Python 3.11.x OBRIGATÓRIO
+# ============================================================================
+
+# ETL - Extract
+pysus==0.11.0
+
+# ETL - Transform
+pandas==2.1.4
+numpy==1.26.2
+
+# ETL - Load
+pyarrow==14.0.1
+
+# Visualização
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Notebooks
+jupyter==1.0.0
+ipykernel==6.27.1
+
+# Desenvolvimento
+black==23.12.1
+flake8==6.1.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+
+# ============================================================================
+# MVP - Adicionar quando necessário
+# ============================================================================
+# cx-Oracle==8.3.0           # Oracle Database
+# openpyxl==3.1.2            # Excel export
+# pytest==7.4.3              # Testing
+# pytest-cov==4.1.0          # Coverage
+# streamlit==1.30.0          # Dashboard alternativo
+
+# ============================================================================
+# Produção - Adicionar quando necessário
+# ============================================================================
+# apache-airflow==2.8.0      # Orquestração
+# fastapi==0.109.0           # API REST
+# uvicorn==0.27.0            # ASGI server
+# pyjwt==2.8.0               # JWT auth
+# prometheus-client==0.19.0  # Monitoramento
+# python-multipart==0.0.6    # File uploads

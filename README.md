@@ -1,93 +1,170 @@
 # DataSUS Analytics
 
+- **Versão:** 0.1.0
+- **Fase:** POC (Proof of Concept)
+- **Data:** 01/12/2024
 
+Sistema de analytics para gestão hospitalar utilizando dados públicos reais do Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Documentação
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Esta documentação está organizada em módulos específicos para facilitar navegação e manutenção.
 
-## Add your files
+### Quick Links
 
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+| Documento | Descrição | Uso |
+|-----------|-----------|-----|
+| **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Decisões arquiteturais, stack técnico, ADRs | Setup inicial, entender o sistema |
+| **[DATA_GUIDE.md](docs/DATA_GUIDE.md)** | Dicionário de dados, regras de negócio, ETL | Desenvolvimento, análise de dados |
+| **[ROADMAP.md](docs/ROADMAP.md)** | Fases do projeto, timeline, milestones | Planejamento, tracking progresso |
+| **[CHANGELOG.md](CHANGELOG.md)** | Histórico de versões | Controle de mudanças |
 
+---
+
+## Quick Start
+```bash
+# 1. Setup ambiente (Python 3.11 obrigatório)
+python3.11 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 2. Criar estrutura de dados (se necessário)
+mkdir -p data/{raw,processed} logs outputs
+
+# 3. Executar pipeline ETL
+python src/main.py --state AC --year 2024 --month 1
+
+# 4. Verificar outputs
+ls data/processed/
+# Deve conter: AC_2024_01.csv e AC_2024_01.parquet
+
+# 5. Análise exploratória
+jupyter notebook
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/delimafabio/datasus-analytics.git
-git branch -M main
-git push -uf origin main
+
+---
+
+## Arquitetura (Resumo)
+```
+DataSUS FTP → EXTRACT → TRANSFORM → LOAD → CSV/Parquet → Analytics
+    ↓           ↓           ↓          ↓         ↓            ↓
+  .dbc        pysus   pandas/numpy   pathlib   storage    jupyter
 ```
 
-## Integrate with your tools
+**Detalhes completos:** [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-* [Set up project integrations](https://gitlab.com/delimafabio/datasus-analytics/-/settings/integrations)
+---
 
-## Collaborate with your team
+## Fases do Projeto
+```
+[ATUAL] POC (1 semana | 01-07/12/2024)
+├─ Dataset: AC, Jan/2024, ~2k registros
+├─ Stack: Python + pandas + matplotlib
+└─ Entregável: Pipeline funcional + 5 KPIs
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+[FUTURO] MVP (3-4 semanas | 08-31/12/2024)
+├─ Dataset: AC/ES, 12 meses, ~30k registros
+├─ Stack: + Oracle XE + Power BI
+└─ Entregável: Dashboard interativo
 
-## Test and Deploy
+[FUTURO] Produção (4-6 semanas | Q1 2025)
+├─ Dataset: Multi-UF, multi-fontes
+├─ Stack: + Airflow + API REST
+└─ Entregável: Sistema production-ready
+```
 
-Use the built-in continuous integration in GitLab.
+**Timeline detalhado:** [ROADMAP.md](docs/ROADMAP.md)
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+---
 
-***
+## Stack Técnico
 
-# Editing this README
+| Camada | Tecnologia | Versão | Fase |
+|--------|------------|--------|------|
+| **Linguagem** | Python | 3.11.x | POC |
+| **ETL** | pysus, pandas, numpy | - | POC |
+| **Visualização** | matplotlib, seaborn | - | POC |
+| **Storage** | CSV + Parquet | - | POC |
+| **Analysis** | Jupyter Notebooks | - | POC |
+| **Database** | Oracle XE | 21c | MVP |
+| **BI** | Power BI | - | MVP |
+| **Orquestração** | Apache Airflow | - | Produção |
+| **API** | FastAPI | - | Produção |
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**Detalhes completos:** [ARCHITECTURE.md](docs/ARCHITECTURE.md#stack-técnico)
 
-## Suggestions for a good README
+---
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## Estrutura do Projeto
+```
+datasus-analytics/
+├── docs/                    # Documentação (SSOT)
+│   ├── ARCHITECTURE.md
+│   ├── DATA_GUIDE.md
+│   └── ROADMAP.md
+├── src/                     # Código fonte
+│   ├── extract/             # Extração DataSUS
+│   ├── transform/           # Transformação dados
+│   ├── load/                # Armazenamento dual-format
+│   └── utils/               # Utilitários
+├── data/                    # Dados (gitignored)
+│   ├── raw/                 # Arquivos .dbc originais
+│   └── processed/           # CSV + Parquet processados
+├── tests/                   # Testes unitários
+├── logs/                    # Logs aplicação (gitignored)
+├── outputs/                 # Visualizações (gitignored)
+├── requirements.txt         # Dependências Python
+├── CHANGELOG.md             # Histórico versões
+└── README.md                # Este arquivo
+```
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Status Atual
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Fase:** POC (Proof of Concept) - Dia 3/7
+**Dataset:** Acre (AC) - Janeiro/2024 (~2.000 registros)
+**Progresso:** Transform stage em andamento
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Milestones
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- [x] M1: Setup Completo (02/12/2024)
+- [ ] M2: POC Finalizada (07/12/2024) - PRÓXIMO
+- [ ] M3: MVP Finalizado (31/12/2024)
+- [ ] M4: Produção Finalizada (Q1 2025)
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+**Tracking detalhado:** [ROADMAP.md](docs/ROADMAP.md#milestones)
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+---
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Development Standards
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+- **Git Workflow:** Gitflow (develop → feature branches → main)
+- **Commit Convention:** `type(scope): Descrição` (em português, primeira letra maiúscula)
+- **Code Style:** PEP 8, Google TypeScript Style Guide
+- **Testing:** pytest com cobertura >90% (fase MVP)
+- **Documentation:** Markdown, sem emojis, símbolos ASCII apenas
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+---
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Licença
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- **Código:** MIT License
+- **Dados:** Domínio público (Governo Brasileiro - DataSUS)
+- **Documentação:** CC BY 4.0
 
-## License
-For open source projects, say how it is licensed.
+---
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Disclaimer
+
+Este é um projeto independente para fins de aprendizado e portfolio profissional.
+
+**Não possui vínculo oficial com:**
+- Ministério da Saúde
+- DATASUS
+- FIOCRUZ
+- Qualquer órgão governamental brasileiro
+
+Os dados utilizados são de domínio público e acessíveis através do portal oficial do DataSUS (https://datasus.saude.gov.br/).
