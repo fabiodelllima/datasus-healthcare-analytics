@@ -2,32 +2,23 @@
 Configurações do projeto
 """
 
-from pathlib import Path
+import os
 
 # Diretórios
-PROJECT_ROOT = Path(__file__).parent.parent
-DATA_DIR = PROJECT_ROOT / "data"
-RAW_DIR = DATA_DIR / "raw"
-PROCESSED_DIR = DATA_DIR / "processed"
-LOGS_DIR = PROJECT_ROOT / "logs"
-OUTPUTS_DIR = PROJECT_ROOT / "outputs"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+LOGS_DIR = os.path.join(BASE_DIR, "logs")
+OUTPUTS_DIR = os.path.join(BASE_DIR, "outputs")
 
-# DataSUS
-DATASUS_FTP = "ftp.datasus.gov.br"
-DATASUS_PATH = "/dissemin/publicos/SIHSUS/200801_/Dados/"
+# Criar diretórios se não existirem
+for directory in [DATA_DIR, RAW_DIR, PROCESSED_DIR, LOGS_DIR, OUTPUTS_DIR]:
+    os.makedirs(directory, exist_ok=True)
 
-# Processamento
-PYTHON_VERSION = "3.11"
-DEFAULT_STATE = "AC"
-DEFAULT_YEAR = 2024
-DEFAULT_MONTH = 1
-
-# Validações
-MAX_IDADE = 120
-MAX_DIAS_PERM = 365
-MAX_VAL_TOT = 1000000
-MIN_VAL_TOT = 0
-
-# Logging
-LOG_FORMAT = "[%(asctime)s] %(levelname)s - %(name)s - %(message)s"
-LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+# Configurações DataSUS
+DATASUS_CONFIG = {
+    "default_state": "AC",
+    "default_year": 2024,
+    "default_month": 1,
+}

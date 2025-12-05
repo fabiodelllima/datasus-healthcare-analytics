@@ -2,7 +2,6 @@
 
 - **Sistema:** DataSUS Healthcare Analytics
 - **Versão:** 1.0.0 POC
-- **Última Atualização:** 03/12/2024
 
 **Propósito:** Single Source of Truth para planejamento do projeto, incluindo
 visão macro, fases detalhadas, cronograma, milestones e riscos.
@@ -22,45 +21,91 @@ visão macro, fases detalhadas, cronograma, milestones e riscos.
 
 ---
 
+## Convenções do Documento
+
+**Símbolos de Status:**
+
+- [x] Completo
+- [~] Em andamento
+- [ ] Planejado
+
+**Categorização de Riscos:**
+
+- Probabilidade: BAIXA | MÉDIA | ALTA
+- Impacto: BAIXO | MÉDIO | ALTO
+
+**Prioridades:**
+
+- [OBRIGATÓRIO]: Critérios GO/NO-GO
+- [DESEJÁVEL]: Melhorias não bloqueantes
+
+---
+
 ## Visão Geral do Projeto
 
-### Objetivo Geral
+### Objetivo
 
-Desenvolver sistema de analytics para gestão hospitalar demonstrando
-competências completas de engenharia de dados através de **dados REAIS**
-do DataSUS/Ministério da Saúde.
+Sistema de analytics para gestão hospitalar processando dados públicos do
+Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
 
-**Contexto:** Portfolio técnico para vaga de Analista de Informações
-Gerenciais Pleno em hospital.
+**Escopo:**
 
-### Diferencial Competitivo
+- Processamento ETL
+- Análise de KPIs operacionais
+- Visualização de métricas hospitalares utilizando dados reais de internações do SUS
 
-```
-[+] Dados REAIS do Ministério da Saúde (não sintéticos)
-[+] Conhecimento do sistema de saúde brasileiro
-[+] Processamento de formato proprietário DBC
-[+] Ciclo completo: POC -> MVP -> Produção
-[+] Demonstração de evolução arquitetural
-```
+**Diferenciais técnicos:**
 
-### Stakeholders
+- Processamento de formato proprietário DBC (compressão específica DataSUS)
+- Dados governamentais reais (~2k-500k+ registros dependendo da fase)
+- Evolução arquitetural progressiva (POC → MVP → Produção)
+- Stack completo: ETL, database, dashboard, orquestração, API
+
+### Stakeholders e Use Cases
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ STAKEHOLDER          │ INTERESSE                  │ EXPECTATIVA         │
+│ STAKEHOLDER          │ USE CASE                   │ REQUISITOS          │
 ├──────────────────────┼────────────────────────────┼─────────────────────┤
-│ F. (Desenvolvedor)   │ Portfolio profissional     │ Projeto completo    │
-│                      │ Vaga Analista Pleno        │ demonstrável        │
+│ Gestores             │ Análise ocupação leitos    │ KPIs tempo real     │
+│ Hospitalares         │ Otimização recursos        │ Dashboards          │
 │                      │                            │                     │
-│ Recrutadores         │ Avaliar competências       │ Código + docs       │
-│                      │ técnicas                   │ reproduzíveis       │
+│ Analistas            │ Estudos epidemiológicos    │ Dados históricos    │
+│ Saúde Pública        │ Análise regional           │ Multi-UF            │
 │                      │                            │                     │
-│ DataSUS/MS           │ Fonte de dados públicos    │ Uso ético dos dados │
+│ DataSUS/Ministério   │ Fonte dados públicos       │ Uso ético           │
+│ da Saúde             │ Transparência SUS          │ Conformidade LGPD   │
 │                      │                            │                     │
-│ Hospitais            │ Use cases reais            │ Insights acionáveis │
-│ (potenciais)         │                            │                     │
+│ Desenvolvedores      │ Integração sistemas        │ API REST            │
+│                      │ Extensibilidade            │ Documentação        │
 └──────────────────────┴────────────────────────────┴─────────────────────┘
 ```
+
+### Diferenciais Técnicos
+
+**Dados:**
+
+- Fonte governamental oficial (DataSUS/Ministério da Saúde)
+- Volume real: 2k (POC) → 30k (MVP) → 500k+ (Produção)
+- Formato proprietário DBC (descompressão via pyreaddbc)
+
+**Arquitetura:**
+
+- Evolução progressiva validada: POC → MVP → Produção
+- Dual-format storage (CSV analytics + Parquet data lakes)
+- Star schema dimensional modeling (MVP+)
+
+**Domínio:**
+
+- Sistema de saúde brasileiro (SUS)
+- Tabelas SIGTAP, CID-10, especialidades médicas
+- Conformidade LGPD (dados públicos anonimizados)
+
+**Classificação do Projeto:**
+
+- Data Engineering: ~65% (ETL, infra, orquestração)
+- Data Analytics: ~30% (KPIs, dashboards, BI)
+- Data Science: ~5% (EDA, estatística descritiva)
 
 ---
 
@@ -85,7 +130,7 @@ POC (1 semana)            MVP (3-4 semanas)        Produção (4-6 semanas)
 Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 ```
 
-### Comparativo Entre Fases
+### Comparativo entre Fases
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -121,11 +166,166 @@ Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 └──────────────────┴───────────────┴───────────────────┴──────────────────┘
 ```
 
+### Technology Stack Evolution
+
+**POC Phase - Foundation:**
+
+- ETL: Python 3.11 + pysus library
+- Storage: Dual-format (CSV + Parquet)
+- Analysis: Jupyter Notebooks + pandas
+- Visualization: matplotlib + seaborn
+
+**MVP Phase - Scale:**
+
+- Database: Oracle XE 21c (12GB capacity)
+- BI: Power BI Desktop
+- Testing: pytest + coverage >87%
+- CI/CD: GitHub Actions
+
+**Production Phase - Enterprise:**
+
+- Orchestration: Apache Airflow
+- API: FastAPI + JWT authentication
+- Monitoring: Prometheus + Grafana + ELK
+- Multi-source: SIH + CNES + SIM integration
+
+---
+
+## Estratégia de Dataset por Fase
+
+### Critérios de Seleção de Estados
+
+**Fatores considerados:**
+
+- Volume de registros (progressão controlada)
+- Qualidade dos dados (completude, consistência)
+- Diversidade geográfica (diferentes regiões)
+- Complexidade hospitalar (hospitais secundários vs terciários)
+- Limites técnicos (Oracle XE 12GB, tempo processamento)
+
+---
+
+### POC - Acre (AC)
+
+**Volume:** ~2.000 registros/mês
+
+**Justificativa técnica:**
+
+```
+- [+] Menor estado em volume absoluto (processamento em segundos)
+- [+] Permite iteração rápida durante desenvolvimento inicial
+- [+] Validação de viabilidade técnica sem overhead computacional
+- [+] Teste de conectividade FTP DataSUS e descompressão DBC
+```
+
+**Justificativa estratégica:**
+
+```
+- [+] Foco em validar pipeline ETL, não análise estatística
+- [+] Baseline de complexidade mínima
+- [+] Permite identificar problemas arquiteturais cedo
+```
+
+**Limitações conhecidas:**
+
+```
+- [-] Amostra pequena não permite análises estatísticas robustas
+- [-] Pode não representar complexidade de estados maiores
+- [-] Taxa de dados faltantes pode ser maior (~10-15%)
+```
+
+---
+
+### MVP - Acre + Espírito Santo (AC + ES)
+
+**Volume:** ~20-30k registros totais (12 meses cada estado)
+
+**Justificativa técnica:**
+
+```
+- [+] Dentro dos limites Oracle XE (12GB user data)
+- [+] Tempo de processamento gerenciável (~5-10 minutos)
+- [+] ES tem melhor qualidade de dados que AC (taxa completude ~85-90%)
+- [+] Progressão controlada: 2k → 30k (crescimento 15x)
+- [+] Demonstra capacidade multi-UF sem overhead excessivo
+- [+] Volume suficiente para KPIs estatisticamente significativos (n > 20k)
+```
+
+**Justificativa estratégica:**
+
+```
+- [+] Diversidade geográfica: Norte (AC) + Sudeste (ES)
+- [+] Complexidade hospitalar variada:
+  - AC: Hospitais menores, atendimento básico predominante
+  - ES: Mix de hospitais secundários e terciários
+- [+] Demonstra flexibilidade do pipeline para diferentes perfis estaduais
+- [+] Permite comparações regionais (Norte vs Sudeste)
+```
+
+**Justificativa operacional:**
+
+```
+- [+] Portfolio demonstra capacidade com dados reais em escala realista
+- [+] Volume comparável a um hospital de médio porte (~30k internações/ano)
+- [+] Suficiente para demonstrar todos os KPIs principais
+```
+
+**Por que NÃO escolhemos estados maiores (SP, PR, RS, SC):**
+
+```
+- [-] SP (~200k/mês): Oracle XE não suporta volume
+- [-] PR (~100k/mês): Tempo processamento excessivo (>30 min)
+- [-] RS (~120k/mês): Risco saturar recursos no MVP
+- [-] SC (~80k/mês): Próximo dos limites, pouco headroom
+```
+
+**Alternativas consideradas:**
+
+```
+- AC + SC: Volume maior (~80k), mas próximo do limite Oracle XE
+- AC + PR: Volume muito grande para MVP, deixado para Produção
+- Apenas AC (12 meses): Volume muito pequeno (~24k), baixa diversidade
+```
+
+---
+
+### Produção - Multi-UF (SP, RJ, MG, PR, RS)
+
+**Volume:** 500k+ registros (múltiplos estados, 12 meses)
+
+**Justificativa técnica:**
+
+```
+- [+] Demonstra capacidade de escalar para volumes hospitalares reais
+- [+] Requer infraestrutura robusta (Airflow, FastAPI, monitoramento)
+- [+] Múltiplas fontes de dados (SIH + CNES + SIM)
+```
+
+**Justificativa estratégica:**
+
+```
+- [+] Estados com maior complexidade hospitalar (SP, RJ, MG)
+- [+] Representa ~40% das internações brasileiras
+- [+] Sistema production-ready para uso real em ambiente hospitalar
+```
+
+**Progressão lógica:**
+
+```
+POC:      2k registros      (1 estado, 1 mês)       → Viabilidade
+MVP:      30k registros     (2 estados, 12 meses)   → Demonstração
+Produção: 500k+ registros   (5+ estados, 12 meses)  → Sistema real
+          ↓                  ↓                        ↓
+        Crescimento 15x    Crescimento 15x         Escala produção
+```
+
 ---
 
 ## POC - Detalhamento Dia-a-Dia
 
-- **Status:** [x] EM ANDAMENTO
+**Status:**
+
+- [x] EM ANDAMENTO
 - **Início:** 01/12/2024
 - **Prazo:** 07/12/2024 (7 dias)
 
@@ -147,7 +347,7 @@ Registros:  ~2.000
 Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~1.5 MB CSV)
 ```
 
-**Justificativa Acre:**
+**Justificativa da Escolha:**
 
 - Estado pequeno: dataset gerenciável
 - Processamento rápido: 2-5 minutos total
@@ -201,7 +401,7 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~1.5 MB CSV)
 │     │            │ - Decode DBC -> DataFrame         │                 │
 │     │            │ - README.md, ARCHITECTURE.md      │                 │
 │     │            │                                   │                 │
-│ 3   │ 03/12/2024 │ Transform + Docs Consolidação     │ [~] ANDAMENTO   │
+│ 3   │ 03/12/2024 │ Transform + Docs Consolidação     │ [x] COMPLETO    │
 │ Ter │            │ - Limpeza dados                   │                 │
 │     │            │ - Validações                      │                 │
 │     │            │ - Enriquecimento                  │                 │
@@ -277,14 +477,16 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~1.5 MB CSV)
 
 ## MVP - Planejamento
 
-- **Status:** [ ] PLANEJADO
+**Status:**
+
+- [ ] PLANEJADO
 - **Início previsto:** 08/12/2024
 - **Prazo:** 31/12/2024 (3-4 semanas)
 
 ### Objetivo
 
-Produto funcional demonstrável e apresentável em entrevistas. Portfolio
-técnico completo com database, dashboard e testes.
+Sistema funcional completo e demonstrável com database, dashboard e testes
+automatizados.
 
 **Pergunta central:** Sistema funciona em escala maior e gera valor real?
 
@@ -389,14 +591,16 @@ Database:   Oracle XE 21c
 [ ] Dashboard Power BI (não Streamlit)
 [ ] Performance queries <3s
 [ ] Zero critical bugs
-[ ] Apresentação slides preparada
+[ ] Documentação de deployment completa
 ```
 
 ---
 
 ## Produção - Planejamento
 
-- **Status:** [ ] FUTURO
+**Status:**
+
+- [ ] FUTURO
 - **Início previsto:** Q1 2025
 - **Prazo:** 4-6 semanas
 
@@ -523,9 +727,9 @@ M4: [ ] Dashboard Funcional      28/12/2024
     - Apresentável
 
 M5: [ ] MVP Release              31/12/2024
-    - Todos critérios MVP OK
-    - Portfolio demonstrável
-    - Pronto para entrevistas
+    - Todos critérios MVP atendidos
+    - Sistema funcional e demonstrável
+    - Documentação técnica completa
 
 M6: [ ] Produção Beta            28/02/2025
     - Multi-fonte integrada
@@ -566,7 +770,7 @@ M7: [ ] Produção Release         31/03/2025
 
 ```
 [DATABASE]
-[ ] Oracle XE instalado e configuracional
+[ ] Oracle XE instalado e configurado
 [ ] Schema normalizado (3NF mínimo)
 [ ] Constraints, índices, views OK
 [ ] Performance queries <3s
@@ -607,43 +811,6 @@ M7: [ ] Produção Release         31/03/2025
 [ ] Logs centralizados (ELK)
 [ ] Dashboards operacionais
 [ ] Alertas 24/7
-```
-
-### Negócio - Portfolio
-
-```
-[DEMONSTRAÇÃO]
-[ ] Competências técnicas completas evidenciadas
-[ ] Dados reais (não sintéticos) destacados
-[ ] Evolução POC->MVP->Prod clara
-[ ] Apresentável em entrevistas
-
-[DIFERENCIAÇÃO]
-[ ] Poucos candidatos usam dados governamentais
-[ ] Conhecimento DataSUS/SUS diferencial
-[ ] Formato DBC proprietário demonstra capacidade
-[ ] Documentação profissional
-```
-
-### Aprendizado - Pessoal
-
-```
-[POC]
-[x] Conhecimento DataSUS/SIH
-[x] Processamento dados públicos brasileiros
-[ ] Pipeline ETL completo
-
-[MVP]
-[ ] Oracle Database administração
-[ ] Power BI dashboards profissionais
-[ ] Testes automatizados (pytest)
-[ ] CI/CD (GitHub Actions)
-
-[PRODUÇÃO]
-[ ] Airflow orquestração
-[ ] FastAPI desenvolvimento
-[ ] Monitoramento production (Prometheus/Grafana)
-[ ] Multi-fonte data integration
 ```
 
 ---
@@ -790,30 +957,9 @@ Mitigação:
 Status: MITIGADO POR DESIGN
 ```
 
-### RISCO-08: Mudança Requisitos Vaga
-
-```
-Probabilidade: BAIXA
-Impacto:       ALTO
-Categoria:     Negócio
-
-Descrição:
-Vaga alvo pode mudar requisitos ou ser cancelada, tornando
-portfolio menos relevante.
-
-Mitigação:
-[ ] Portfolio tem valor independente (GitHub público)
-[ ] Competências demonstradas são transferíveis
-[ ] Projeto interessante para múltiplas vagas healthcare
-[ ] Conhecimento DataSUS valioso no mercado brasileiro
-
-Status: ACEITÁVEL
-```
-
 ---
 
-- **Última Atualização:** 03/12/2024
-- **Próxima Atualização:** Diária durante POC, depois semanal
+**Última atualização:** 04/12/2024
 
 **Veja Também:**
 

@@ -3,36 +3,54 @@ Extract: Download e decode de arquivos DBC do DataSUS
 """
 
 import logging
-from pysus.online_data import SIH
+
 import pandas as pd
+from pysus.online_data.SIH import download
 
 logger = logging.getLogger(__name__)
 
 
 class DataSUSExtractor:
-    """Extrai dados do DataSUS via pysus"""
-    
+    """Extrator de dados do SIH/DataSUS"""
+
     def __init__(self):
-        self.sih = SIH()
-    
+        """Inicializa extrator"""
+        logger.info("[EXTRACTOR] Inicializado")
+
     def extract(self, state: str, year: int, month: int) -> pd.DataFrame:
         """
-        Extrai dados do SIH/DataSUS
-        
+        Download e decode de arquivo DBC do DataSUS
+
         Args:
-            state: UF (ex: 'AC', 'SP')
-            year: Ano (ex: 2024)
+            state: UF (2 letras)
+            year: Ano (YYYY)
             month: Mês (1-12)
-        
+
         Returns:
             DataFrame com dados brutos
         """
-        logger.info(f"[EXTRACT] Iniciando download: {state} {year}/{month:02d}")
-        
         try:
-            df = self.sih.download(state=state, year=year, month=month, group='RD')
-            logger.info(f"[EXTRACT] Sucesso: {len(df)} registros, {len(df.columns)} colunas")
-            return df
+            logger.info(f"[EXTRACT] Baixando: {state} {year}/{month:02d}")
+
+            # Download retorna ParquetSet
+            # Grupo RD = AIH Reduzida (dados reduzidos)
+            parquet_set = download(
+                states=state,
+                years=year,
+                months=month,
+                groups="RD",  # AIH Reduzida
+            )
+
+            logger.info("[EXTRACT] Download concluído")
+
+            # ParquetSet tem método to_dataframe()
+            df = parquet_set.to_dataframe()
+
+            logger.info(f"[EXTRACT] Registros carregados: {len(df):,}")
+            logger.info(f"[EXTRACT] Colunas: {len(df.columns)}")
+
+            return df  # type: ignore[no-any-return]
+
         except Exception as e:
-            logger.error(f"[EXTRACT] Erro ao baixar dados: {e}")
+            logger.error(f"[EXTRACT] Erro: {e}")
             raise

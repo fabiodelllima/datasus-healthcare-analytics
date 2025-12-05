@@ -1,50 +1,48 @@
 """
-Configuração de logging
+Logger: Configuração de logging
 """
 
 import logging
+import os
 import sys
-from pathlib import Path
-from src.config import LOGS_DIR, LOG_FORMAT, LOG_DATE_FORMAT
+from datetime import datetime
+
+from src.config import LOGS_DIR
 
 
-def setup_logger(name: str, log_file: str = "etl_pipeline.log") -> logging.Logger:
+def setup_logger(name: str = "datasus", level: int = logging.INFO) -> logging.Logger:
     """
     Configura logger com output para console e arquivo
-    
+
     Args:
         name: Nome do logger
-        log_file: Nome do arquivo de log
-    
+        level: Nível de logging
+
     Returns:
         Logger configurado
     """
-    # Criar diretório logs
-    LOGS_DIR.mkdir(parents=True, exist_ok=True)
-    log_path = LOGS_DIR / log_file
-    
-    # Configurar logger
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-    
-    # Evitar duplicação de handlers
-    if logger.handlers:
-        return logger
-    
-    # Handler console
+    logger.setLevel(level)
+
+    # Remover handlers existentes
+    logger.handlers.clear()
+
+    # Formato
+    formatter = logging.Formatter(
+        "[%(asctime)s] %(levelname)s - %(name)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    )
+
+    # Handler: Console
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.INFO)
-    console_formatter = logging.Formatter(LOG_FORMAT, LOG_DATE_FORMAT)
-    console_handler.setFormatter(console_formatter)
-    
-    # Handler arquivo
-    file_handler = logging.FileHandler(log_path, encoding='utf-8')
-    file_handler.setLevel(logging.INFO)
-    file_formatter = logging.Formatter(LOG_FORMAT, LOG_DATE_FORMAT)
-    file_handler.setFormatter(file_formatter)
-    
-    # Adicionar handlers
+    console_handler.setLevel(level)
+    console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
+
+    # Handler: Arquivo
+    log_file = os.path.join(LOGS_DIR, f"pipeline_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
+    file_handler = logging.FileHandler(log_file, encoding="utf-8")
+    file_handler.setLevel(level)
+    file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
-    
+
     return logger
