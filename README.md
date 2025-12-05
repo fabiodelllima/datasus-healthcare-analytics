@@ -1,4 +1,4 @@
-# DataSUS Analytics
+# DataSUS Healthcare Analytics
 
 - **Versão:** 0.1.0
 - **Fase:** POC (Proof of Concept)
@@ -38,8 +38,8 @@ mkdir -p data/{raw,processed} logs outputs
 python src/main.py --state AC --year 2024 --month 1
 
 # 4. Verificar outputs
-ls data/processed/
 # Deve conter: AC_2024_01.csv e AC_2024_01.parquet
+ls data/processed/
 
 # 5. Análise exploratória
 jupyter notebook
@@ -47,12 +47,14 @@ jupyter notebook
 
 ---
 
-## Arquitetura (Resumo)
+## Arquitetura
+
+Resumo da arquitetura:
 
 ```
 DataSUS FTP → EXTRACT → TRANSFORM → LOAD → CSV/Parquet → Analytics
-    ↓           ↓           ↓          ↓         ↓            ↓
-  .dbc        pysus   pandas/numpy   pathlib   storage    jupyter
+    ↓           ↓           ↓         ↓           ↓          ↓
+  .dbc        pysus   pandas/numpy  pathlib    storage    jupyter
 ```
 
 **Detalhes completos:** [ARCHITECTURE.md](docs/ARCHITECTURE.md)
@@ -170,4 +172,6 @@ Este é um projeto independente para aprendizado e portfólio profissional.
 - FIOCRUZ
 - Qualquer órgão governamental brasileiro
 
-Os dados utilizados são de domínio público e acessíveis através do portal oficial do DataSUS: <https://datasus.saude.gov.br/>
+Os dados utilizados são de domínio público e acessíveis através do portal oficial do DataSUS:
+
+> <https://datasus.saude.gov.br/>

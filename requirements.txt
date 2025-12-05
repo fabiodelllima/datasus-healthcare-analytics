@@ -1,5 +1,5 @@
 # ============================================================================
-# DataSUS Analytics - Requirements
+# DataSUS Healthcare Analytics - Requirements
 # Python 3.11.x OBRIGATÓRIO
 # ============================================================================
 

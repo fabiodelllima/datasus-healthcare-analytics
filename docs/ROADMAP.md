@@ -1,6 +1,6 @@
 # ROADMAP
 
-- **Sistema:** DataSUS Analytics
+- **Sistema:** DataSUS Healthcare Analytics
 - **Versão:** 1.0.0 POC
 
 **Propósito:** Single Source of Truth para planejamento do projeto, incluindo
