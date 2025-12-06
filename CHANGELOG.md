@@ -7,72 +7,58 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.1.0] - 2024-12-05
+
+### Added
+
+- Pipeline ETL completo (Extract, Transform, Load)
+- Integração pysus para download dados DataSUS
+- Transformações: limpeza, validação, enriquecimento
+- Salvamento dual-format (CSV + Parquet)
+- Sistema logging estruturado
+- Ferramentas code quality: ruff, mypy, pre-commit
+- Framework testes: pytest com coverage
+- Documentação completa (README, ARCHITECTURE, DATA_GUIDE, ROADMAP)
+- Configuração type hints (mypy.ini)
+- Configuração ruff (pyproject.toml)
+- Pre-commit hooks automáticos
+
+### Changed
+
+- Renomeação projeto: "DataSUS Analytics" → "DataSUS Healthcare Analytics"
+- Substituição black + flake8 → ruff (10-100x mais rápido)
+- Dependências: versões fixadas (==) → flexíveis (>=)
+- Config paths: pathlib → os.path (compatibilidade)
+
+### Fixed
+
+- Test extractor: removido assert self.sih obsoleto
+- Type hints: adicionado cast() para operações DataFrame
+- Imports: removidos imports não utilizados
+- Formatação: aplicado ruff em toda codebase
+
+### Technical Details
+
+**Commits principais:**
+
+- `b976ea0`: Renomear projeto para Healthcare Analytics
+- `1d032ee`: Implementar ruff + mypy + pre-commit
+- `3cc9826`: Remover black e flake8
+
+**Métricas:**
+
+- Cobertura testes: 5% (1/1 teste passando)
+- Pipeline: 4.315 registros AC processados com sucesso
+- Pre-commit: 3 hooks configurados (ruff, ruff-format, mypy)
+
+---
+
 ## [Unreleased]
 
-### Em desenvolvimento
+### Planned
 
-- Pipeline ETL POC em andamento
-
----
-
-## [0.1.0] - 2024-12-03
-
-### Adicionado
-
-- Estrutura inicial do projeto
-- Documentação completa (4 arquivos SSOT):
-  - README.md (entry point)
-  - ARCHITECTURE.md (stack técnico + ADRs)
-  - DATA_GUIDE.md (dicionário dados + regras + ETL)
-  - ROADMAP.md (planejamento + cronograma + riscos)
-- ADR-001: Decisão usar dados reais DataSUS
-- ADR-002: Decisão Python 3.11 (não 3.14)
-- ADR-003: Decisão formato dual CSV + Parquet
-- ADR-004: Decisão documentação modular
-- Estrutura código Python:
-  - src/extract/ (módulo Extract)
-  - src/transform/ (módulo Transform)
-  - src/load/ (módulo Load)
-  - src/utils/ (utilitários)
-  - src/main.py (pipeline principal)
-- requirements.txt com dependências POC
-- .gitignore configurado para Python/dados
-- Estrutura diretórios: data/, logs/, outputs/, tests/
-
-### Configurado
-
-- Python 3.11.x como versão obrigatória
-- Ambiente virtual (venv)
-- Logging estruturado
-
----
-
-## Tipos de Mudanças
-
-- **Adicionado** para novas funcionalidades
-- **Modificado** para mudanças em funcionalidades existentes
-- **Descontinuado** para funcionalidades que serão removidas
-- **Removido** para funcionalidades removidas
-- **Corrigido** para correções de bugs
-- **Segurança** para vulnerabilidades
-
----
-
-## Versionamento
-
-```
-MAJOR.MINOR.PATCH
-
-MAJOR: Mudanças incompatíveis na API
-MINOR: Novas funcionalidades compatíveis
-PATCH: Correções de bugs compatíveis
-
-Exemplos:
-0.1.0 = POC inicial
-0.2.0 = MVP features
-1.0.0 = Produção release
-```
-
----
-
-**Nota:** Versões 0.x.x são consideradas desenvolvimento inicial.
+- Análise exploratória (EDA) em Jupyter
+- Cálculo 5 KPIs básicos
+- Visualizações matplotlib (4-6 gráficos)
+- Aumento cobertura testes (meta: 80%)
+- Processamento estado ES (validação dataset MVP)

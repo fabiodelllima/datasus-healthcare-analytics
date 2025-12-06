@@ -2,563 +2,656 @@
 
 - **Sistema:** DataSUS Healthcare Analytics
 - **Versão:** 1.0.0 POC
-- **Última Atualização:** 03/12/2024
+- **Última Atualização:** 05/12/2024
 
-**Propósito:** Single Source of Truth para decisões arquiteturais, stack
-técnico, requisitos de sistema e workflows de infraestrutura.
+**Propósito:** Single Source of Truth para decisões arquiteturais, stack técnico, requisitos de sistema e workflows de infraestrutura.
 
 ---
 
 ## Índice
 
 1. [Visão Geral](#visão-geral)
-2. [Stack Técnico](#stack-técnico)
-3. [Arquitetura do Pipeline](#arquitetura-do-pipeline)
-4. [Decisões Arquiteturais (ADRs)](#decisões-arquiteturais-adrs)
-5. [Requisitos de Sistema](#requisitos-de-sistema)
-6. [Workflows de Infraestrutura](#workflows-de-infraestrutura)
+2. [Stack Tecnológico](#stack-tecnológico)
+3. [Arquitetura do Sistema](#arquitetura-do-sistema)
+4. [Pipeline ETL](#pipeline-etl)
+5. [Qualidade de Código](#qualidade-de-código)
+6. [Testes e Coverage](#testes-e-coverage)
+7. [Estrutura do Projeto](#estrutura-do-projeto)
+8. [Decisões Arquiteturais (ADRs)](#decisões-arquiteturais-adrs)
+9. [Workflows](#workflows)
+10. [Requisitos de Sistema](#requisitos-de-sistema)
 
 ---
 
 ## Visão Geral
 
-### Contexto
+Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/DataSUS, estruturado em três fases progressivas: POC, MVP e Produção.
 
-Sistema de analytics para gestão hospitalar baseado em **dados REAIS** do
-Sistema de Informações Hospitalares (SIH) do DataSUS/Ministério da Saúde.
+### Princípios Arquiteturais
 
-**Diferencial competitivo:**
-
-- Integração com fontes públicas brasileiras (DataSUS)
-- Processamento de formato proprietário DBC (DBF comprimido)
-- Demonstração de competências completas de engenharia de dados
-- Pipeline end-to-end: Extract → Transform → Load → Analytics
-
-### Objetivos por Fase
-
-**POC (atual):**
-
-- Validar viabilidade técnica de processar DataSUS
-- Pipeline ETL funcional com dados reais
-- KPIs básicos para demonstração
-- Documentação reproduzível
-
-**MVP:**
-
-- Produto funcional demonstrável
-- Database Oracle com schema relacional
-- Dashboard interativo (Power BI ou Streamlit)
-- Testes automatizados (87%+ coverage)
-- CI/CD básico
-
-**Produção:**
-
-- Sistema robusto production-ready
-- Multi-fonte (SIH + CNES + SIM)
-- Orquestração Airflow
-- API REST + autenticação
-- Monitoramento completo
+1. **Simplicidade primeiro:** POC usa ferramentas simples, escala progressivamente
+2. **Dados reais:** Sem dados sintéticos, apenas datasets governamentais públicos
+3. **Code quality:** Type safety, linting automático, pre-commit hooks
+4. **Documentação:** Single Source of Truth por domínio
+5. **Testabilidade:** Coverage tracking, testes automatizados
 
 ---
 
-## Stack Técnico
+## Stack Tecnológico
 
-### POC - Stack Atual
+### Core Pipeline (POC)
+
+| Componente    | Tecnologia | Versão   | Justificativa                             |
+| ------------- | ---------- | -------- | ----------------------------------------- |
+| **Runtime**   | Python     | 3.11.x   | Compatibilidade pysus (não suporta 3.12+) |
+| **Extract**   | pysus      | >=0.11.0 | Biblioteca oficial DataSUS, decode DBC    |
+| **Transform** | pandas     | >=2.1.4  | Padrão indústria para data wrangling      |
+| **Transform** | numpy      | >=1.26.2 | Operações numéricas otimizadas            |
+| **Load**      | pyarrow    | >=14.0.1 | Parquet format, compressão eficiente      |
+
+### Qualidade de Código
+
+| Ferramenta       | Versão   | Função                | Substitui                          |
+| ---------------- | -------- | --------------------- | ---------------------------------- |
+| **ruff**         | >=0.14.8 | Linter + formatter    | black + flake8 + isort + pyupgrade |
+| **mypy**         | >=1.19.0 | Type checker          | -                                  |
+| **pre-commit**   | >=4.5.0  | Git hooks automáticos | -                                  |
+| **pandas-stubs** | >=2.3.3  | Type stubs pandas     | -                                  |
+
+**Por que Ruff?**
+
+- 10-100x mais rápido que flake8/black
+- Consolidação: 1 ferramenta substitui 4
+- Configuração unificada (pyproject.toml)
+- Auto-fix nativo
+
+### Testes
+
+| Ferramenta      | Versão   | Função           |
+| --------------- | -------- | ---------------- |
+| **pytest**      | >=8.0.0  | Framework testes |
+| **pytest-cov**  | >=6.0.0  | Cobertura código |
+| **pytest-mock** | >=3.14.0 | Mocking          |
+
+### Visualização e Análise
+
+| Componente      | Tecnologia | Versão   | Uso                     |
+| --------------- | ---------- | -------- | ----------------------- |
+| **Gráficos**    | matplotlib | >=3.8.2  | Visualizações estáticas |
+| **Estatística** | seaborn    | >=0.13.0 | Gráficos estatísticos   |
+| **Notebooks**   | jupyter    | >=1.0.0  | Análise exploratória    |
+| **Kernel**      | ipykernel  | >=6.27.1 | Runtime notebooks       |
+
+### Utilities
+
+| Ferramenta        | Versão   | Função             |
+| ----------------- | -------- | ------------------ |
+| **python-dotenv** | >=1.0.0  | Variáveis ambiente |
+| **requests**      | >=2.31.0 | HTTP client        |
+
+### Stack MVP (Planejado)
+
+- **Database:** Oracle 19c (compatibilidade sistemas hospitalares)
+- **BI:** Power BI Desktop → Power BI Service
+- **Data Lake:** Azure Data Lake Storage Gen2 (Parquet)
+
+### Stack Produção (Planejado)
+
+- **Orquestração:** Apache Airflow
+- **API:** FastAPI + Uvicorn
+- **Auth:** JWT (pyjwt)
+- **Monitoring:** Prometheus + Grafana
+- **CI/CD:** GitHub Actions
+
+---
+
+## Arquitetura do Sistema
+
+### Diagrama High-Level
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│ CAMADA           │ TECNOLOGIA              │ VERSÃO      │ JUSTIFICATIVA │
-├──────────────────┼─────────────────────────┼─────────────┼───────────────┤
-│ Linguagem        │ Python                  │ 3.11.x      │ [ADR-002]     │
-│                  │                         │ OBRIGATÓRIO │ Compatível    │
-│                  │                         │             │ pysus         │
-│                  │                         │             │               │
-│ Extract          │ pysus                   │ 0.11.0      │ Lib oficial   │
-│                  │                         │             │ DataSUS       │
-│                  │                         │             │               │
-│ Transform        │ pandas                  │ 2.1.4       │ Manipulação   │
-│                  │ numpy                   │ 1.26.2      │ dados         │
-│                  │                         │             │               │
-│ Visualização     │ matplotlib              │ 3.8.2       │ Gráficos      │
-│                  │ seaborn                 │ 0.13.0      │ estáticos     │
-│                  │                         │             │               │
-│ Storage          │ CSV                     │ nativo      │ [ADR-003]     │
-│                  │ Parquet (pyarrow)       │ 14.0.1      │ Formato dual  │
-│                  │                         │             │               │
-│ Notebooks        │ Jupyter                 │ 1.0.0       │ Análise       │
-│                  │                         │             │ exploratória  │
-│                  │                         │             │               │
-│ Ambiente Virtual │ venv                    │ nativo      │ Isolamento    │
-└──────────────────┴─────────────────────────┴─────────────┴───────────────┘
-
-Tempo processamento esperado (POC):
-  AC 2k registros:  2-5 minutos total
-  ES 20k registros: 5-10 minutos total
-```
-
-### MVP - Stack Planejado
-
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│ CAMADA           │ TECNOLOGIA              │ VERSÃO      │ STATUS        │
-├──────────────────┼─────────────────────────┼─────────────┼───────────────┤
-│ Database         │ Oracle Database XE      │ 21c         │ [ ] Planejado │
-│                  │ cx_Oracle               │ 8.3+        │               │
-│                  │                         │             │               │
-│ BI/Dashboard     │ Power BI Desktop        │ Latest      │ [ ] Planejado │
-│                  │ ou Streamlit            │ 1.30+       │ Alternativa   │
-│                  │                         │             │               │
-│ Testes           │ pytest                  │ 7.4+        │ [ ] Planejado │
-│                  │ pytest-cov              │ 4.1+        │               │
-│                  │                         │             │               │
-│ CI/CD            │ GitHub Actions          │ -           │ [ ] Planejado │
-│                  │ flake8 (linting)        │ 6.1+        │               │
-│                  │                         │             │               │
-│ Agendamento      │ cron                    │ nativo      │ [ ] Planejado │
-└──────────────────┴─────────────────────────┴─────────────┴───────────────┘
-```
-
-### Produção - Stack Futuro
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ CAMADA           │ TECNOLOGIA              │ VERSÃO      │ STATUS       │
-├──────────────────┼─────────────────────────┼─────────────┼──────────────┤
-│ Orquestração     │ Apache Airflow          │ 2.8+        │ [ ] Futuro   │
-│                  │                         │             │              │
-│ API              │ FastAPI                 │ 0.109+      │ [ ] Futuro   │
-│                  │ JWT Authentication      │ -           │              │
-│                  │                         │             │              │
-│ Monitoramento    │ Prometheus              │ 2.48+       │ [ ] Futuro   │
-│                  │ Grafana                 │ 10.2+       │              │
-│                  │                         │             │              │
-│ Logging          │ ELK Stack               │ 8.11+       │ [ ] Futuro   │
-│                  │ (Elasticsearch, Kibana) │             │              │
-│                  │                         │             │              │
-│ Containerização  │ Docker                  │ 24+         │ [ ] Futuro   │
-│                  │ Docker Compose          │ 2.23+       │              │
-└──────────────────┴─────────────────────────┴─────────────┴──────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         DataSUS FTP Server                      │
+│                    ftp.datasus.gov.br/dissemin/                 │
+└─────────────────┬───────────────────────────────────────────────┘
+                  │ .dbc files (compressed DBF)
+                  │
+                  ▼
+┌────────────────────────────────────────────────────────────────┐
+│                        EXTRACT (pysus)                         │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ DataSUSExtractor                                         │  │
+│  │ - download(state, year, month, groups='RD')              │  │
+│  │ - ParquetSet.to_dataframe()                              │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└─────────────────┬──────────────────────────────────────────────┘
+                  │ pd.DataFrame (raw)
+                  │
+                  ▼
+┌────────────────────────────────────────────────────────────────┐
+│                    TRANSFORM (pandas/numpy)                    │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ DataTransformer                                          │  │
+│  │ 1. _convert_types()    → tipos corretos                  │  │
+│  │ 2. _clean_data()       → remove duplicatas/nulos         │  │
+│  │ 3. _validate_data()    → valida ranges                   │  │
+│  │ 4. _enrich_data()      → campos calculados               │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└─────────────────┬──────────────────────────────────────────────┘
+                  │ pd.DataFrame (clean)
+                  │
+                  ▼
+┌────────────────────────────────────────────────────────────────┐
+│                      LOAD (pyarrow)                            │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ DataLoader                                               │  │
+│  │ - to_csv()      → CSV UTF-8                              │  │
+│  │ - to_parquet()  → Parquet compressed                     │  │
+│  │ - metadata      → Dict com estatísticas                  │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└─────────────────┬──────────────────────────────────────────────┘
+                  │
+        ┌─────────┴─────────┐
+        ▼                   ▼
+┌───────────────┐   ┌───────────────┐
+│   CSV Files   │   │ Parquet Files │
+│  (2.7 MB)     │   │  (320 KB)     │
+│  Human-read   │   │  Compressed   │
+└───────┬───────┘   └───────┬───────┘
+        │                   │
+        └─────────┬─────────┘
+                  │
+                  ▼
+        ┌─────────────────┐
+        │   Analytics     │
+        │   (Jupyter)     │
+        └─────────────────┘
 ```
 
 ---
 
-## Arquitetura do Pipeline
+## Pipeline ETL
 
-### Diagrama de Fluxo (POC)
+### 1. Extract
 
-```
- DataSUS FTP                EXTRACT             TRANSFORM
-┌─────────────┐           ┌──────────┐         ┌───────────────────────┐
-│ ftp.datasus │           │          │         │ 1. Conversão Tipos    │
-│ .gov.br     │──────────→│  pysus   │────────→│    - datetime         │
-│             │  Download │          │  DBC→   │    - numeric          │
-│ RDAC2401    │  ~500KB   │  Decode  │  DBF    │    - categorical      │
-│ .dbc        │  30-90s   │          │         │                       │
-└─────────────┘           └──────────┘         │ 2. Limpeza            │
-                                               │    - duplicatas       │
-                                               │    - nulos críticos   │
-                                               │    - outliers         │
-                                               │                       │
-                                               │ 3. Validação          │
-                                               │    - datas            │
-                                               │    - valores          │
-                                               │    - consistência     │
-                                               │                       │
-                                               │ 4. Enriquecimento     │
-                                               │    - faixa_etaria     │
-                                               │    - especialidade    │
-                                               │    - custo_dia        │
-                                               │                       │
-                                               │ pandas/numpy          │
-                                               │ 15-45s                │
-                                               │ Perda: 5-10%          │
-                                               └───────────────────────┘
-                                                         │
-                                                         ▼
- LOAD                             ANALYTICS
-┌──────────────────────┐        ┌────────────────────────────┐
-│ Storage Dual-Format  │        │ Jupyter Notebook           │
-│                      │        │                            │
-│ /data/processed/     │        │ KPIs:                      │
-│ ├─ sih_AC_202401.csv │───────→│ - Taxa ocupação            │
-│ │  (~1.5MB)          │        │ - Tempo médio permanência  │
-│ │  Universal         │        │ - Volume internações       │
-│ │                    │        │ - Receita total            │
-│ └─ sih_AC_202401     │        │ - Distribuição demográfica │
-│    .parquet          │        │                            │
-│    (~450KB, 70%)     │        │ Visualizações:             │
-│    Performance       │        │ - 4-6 gráficos PNG 300 DPI │
-│                      │        │ - matplotlib/seaborn       │
-│ 5-15s                │        │                            │
-└──────────────────────┘        └────────────────────────────┘
+**Responsabilidade:** Download e decode arquivos DBC do DataSUS.
 
-Total: ~80 colunas raw → validado/enriquecido → 2 formatos storage
+**Implementação:**
+
+```python
+from pysus.online_data.SIH import download
+
+parquet_set = download(
+    states='AC',
+    years=2024,
+    months=1,
+    groups='RD'  # AIH Reduzida
+)
+df = parquet_set.to_dataframe()
 ```
 
-### Fluxo de Dados Detalhado
+**Características:**
+
+- API pysus abstrai FTP + decode DBC
+- Retorna ParquetSet (não lista de arquivos)
+- Método `.to_dataframe()` converte para pandas
+- Cache automático em `~/pysus/`
+
+**Performance:**
+
+- Download: ~313 KB comprimido
+- Tempo: <1s (AC janeiro 2024)
+- Registros: 4.315
+
+### 2. Transform
+
+**Responsabilidade:** Limpeza, validação e enriquecimento.
+
+**Pipeline em 4 etapas:**
+
+#### 2.1. Convert Types
+
+```python
+def _convert_types(self, df: pd.DataFrame) -> pd.DataFrame:
+    # Numéricos: IDADE, VAL_TOT, VAL_UTI, etc
+    df[field] = pd.to_numeric(df[field], errors='coerce')
+
+    # Datas: DT_INTER, DT_SAIDA
+    df[field] = pd.to_datetime(df[field], format='%Y%m%d', errors='coerce')
+```
+
+#### 2.2. Clean Data
+
+```python
+def _clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    # Remove duplicatas
+    df = df.drop_duplicates()
+
+    # Remove nulos em campos críticos
+    df = df.dropna(subset=['N_AIH', 'DT_INTER', 'DT_SAIDA'])
+```
+
+#### 2.3. Validate Data
+
+```python
+def _validate_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    # Datas: DT_INTER <= DT_SAIDA
+    df = cast(pd.DataFrame, df[df['DT_INTER'] <= df['DT_SAIDA']])
+
+    # Idade: 0-120 anos
+    df = cast(pd.DataFrame, df[(df['IDADE'] >= 0) & (df['IDADE'] <= 120)])
+
+    # Valores: >= 0
+    df = cast(pd.DataFrame, df[df[col] >= 0])
+```
+
+#### 2.4. Enrich Data
+
+```python
+def _enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    # Tempo permanência
+    df['stay_days'] = (df['DT_SAIDA'] - df['DT_INTER']).dt.days
+
+    # Custo diário
+    df['daily_cost'] = df['VAL_TOT'] / df['stay_days'].replace(0, 1)
+
+    # Faixa etária
+    df['age_group'] = pd.cut(df['IDADE'], bins=[0,18,30,45,60,120])
+
+    # Flag óbito
+    df['death'] = df['MORTE'] == 1
+```
+
+**Taxa validação:** 100% (AC jan/2024: 4.315/4.315)
+
+### 3. Load
+
+**Responsabilidade:** Salvamento dual-format com metadata.
+
+**Implementação:**
+
+```python
+# CSV - Human-readable
+df.to_csv(csv_path, index=False, encoding='utf-8')
+
+# Parquet - Compressed
+df.to_parquet(parquet_path, index=False, engine='pyarrow')
+
+# Metadata
+metadata = {
+    'state': 'AC',
+    'records': 4315,
+    'csv_size_mb': 2.7,
+    'parquet_size_mb': 0.32,
+    'timestamp': '2024-12-05T12:16:49'
+}
+```
+
+**Compressão:** Parquet é ~8.5x menor que CSV
+
+---
+
+## Qualidade de Código
+
+### Pre-commit Hooks
+
+**Configuração:** `.pre-commit-config.yaml`
+
+```yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.8
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [pandas-stubs]
+        args: [--ignore-missing-imports]
+```
+
+**Workflow:**
+
+```bash
+git commit -m "feat: nova feature"
+
+# Pre-commit executa automaticamente:
+# 1. ruff check --fix     → lint + auto-fix
+# 2. ruff format          → formatting
+# 3. mypy                 → type checking
+
+# Se falhar → commit bloqueado
+# Se passar → commit realizado
+```
+
+### Ruff Configuration
+
+**Arquivo:** `pyproject.toml`
+
+```toml
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+```
+
+### Mypy Configuration
+
+**Arquivo:** `mypy.ini`
+
+```ini
+[mypy]
+python_version = 3.11
+warn_return_any = True
+warn_unused_configs = True
+disallow_untyped_defs = False
+check_untyped_defs = True
+ignore_missing_imports = True
+
+[mypy-pysus.*]
+ignore_missing_imports = True
+
+[mypy-pyarrow.*]
+ignore_missing_imports = True
+```
+
+### Type Hints Coverage
+
+**Status atual:** 100% em funções públicas
+
+```python
+# Correto
+def extract(self, state: str, year: int, month: int) -> pd.DataFrame:
+    ...
+
+def load(self, df: pd.DataFrame, state: str, year: int, month: int) -> dict[str, Any]:
+    ...
+
+# Type casting para satisfazer mypy
+df = cast(pd.DataFrame, df[df['IDADE'] > 0])
+```
+
+---
+
+## Testes e Coverage
+
+### Framework
+
+**pytest** com plugins:
+
+- `pytest-cov`: relatórios cobertura
+- `pytest-mock`: mocking/patching
+
+### Executar Testes
+
+```bash
+# Rodar todos testes
+pytest tests/ -v
+
+# Com coverage
+pytest tests/ --cov=src --cov-report=term-missing
+
+# HTML report
+pytest tests/ --cov=src --cov-report=html
+# Ver: htmlcov/index.html
+```
+
+### Métricas Atuais
 
 ```
-ENTRADA                  PROCESSAMENTO                     SAÍDA
-┌────────────┐          ┌──────────────────┐          ┌──────────────┐
-│ DBC        │          │ Validações:      │          │ CSV          │
-│ Comprimido │ ────────→│ - NOT NULL       │─────────→│ + Parquet    │
-│ ~500KB     │  Decode  │ - Ranges válidos │ Storage  │ ~1.5MB / 450 │
-│            │          │ - Consistência   │          │              │
-│ Colunas:   │          │ - Duplicatas     │          │ Campos:      │
-│ ~80 campos │          │                  │          │ ~85 campos   │
-│            │          │ Enriquecimento:  │          │ (+ calc.)    │
-│            │          │ - Campos calc.   │          │              │
-└────────────┘          └──────────────────┘          └──────────────┘
+Cobertura: 5% (182 stmts, 173 miss)
+
+Módulos:
+├── src/extract/extractor.py      42%  (19 stmts, 11 miss)
+├── src/transform/transformer.py   0%  (67 stmts, 67 miss)
+├── src/load/loader.py             0%  (27 stmts, 27 miss)
+├── src/main.py                    0%  (38 stmts, 38 miss)
+└── src/utils/logger.py            0%  (20 stmts, 20 miss)
+
+Testes:
+└── tests/test_extractor.py     1 teste PASS
+```
+
+**Meta POC:** >50% coverage
+**Meta MVP:** >80% coverage
+
+### Estrutura Testes
+
+```python
+# tests/test_extractor.py
+def test_extractor_init():
+    """Testa inicialização do extractor"""
+    extractor = DataSUSExtractor()
+    assert isinstance(extractor, DataSUSExtractor)
+
+# TODO: Adicionar
+# - test_transformer.py
+# - test_loader.py
+# - test_pipeline_integration.py
+```
+
+---
+
+## Estrutura do Projeto
+
+```
+datasus-test/
+├── .git/                       # Controle versão
+├── .pytest_cache/              # Cache pytest
+├── venv/                       # Ambiente virtual
+│
+├── src/                        # Código fonte
+│   ├── __init__.py
+│   ├── config.py               # Configurações globais
+│   ├── main.py                 # Pipeline principal
+│   │
+│   ├── extract/                # Módulo Extract
+│   │   ├── __init__.py
+│   │   └── extractor.py        # DataSUSExtractor
+│   │
+│   ├── transform/              # Módulo Transform
+│   │   ├── __init__.py
+│   │   └── transformer.py      # DataTransformer
+│   │
+│   ├── load/                   # Módulo Load
+│   │   ├── __init__.py
+│   │   └── loader.py           # DataLoader
+│   │
+│   └── utils/                  # Utilitários
+│       ├── __init__.py
+│       └── logger.py           # Setup logging
+│
+├── tests/                      # Testes pytest
+│   ├── __init__.py
+│   └── test_extractor.py
+│
+├── data/                       # Dados (git-ignored)
+│   ├── raw/                    # Dados brutos
+│   └── processed/              # Dados processados
+│       ├── SIH_AC_202401.csv
+│       └── SIH_AC_202401.parquet
+│
+├── logs/                       # Logs (git-ignored)
+│   └── pipeline_YYYYMMDD_HHMMSS.log
+│
+├── notebooks/                  # Jupyter notebooks
+│   └── 01_analise_exploratoria.ipynb
+│
+├── docs/                       # Documentação
+│   ├── ARCHITECTURE.md         # Este arquivo
+│   ├── DATA_GUIDE.md           # Dicionário dados
+│   └── ROADMAP.md              # Planejamento
+│
+├── .gitignore                  # Arquivos ignorados
+├── .pre-commit-config.yaml     # Hooks pre-commit
+├── mypy.ini                    # Config mypy
+├── pyproject.toml              # Config ruff + pytest
+├── requirements.txt            # Dependências
+├── CHANGELOG.md                # Histórico versões
+└── README.md                   # Documentação principal
 ```
 
 ---
 
 ## Decisões Arquiteturais (ADRs)
 
-### ADR-001: Dados Reais vs Dados Sintéticos
+### ADR-001: Python 3.11 (não 3.12+)
 
-- **Status:** [x] APROVADO
-- **Data:** 01/12/2024
-- **Decisores:** F. (desenvolvedor)
+**Status:** Aceito
 
-**Contexto:**
+**Contexto:** pysus (biblioteca oficial DataSUS) não suporta Python 3.12+
 
-- Projeto visa portfolio para vaga de Analista de Informações Gerenciais Pleno
-  em hospital. Escolha entre usar dados sintéticos (mais rápido) ou dados reais
-  do DataSUS (mais complexo).
-
-**Decisão:**
-
-- Usar **dados REAIS do DataSUS** (Sistema de Informações Hospitalares).
-
-**Justificativa:**
-
-- [+] Portfolio diferenciado: poucos candidatos usam dados reais governamentais
-- [+] Conhecimento prático: familiaridade com formato DBC proprietário
-- [+] Credibilidade: demonstra capacidade de trabalhar com dados complexos
-- [+] Problema real: validações e limpeza necessárias (não dados perfeitos)
-- [+] Contexto brasileiro: conhecimento do sistema de saúde nacional
-
-- [-] Setup mais lento: ~3 horas vs ~30 minutos dados sintéticos
-- [-] Dependência externa: FTP DataSUS pode estar instável
-- [-] Qualidade variável: requer validações rigorosas
-- [-] Documentação limitada: menos docs que datasets acadêmicos
+**Decisão:** Usar Python 3.11.x
 
 **Consequências:**
 
-- Pipeline ETL mais robusto (validações reais)
-- Conhecimento transferível para ambiente hospitalar
-- Possível instabilidade FTP (mitigado: cache local)
-- Necessidade de documentação detalhada dos campos
-
-**Alternativas Consideradas:**
-
-- Kaggle healthcare datasets (rejeitado: dados limpos demais)
-- MIMIC-III (rejeitado: foco EUA, não Brasil)
-- Dados sintéticos faker (rejeitado: pouco realista)
-
-### ADR-002: Python 3.11 vs Python 3.14
-
-- **Status:** [x] APROVADO
-- **Data:** 01/12/2024
-- **Decisores:** F. (desenvolvedor)
-
-**Contexto:**
-
-- Biblioteca pysus (essencial para ler DBC) tem dependências antigas. Python 3.14
-  é versão mais recente mas pode ter problemas de compatibilidade.
-
-**Decisão:**
-
-- Usar **Python 3.11.x** (não Python 3.14).
-
-**Justificativa:**
-
-- [+] Compatibilidade pysus: biblioteca testada e funcional em 3.11
-- [+] Dependências estáveis: numpy 1.26.2, cffi 1.15.1 compilam sem erros
-- [+] Ambiente produção: hospitais tipicamente usam versões LTS
-- [+] Suporte garantido: Python 3.11 suportado até outubro/2027
-
-- [-] Não é latest: Python 3.14 tem features novas (não essenciais)
-- [-] Migração futura: eventual upgrade necessário
-
-**Consequências:**
-
-- Ambiente isolado venv obrigatório para evitar conflitos
-- Documentação deve especificar versão exata
-- Setup reproduzível garantido
-
-**Evidências Técnicas:**
-
-```bash
-# Python 3.14: FALHOU
-numpy 1.26.2: C extensions não compilam
-cffi 1.15.1: Build errors
-
-# Python 3.11: SUCESSO
-Todas dependências instaladas corretamente
-pysus funcional
-```
-
-### ADR-003: CSV + Parquet vs Apenas um Formato
-
-- **Status:** [x] APROVADO
-- **Data:** 02/12/2024
-- **Decisores:** F. (desenvolvedor)
-
-**Contexto:**
-
-- Necessidade de storage para dados processados. Escolha entre formato único ou
-  múltiplos formatos.
-
-**Decisão:**
-
-- Usar **formato dual: CSV + Parquet simultaneamente**.
-
-**Justificativa:**
-
-CSV:
-
-- [+] Universal: abre em Excel, LibreOffice, qualquer ferramenta
-- [+] Debug fácil: inspeção visual direta
-- [+] Compatibilidade: importação garantida em qualquer sistema
-- [+] Human-readable: facilita troubleshooting
-
-- [-] Tamanho: ~1.5MB (maior)
-- [-] Performance: leitura mais lenta
-
-Parquet:
-
-- [+] Compacto: ~450KB (70% menor que CSV)
-- [+] Performance: 3x mais rápido leitura (columnar)
-- [+] Tipos: preserva datetime, int, float nativamente
-- [+] Ecosistema: padrão Data Lake (Spark, Athena, BigQuery)
-
-- [-] Binário: não human-readable
-- [-] Ferramentas: requer libs específicas (pyarrow, pandas)
-
-**Decisão: AMBOS**
-
-- [+] Máxima flexibilidade: escolher formato por contexto
-- [+] Demo portfolio: mostra conhecimento Data Lake ecosystem
-- [+] MVP-ready: Parquet preparado para escala
-- [+] POC-friendly: CSV para validação rápida
-
-- [-] Duplicação storage: ~2MB total vs ~1.5MB
-- [-] Duplicação processamento: write 2x (overhead mínimo ~2s)
-
-**Consequências:**
-
-- Storage dual aumenta confiabilidade (backup implícito)
-- MVP pode usar apenas Parquet se storage for crítico
-- Entrevistas: demonstra conhecimento de trade-offs
-
-### ADR-004: Documentação Modular vs Monolítica
-
-- **Status:** [x] APROVADO
-- **Data:** 03/12/2024
-- **Decisores:** F. (desenvolvedor)
-
-**Contexto:**
-
-- Arquivo DOCS.md monolítico (1800+ linhas) difícil de manter. Corrupção de
-  arquivo (6GB por loop sed) evidenciou fragilidade.
-
-**Decisão:**
-
-- Quebrar documentação em **4 arquivos SSOT modulares e consolidados**:
-
-- README.md (entry point)
-- ARCHITECTURE.md (técnico)
-- DATA_GUIDE.md (dados)
-- ROADMAP.md (planejamento)
-
-**Justificativa:**
-
-- [+] Arquivos menores: <500 linhas cada, mais fácil editar
-- [+] Separação concerns: técnico vs dados vs planejamento
-- [+] Versionamento: menos conflitos merge em Git
-- [+] Propósito claro: cada arquivo tem responsabilidade única
-- [+] Navegação: índice no README.md facilita descoberta
-
-- [-] Navegação: precisa manter links entre arquivos
-- [-] Índice centralizado: README.md como "table of contents"
-
-**Consequências:**
-
-- Manutenção mais fácil: editar apenas arquivo relevante
-- Onboarding: novos podem focar em arquivo específico
-- Risco reduzido: corrupção afeta apenas 1 arquivo não tudo
-- Trade-off aceitável: múltiplos arquivos vs gerenciabilidade
+- ✓ Compatibilidade garantida com pysus
+- ✓ Suporte pandas/numpy maduro
+- ✗ Sem features Python 3.12+
 
 ---
 
-## Requisitos de Sistema
+### ADR-002: Ruff vs Black + Flake8
 
-### Requisitos Mínimos (Funcional mas Lento)
+**Status:** Aceito
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ COMPONENTE       │ MÍNIMO              │ DESEMPENHO ESPERADO            │
-├──────────────────┼─────────────────────┼────────────────────────────────┤
-│ CPU              │ 2 cores             │ AC 2k registros: 5-8 min       │
-│                  │                     │ ES 20k registros: 15-20 min    │
-│                  │                     │                                │
-│ RAM              │ 4GB                 │ Pandas pode usar swap          │
-│                  │                     │ Processamento mais lento       │
-│                  │                     │                                │
-│ Disco            │ 10GB livres         │ Dados + ambiente virtual       │
-│                  │                     │                                │
-│ Conexão Internet │ 5 Mbps              │ Download DBC ~2-3 minutos      │
-│                  │                     │                                │
-│ Sistema          │ Linux Ubuntu 20.04+ │ Ou Windows 10+ com WSL2        │
-│ Operacional      │ macOS 11+           │                                │
-└──────────────────┴─────────────────────┴────────────────────────────────┘
-```
+**Contexto:** Black + flake8 + isort são ferramentas separadas, lentas
 
-### Requisitos Recomendados (POC)
+**Decisão:** Migrar para Ruff
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ COMPONENTE       │ RECOMENDADO         │ DESEMPENHO ESPERADO           │
-├──────────────────┼─────────────────────┼───────────────────────────────┤
-│ CPU              │ 4 cores             │ AC 2k registros: 2-5 min      │
-│                  │ Intel i5/Ryzen 5+   │ ES 20k registros: 5-10 min    │
-│                  │                     │ SP 200k registros: 25-50 min  │
-│                  │                     │                               │
-│ RAM              │ 8GB                 │ Processamento confortável     │
-│                  │                     │ Múltiplos notebooks abertos   │
-│                  │                     │                               │
-│ Disco            │ 50GB SSD            │ I/O rápido                    │
-│                  │                     │ Espaço para múltiplos estados │
-│                  │                     │                               │
-│ Conexão Internet │ 10+ Mbps            │ Download DBC ~30-60 segundos  │
-│                  │                     │                               │
-│ Sistema          │ Linux Ubuntu 22.04  │ Ambiente nativo Python        │
-│ Operacional      │ macOS 12+           │ Performance otimizada         │
-└──────────────────┴─────────────────────┴───────────────────────────────┘
-```
+**Alternativas consideradas:**
 
-### Requisitos MVP (Oracle Database)
+- Black + flake8 + isort (status quo)
+- Pylint (mais lento que Ruff)
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ COMPONENTE       │ MVP                 │ OBSERVAÇÕES                   │
-├──────────────────┼─────────────────────┼───────────────────────────────┤
-│ CPU              │ 4 cores             │ Oracle XE consome recurso     │
-│                  │                     │                               │
-│ RAM              │ 12GB+               │ Oracle XE: até 2GB RAM        │
-│                  │                     │ Sistema: 4GB                  │
-│                  │                     │ Python: 2GB                   │
-│                  │                     │ Overhead: 4GB                 │
-│                  │                     │                               │
-│ Disco            │ 100GB SSD           │ Oracle XE: até 12GB dados     │
-│                  │                     │ Dados processados: 20-30GB    │
-│                  │                     │                               │
-│ Database         │ Oracle XE 21c       │ Gratuito, limitações:         │
-│                  │                     │ - 2GB RAM                     │
-│                  │                     │ - 12GB dados                  │
-│                  │                     │ - 2 CPUs                      │
-└──────────────────┴─────────────────────┴───────────────────────────────┘
-```
+**Consequências:**
 
-### Dependências Python (POC)
-
-```bash
-# requirements.txt
-python==3.11.*          # OBRIGATÓRIO: compatibilidade pysus
-
-# ETL
-pysus==0.11.0          # Extract DataSUS
-pandas==2.1.4          # Transform
-numpy==1.26.2          # Cálculos
-pyarrow==14.0.1        # Parquet
-
-# Visualização
-matplotlib==3.8.2
-seaborn==0.13.0
-
-# Notebooks
-jupyter==1.0.0
-ipykernel==6.27.1
-
-# Desenvolvimento
-black==23.12.1         # Code formatter
-flake8==6.1.0          # Linter
-```
+- ✓ 10-100x mais rápido
+- ✓ 1 ferramenta substitui 4
+- ✓ Configuração unificada (pyproject.toml)
+- ✓ Auto-fix nativo
+- ✗ Ferramenta relativamente nova (risco adoção)
 
 ---
 
-## Workflows de Infraestrutura
+### ADR-003: Dual-Format Storage (CSV + Parquet)
 
-### Setup Ambiente (POC)
+**Status:** Aceito
+
+**Contexto:** CSV legível vs Parquet comprimido
+
+**Decisão:** Salvar ambos formatos
+
+**Consequências:**
+
+- ✓ CSV: inspeção manual, Excel, debugging
+- ✓ Parquet: compressão (~8.5x), queries rápidas
+- ✗ 2x espaço disco (mitigado: Parquet pequeno)
+
+---
+
+### ADR-004: Type Hints com cast()
+
+**Status:** Aceito
+
+**Contexto:** Mypy não infere tipos em operações DataFrame
+
+**Decisão:** Usar `cast(pd.DataFrame, df[...])` quando necessário
+
+**Alternativas:**
+
+- `# type: ignore` (menos explícito)
+- Desabilitar mypy (perde type safety)
+
+**Consequências:**
+
+- ✓ Type safety mantido
+- ✓ Mypy passa sem erros
+- ✗ Verbosidade ligeiramente maior
+
+---
+
+### ADR-005: Pre-commit Hooks Obrigatórios
+
+**Status:** Aceito
+
+**Contexto:** Code quality deve ser automática, não manual
+
+**Decisão:** Instalar pre-commit hooks para todos desenvolvedores
+
+**Consequências:**
+
+- ✓ Impossível commitar código sem lint/type check
+- ✓ Consistência garantida
+- ✓ CI/CD mais rápido (já validado localmente)
+- ✗ Primeiro commit mais lento (setup hooks)
+
+---
+
+## Workflows
+
+### Desenvolvimento Local
 
 ```bash
-# 1. Verificar versão Python
-python3 --version  # Deve ser 3.11.x
-
-# 2. Criar ambiente virtual
+# 1. Setup inicial
+git clone <repo>
+cd datasus-test
 python3.11 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pre-commit install
 
-# 3. Ativar ambiente
-source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate     # Windows
+# 2. Criar feature branch
+git checkout -b feat/nome-feature
 
-# 4. Atualizar pip
-pip install --upgrade pip
+# 3. Desenvolver
+# Editar código...
 
-# 5. Instalar dependências
-pip install --break-system-packages -r requirements.txt
+# 4. Testar localmente
+pytest tests/ -v
+ruff check src/ --fix
+mypy src/
 
-# 6. Verificar instalação
-python -c "import pysus; print(pysus.__version__)"
+# 5. Commit (pre-commit roda automaticamente)
+git add .
+git commit -m "feat: descrição"
+
+# Se pre-commit falhar:
+# - Corrige automaticamente
+# - Adicionar correções: git add .
+# - Commitar novamente
+
+# 6. Push
+git push origin feat/nome-feature
+
+# 7. Pull Request para develop
 ```
 
-### Deploy Pipeline (POC)
-
-```bash
-# 1. Estrutura de diretórios
-mkdir -p data/{raw,processed}
-mkdir -p logs
-mkdir -p outputs
-
-# 2. Executar pipeline
-python src/main.py --state AC --year 2024 --month 01
-
-# 3. Verificar saídas
-ls -lh data/processed/
-ls -lh outputs/
-
-# 4. Logs
-tail -f logs/etl_pipeline.log
-```
-
-### Troubleshooting Comum
-
-```bash
-# Problema: pysus não instala
-# Solução: Verificar Python 3.11
-python3.11 -m pip install pysus==0.11.0 --break-system-packages
-
-# Problema: FTP DataSUS timeout
-# Solução: Retry manual ou usar cache local
-wget ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801_/Dados/RDAC2401.dbc
-
-# Problema: Memory error pandas
-# Solução: Processar em chunks
-df = pd.read_csv('file.csv', chunksize=10000)
-
-# Problema: Parquet write error
-# Solução: Verificar pyarrow instalado
-pip install pyarrow==14.0.1 --break-system-packages
-```
-
-### CI/CD (MVP - Planejado)
+### CI/CD (Planejado MVP)
 
 ```yaml
 # .github/workflows/ci.yml
-name: CI Pipeline
+name: CI
 
 on: [push, pull_request]
 
@@ -566,22 +659,65 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - run: flake8 src/
-      - run: pytest tests/ --cov
+      - run: ruff check .
+      - run: mypy src/
+      - run: pytest tests/ --cov=src
 ```
 
 ---
 
-- **Última Atualização:** 03/12/2024
-- **Próxima Revisão:** Após conclusão POC (07/12/2024)
+## Requisitos de Sistema
 
-**Veja Também:**
+### Hardware Mínimo (POC)
 
-- [README.md](../README.md) - Entry point do projeto
-- [DATA_GUIDE.md](DATA_GUIDE.md) - Dicionário de dados e regras
-- [ROADMAP.md](ROADMAP.md) - Planejamento e cronograma
+- **CPU:** 2 cores
+- **RAM:** 4 GB
+- **Disco:** 10 GB livre
+- **Rede:** Conexão internet (download DataSUS)
+
+### Hardware Recomendado (MVP)
+
+- **CPU:** 4+ cores
+- **RAM:** 8+ GB
+- **Disco:** 50+ GB (múltiplos estados)
+- **Rede:** Banda larga (downloads grandes)
+
+### Software
+
+**Obrigatório:**
+
+- Python 3.11.x
+- pip >= 23.0
+- Git >= 2.30
+
+**Recomendado:**
+
+- VS Code + extensões:
+  - Python (Microsoft)
+  - Pylance (Microsoft)
+  - Ruff (Astral)
+  - Jupyter
+- Oracle SQL Developer (MVP)
+- Power BI Desktop (MVP)
+
+### Plataformas Suportadas
+
+- ✓ Linux (testado: Fedora 43)
+- ✓ macOS (não testado, deve funcionar)
+- ✓ Windows (não testado, deve funcionar)
+
+---
+
+## Referências
+
+- [pysus Documentation](https://github.com/AlertaDengue/PySUS)
+- [DataSUS FTP](ftp://ftp.datasus.gov.br)
+- [Ruff](https://docs.astral.sh/ruff/)
+- [Mypy](https://mypy.readthedocs.io/)
+- [pytest](https://docs.pytest.org/)
+- [Pre-commit](https://pre-commit.com/)
