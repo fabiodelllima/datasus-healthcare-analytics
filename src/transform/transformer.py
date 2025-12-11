@@ -3,7 +3,6 @@ Transform: Limpeza, validação e enriquecimento de dados
 """
 
 import logging
-from typing import cast
 
 import pandas as pd
 
@@ -11,32 +10,60 @@ logger = logging.getLogger(__name__)
 
 
 class DataTransformer:
-    """Transforma dados brutos do DataSUS"""
+    """
+    Pipeline de transformação ETL para dados SIH/DataSUS.
+
+    USO NORMAL:
+        Use transform() para processamento completo e automático.
+
+    USO AVANÇADO:
+        Use métodos individuais para:
+        - Debug granular de etapas
+        - Pipelines customizados
+        - Análise exploratória
+        - Testes unitários específicos
+
+    EXEMPLO NORMAL:
+        >>> transformer = DataTransformer()
+        >>> df_clean = transformer.transform(df_raw)
+
+    EXEMPLO AVANÇADO:
+        >>> df = transformer.convert_types(df_raw)
+        >>> print(f"Registros após conversão: {len(df)}")
+        >>> df = transformer.clean_data(df)
+        >>> print(f"Registros após limpeza: {len(df)}")
+    """
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Aplica pipeline de transformação
+        Pipeline ETL completo (USE ESTE MÉTODO NA MAIORIA DOS CASOS).
+
+        Executa 4 etapas sequencialmente:
+        1. convert_types: String → tipos corretos
+        2. clean_data: Remove duplicatas e nulos
+        3. validate_data: Valida regras de negócio
+        4. enrich_data: Adiciona campos calculados
 
         Args:
-            df: DataFrame bruto
+            df: DataFrame bruto extraído do DataSUS
 
         Returns:
-            DataFrame processado
+            DataFrame transformado e validado
         """
         try:
             logger.info(f"[TRANSFORM] Iniciado: {len(df):,} registros")
 
             # 1. Conversão de tipos
-            df = self._convert_types(df)
+            df = self.convert_types(df)
 
             # 2. Limpeza
-            df = self._clean_data(df)
+            df = self.clean_data(df)
 
             # 3. Validações
-            df = self._validate_data(df)
+            df = self.validate_data(df)
 
             # 4. Enriquecimento
-            df = self._enrich_data(df)
+            df = self.enrich_data(df)
 
             logger.info(f"[TRANSFORM] Concluído: {len(df):,} registros")
 
@@ -46,8 +73,23 @@ class DataTransformer:
             logger.error(f"[TRANSFORM] Erro: {e}")
             raise
 
-    def _convert_types(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Converte tipos de dados"""
+    def convert_types(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Etapa 1: Converte tipos de dados.
+
+        USO AVANÇADO: Para pipeline customizado ou debug.
+        USO NORMAL: Chamado automaticamente por transform().
+
+        Conversões:
+        - Numéricos: String → int64/float64
+        - Datas: YYYYMMDD (str) → datetime64
+
+        Args:
+            df: DataFrame com tipos originais (strings)
+
+        Returns:
+            DataFrame com tipos corretos
+        """
         logger.info("[CONVERT] Convertendo tipos...")
 
         # Campos numéricos
@@ -65,7 +107,7 @@ class DataTransformer:
         logger.info("[CONVERT] Tipos convertidos")
         return df
 
-    def _clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """Remove duplicatas e dados inválidos"""
         logger.info("[CLEAN] Iniciando limpeza...")
 
@@ -82,7 +124,7 @@ class DataTransformer:
 
         return df
 
-    def _validate_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    def validate_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """Valida tipos e ranges de dados"""
         logger.info("[VALIDATE] Iniciando validações...")
 
@@ -90,17 +132,17 @@ class DataTransformer:
 
         # Validar datas (DT_INTER <= DT_SAIDA)
         if "DT_INTER" in df.columns and "DT_SAIDA" in df.columns:
-            df = cast(pd.DataFrame, df[df["DT_INTER"] <= df["DT_SAIDA"]])
+            df = df[df["DT_INTER"] <= df["DT_SAIDA"]]
 
         # Validar idade (0-120)
         if "IDADE" in df.columns:
-            df = cast(pd.DataFrame, df[(df["IDADE"] >= 0) & (df["IDADE"] <= 120)])
+            df = df[(df["IDADE"] >= 0) & (df["IDADE"] <= 120)]
 
         # Validar valores monetários (>= 0)
         value_cols = ["VAL_TOT", "VAL_UTI", "VAL_SH", "VAL_SP", "VAL_SADT"]
         for col in value_cols:
             if col in df.columns:
-                df = cast(pd.DataFrame, df[df[col] >= 0])
+                df = df[df[col] >= 0]
 
         removed = initial_count - len(df)
         logger.info(f"[VALIDATE] Registros inválidos removidos: {removed}")
@@ -108,7 +150,7 @@ class DataTransformer:
 
         return df
 
-    def _enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    def enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """Adiciona campos calculados"""
         logger.info("[ENRICH] Iniciando enriquecimento...")
 
