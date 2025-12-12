@@ -18,3 +18,6 @@ ignore = ["E501"]  # line too long (já tem line-length)
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # imports não usados em __init__
+
+[tool.pyright]
+reportUnknownMemberType = "none"  # Suprime warnings "partially unknown"
