@@ -13,13 +13,11 @@
 1. [Fonte de Dados](#fonte-de-dados)
 2. [Dataset POC](#dataset-poc)
 3. [Dicionário de Dados](#dicionário-de-dados)
-4. [Campos Calculados](#campos-calculados)
-5. [Regras de Validação](#regras-de-validação)
-6. [Códigos e Tabelas](#códigos-e-tabelas)
-7. [KPIs Implementados](#kpis-implementados)
-8. [Pipeline ETL Detalhado](#pipeline-etl-detalhado)
-9. [Qualidade de Dados](#qualidade-de-dados)
-10. [Limitações Conhecidas](#limitações-conhecidas)
+4. [Códigos e Tabelas](#códigos-e-tabelas)
+5. [KPIs Implementados](#kpis-implementados)
+6. [Pipeline ETL Detalhado](#pipeline-etl-detalhado)
+7. [Qualidade de Dados](#qualidade-de-dados)
+8. [Limitações Conhecidas](#limitações-conhecidas)
 
 ---
 
@@ -189,93 +187,6 @@ Comparação Nacional (Jan 2024):
 | `UTI_MES_TO` | Int  | Total diárias UTI          |
 
 ---
-
-## Campos Calculados
-
-### Pipeline Transform Adiciona
-
-| Campo            | Tipo     | Cálculo                                   | Exemplo    | Uso              |
-| ---------------- | -------- | ----------------------------------------- | ---------- | ---------------- |
-| `stay_days`      | int64    | `(DT_SAIDA - DT_INTER).days`              | 5          | TMP, ocupação    |
-| `daily_cost`     | float64  | `VAL_TOT / stay_days` (evita div/0)       | 235.50     | Custo/eficiência |
-| `age_group`      | category | `pd.cut(IDADE, bins=[0,18,30,45,60,120])` | "18-29"    | Demografia       |
-| `death`          | bool     | `MORTE == 1`                              | True/False | Mortalidade      |
-| `specialty_name` | string   | `ESPEC.astype(str)`                       | "03"       | Classificação    |
-
-### Implementação
-
-```python
-# stay_days
-df['stay_days'] = (df['DT_SAIDA'] - df['DT_INTER']).dt.days  # type: ignore[attr-defined]
-
-# daily_cost (evita divisão por zero)
-df['daily_cost'] = df['VAL_TOT'] / df['stay_days'].replace(0, 1)
-
-# age_group
-df['age_group'] = pd.cut(
-    df['IDADE'],
-    bins=[0, 18, 30, 45, 60, 120],
-    labels=['0-17', '18-29', '30-44', '45-59', '60+']
-)
-
-# death (boolean mais limpo que 0/1)
-df['death'] = df['MORTE'] == 1
-
-# specialty_name (placeholder - requer tabela SIGTAP completa)
-df['specialty_name'] = df['ESPEC'].astype(str)
-```
-
----
-
-## Regras de Validação
-
-### Pipeline Transform Aplica
-
-#### 1. Conversão de Tipos
-
-```python
-# Numéricos (string → float64)
-numeric_fields = ['IDADE', 'VAL_TOT', 'VAL_UTI', 'VAL_SH', 'VAL_SP', 'VAL_SADT']
-for field in numeric_fields:
-    df[field] = pd.to_numeric(df[field], errors='coerce')
-
-# Datas (string YYYYMMDD → datetime64)
-date_fields = ['DT_INTER', 'DT_SAIDA']
-for field in date_fields:
-    df[field] = pd.to_datetime(df[field], format='%Y%m%d', errors='coerce')
-```
-
-#### 2. Limpeza
-
-```python
-# Remove duplicatas completas
-df = df.drop_duplicates()
-
-# Remove registros com nulos em campos críticos
-critical_fields = ['N_AIH', 'DT_INTER', 'DT_SAIDA']
-df = df.dropna(subset=critical_fields)
-```
-
-#### 3. Validações de Negócio
-
-| Regra             | Validação              | Ação            | Justificativa                          |
-| ----------------- | ---------------------- | --------------- | -------------------------------------- |
-| Datas lógicas     | `DT_INTER <= DT_SAIDA` | Remove registro | Impossível sair antes de entrar        |
-| Idade válida      | `0 <= IDADE <= 120`    | Remove registro | Fora range humano plausível            |
-| Valores positivos | `VAL_* >= 0`           | Remove registro | Valores monetários negativos inválidos |
-
-```python
-# Datas
-df = cast(pd.DataFrame, df[df['DT_INTER'] <= df['DT_SAIDA']])
-
-# Idade
-df = cast(pd.DataFrame, df[(df['IDADE'] >= 0) & (df['IDADE'] <= 120)])
-
-# Valores monetários
-value_cols = ['VAL_TOT', 'VAL_UTI', 'VAL_SH', 'VAL_SP', 'VAL_SADT']
-for col in value_cols:
-    df = cast(pd.DataFrame, df[df[col] >= 0])
-```
 
 #### 4. Métricas Qualidade
 
@@ -507,7 +418,7 @@ df_raw = parquet_set.to_dataframe()
 
 ### Load
 
-- **Input:** DataFrame clean + metadata  
+- **Input:** DataFrame clean + metadata
 - **Output:** CSV + Parquet files
 
 ```python

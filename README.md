@@ -2,7 +2,7 @@
 
 - **Versão:** 0.1.0
 - **Fase:** POC (Proof of Concept)
-- **Data:** 05/12/2024
+- **Data:** 12/12/2024
 
 Sistema de analytics para gestão hospitalar utilizando dados públicos reais do Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
 
@@ -14,12 +14,13 @@ Esta documentação está organizada em módulos específicos para facilitar nav
 
 ### Quick Links
 
-| Documento                                   | Descrição                                   | Uso                               |
-| ------------------------------------------- | ------------------------------------------- | --------------------------------- |
-| **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Decisões arquiteturais, stack técnico, ADRs | Setup inicial, entender o sistema |
-| **[DATA_GUIDE.md](docs/DATA_GUIDE.md)**     | Dicionário de dados, regras de negócio, ETL | Desenvolvimento, análise de dados |
-| **[ROADMAP.md](docs/ROADMAP.md)**           | Planejamento, cronograma, milestones        | Acompanhamento do projeto         |
-| **[CHANGELOG.md](CHANGELOG.md)**            | Histórico de versões e mudanças             | Release notes                     |
+| Documento                                       | Descrição                                   | Uso                               |
+| ----------------------------------------------- | ------------------------------------------- | --------------------------------- |
+| **[ARCHITECTURE.md](docs/ARCHITECTURE.md)**     | Decisões arquiteturais, stack técnico, ADRs | Setup inicial, entender o sistema |
+| **[DATA_GUIDE.md](docs/DATA_GUIDE.md)**         | Dicionário de dados, regras de negócio, ETL | Desenvolvimento, análise de dados |
+| **[BUSINESS_RULES.md](docs/BUSINESS_RULES.md)** | Regras de validação e enriquecimento        | Implementação, testes             |
+| **[ROADMAP.md](docs/ROADMAP.md)**               | Planejamento, cronograma, milestones        | Acompanhamento do projeto         |
+| **[CHANGELOG.md](CHANGELOG.md)**                | Histórico de versões e mudanças             | Release notes                     |
 
 ---
 
