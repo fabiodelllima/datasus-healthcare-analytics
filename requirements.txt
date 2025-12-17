@@ -31,11 +31,11 @@ pandas-stubs>=2.3.3       # Type stubs para pandas
 pytest>=8.0.0
 pytest-cov>=6.0.0         # Cobertura de código
 pytest-mock>=3.14.0       # Mocking
+pytest-bdd>=6.1.1         # BDD testing (Gherkin)
 
 # Utilities
 python-dotenv>=1.0.0
 requests>=2.31.0
-
 
 # ============================================================================
 # MVP - Adicionar quando necessário
