@@ -93,7 +93,7 @@ class OpenDataSUSInspector:
         Raises:
             ValueError: Se package_id inválido
             requests.Timeout: Se requisição exceder 30s
-            requests.RequestException: Se erro de rede
+            requests.ConnectionError: Se erro de conexão
 
         Example:
             >>> inspector = OpenDataSUSInspector()
@@ -113,6 +113,12 @@ class OpenDataSUSInspector:
 
         try:
             response = requests.get(url, params=params, headers=self.headers, timeout=self.timeout)
+
+            # 404 retorna None (package não existe), não levanta exceção
+            if response.status_code == 404:
+                self.logger.info(f"Package '{package_id}' not found (404)")
+                return None
+
             response.raise_for_status()
 
             # Verificar Content-Type
@@ -128,7 +134,6 @@ class OpenDataSUSInspector:
                 return None
 
             self.logger.info(f"Package '{package_id}' found successfully")
-
             result: dict[str, Any] = data["result"]
             return result
 
@@ -137,9 +142,6 @@ class OpenDataSUSInspector:
             raise
         except requests.ConnectionError as e:
             self.logger.error(f"Connection error: {e}")
-            raise
-        except requests.RequestException as e:
-            self.logger.error(f"Request error: {e}")
             raise
 
     def list_packages(self) -> list[str]:
