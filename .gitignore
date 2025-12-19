@@ -47,14 +47,14 @@ venv.bak/
 *~
 .DS_Store
 
-# Data Files (IMPORTANTE: não versionar dados)
+# Data Files
 data/raw/*.dbc
 data/raw/*.dbf
 data/processed/*.csv
 data/processed/*.parquet
 data/processed/*.json
 
-# Permitir estrutura de diretórios
+# Gitkeep
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
@@ -97,3 +97,9 @@ dmypy.json
 
 # Documentation builds
 docs/_build/
+
+# Notes
+NOTES.md
+LEARN.md
+TODO.md
+test_results.txt

@@ -9,70 +9,90 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
-### Em desenvolvimento
+### Planejado
 
-- Pipeline ETL POC em andamento
+- Processamento estado ES (validação multi-estado)
+- Análise exploratória completa (AC + ES)
+- Dashboard Power BI inicial
+- Integração Oracle Database (MVP)
 
 ---
 
-## [0.1.0] - 2024-12-03
+## [0.2.0] - 2024-12-11
 
 ### Adicionado
 
-- Estrutura inicial do projeto
-- Documentação completa (4 arquivos SSOT):
-  - README.md (entry point)
-  - ARCHITECTURE.md (stack técnico + ADRs)
-  - DATA_GUIDE.md (dicionário dados + regras + ETL)
-  - ROADMAP.md (planejamento + cronograma + riscos)
-- ADR-001: Decisão usar dados reais DataSUS
-- ADR-002: Decisão Python 3.11 (não 3.14)
-- ADR-003: Decisão formato dual CSV + Parquet
-- ADR-004: Decisão documentação modular
-- Estrutura código Python:
-  - src/extract/ (módulo Extract)
-  - src/transform/ (módulo Transform)
-  - src/load/ (módulo Load)
-  - src/utils/ (utilitários)
-  - src/main.py (pipeline principal)
-- requirements.txt com dependências POC
-- .gitignore configurado para Python/dados
-- Estrutura diretórios: data/, logs/, outputs/, tests/
+- Conjunto abrangente de testes (18 testes, 54% coverage)
+- Especificações BDD em formato Gherkin (hospitalization_validation.feature)
+- Documentação de regras de negócio (BUSINESS_RULES.md)
+- Validações de qualidade de dados (datas, idade, valores monetários)
+- Enriquecimento de dados (stay_days, daily_cost, age_group, flag óbito)
+- Documentação completa de todas regras ETL (12 regras: CONV, LIMP, VAL, ENR)
 
-### Configurado
+### Modificado
 
-- Python 3.11.x como versão obrigatória
-- Ambiente virtual (venv)
-- Logging estruturado
+- Métodos Transformer agora públicos (clean_data, validate_data, enrich_data)
+- Melhoria cobertura testes: 5% → 54%
+- Coverage transformer: 0% → 94%
+- DATA_GUIDE.md: removidas regras negócio duplicadas (movidas para BUSINESS_RULES.md)
 
----
+### Técnico
 
-## Tipos de Mudanças
+- Adoção Google Python Style Guide para testabilidade
+- Conformidade PEP 8
+- Ruff + mypy configurados
+- Pre-commit hooks habilitados
+- Hierarquia DOCS > BDD > TDD > CODE implementada
 
-- **Adicionado** para novas funcionalidades
-- **Modificado** para mudanças em funcionalidades existentes
-- **Descontinuado** para funcionalidades que serão removidas
-- **Removido** para funcionalidades removidas
-- **Corrigido** para correções de bugs
-- **Segurança** para vulnerabilidades
+### Corrigido
+
+- Expectativas pd.cut() para intervalos (comportamento right=True)
+- Comparações booleanas (== ao invés de is)
+- Correções type hints
+- Consistência nomenclatura testes (hospitalization_validation.feature)
 
 ---
 
-## Versionamento
+## [0.1.0] - 2024-12-05
 
-```
-MAJOR.MINOR.PATCH
+### Adicionado
 
-MAJOR: Mudanças incompatíveis na API
-MINOR: Novas funcionalidades compatíveis
-PATCH: Correções de bugs compatíveis
+- Pipeline ETL completo (Extract, Transform, Load)
+- Integração pysus para download dados DataSUS
+- Transformações: limpeza, validação, enriquecimento
+- Salvamento dual-format (CSV + Parquet)
+- Sistema logging estruturado
+- Ferramentas code quality: ruff, mypy, pre-commit
+- Framework testes: pytest com coverage
+- Documentação completa (README, ARCHITECTURE, DATA_GUIDE, ROADMAP)
+- Configuração type hints (mypy.ini)
+- Configuração ruff (pyproject.toml)
+- Pre-commit hooks automáticos
 
-Exemplos:
-0.1.0 = POC inicial
-0.2.0 = MVP features
-1.0.0 = Produção release
-```
+### Modificado
 
----
+- Renomeação projeto: "DataSUS Analytics" → "DataSUS Healthcare Analytics"
+- Substituição black + flake8 → ruff (10-100x mais rápido)
+- Dependências: versões fixadas (==) → flexíveis (>=)
+- Config paths: pathlib → os.path (compatibilidade)
 
-**Nota:** Versões 0.x.x são consideradas desenvolvimento inicial.
+### Corrigido
+
+- Test extractor: removido assert self.sih obsoleto
+- Type hints: adicionado cast() para operações DataFrame
+- Imports: removidos imports não utilizados
+- Formatação: aplicado ruff em toda codebase
+
+### Técnico
+
+**Commits principais:**
+
+- `b976ea0`: Renomear projeto para Healthcare Analytics
+- `1d032ee`: Implementar ruff + mypy + pre-commit
+- `3cc9826`: Remover black e flake8
+
+**Métricas:**
+
+- Cobertura testes: 5% (1/1 teste passando)
+- Pipeline: 4.315 registros AC processados com sucesso
+- Pre-commit: 3 hooks configurados (ruff, ruff-format, mypy)
