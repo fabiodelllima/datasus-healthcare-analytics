@@ -18,6 +18,31 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.1] - 2025-12-27
+
+### Corrigido
+
+- **CI/CD**: GitHub Actions configurado e testado
+- **Métricas**: Coverage real 56% (51/57 testes, 5 falhas, 1 skip)
+- **README**: Atualizado com resultados reais do CI/CD
+
+### Descoberto
+
+- Testes API: 3 timeouts opendatasus.saude.gov.br (timeout 30s insuficiente)
+- Testes BDD: 2 step definitions faltando em api_inspection.feature
+- API Inspector coverage: 49% (timeouts reduzem métrica)
+- Necessário VCR.py para fixtures de testes API
+- Necessário retry logic com exponential backoff
+
+### Técnico
+
+- GitHub Actions rodando pytest + coverage automaticamente
+- Coverage XML gerado e enviado para Codecov
+- Badges Codecov funcionais no README
+- Ruff + Mypy passing em CI
+
+---
+
 ## [0.2.0] - 2025-12-22
 
 ### Adicionado
