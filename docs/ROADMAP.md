@@ -326,8 +326,8 @@ Produção: 500k+ registros   (5+ estados, 12 meses)  → Sistema real
 **Status:**
 
 - [x] EM ANDAMENTO
-- **Início:** 01/12/2024
-- **Prazo:** 07/12/2024 (7 dias)
+- **Início:** 01/12/2025
+- **Prazo:** 22/12/2025 (7 dias)
 
 ### Objetivo
 
@@ -391,38 +391,38 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~1.5 MB CSV)
 ┌────────────────────────────────────────────────────────────────────────┐
 │ DIA │ DATA       │ ATIVIDADES                        │ STATUS          │
 ├─────┼────────────┼───────────────────────────────────┼─────────────────┤
-│ 1   │ 01/12/2024 │ Setup ambiente + Pesquisa         │ [x] COMPLETO    │
+│ 1   │ 01/12/2025 │ Setup ambiente + Pesquisa         │ [x] COMPLETO    │
 │ Dom │            │ - Python 3.11 + venv              │                 │
 │     │            │ - Pesquisa DataSUS/pysus          │                 │
 │     │            │ - Estrutura diretórios            │                 │
 │     │            │                                   │                 │
-│ 2   │ 02/12/2024 │ Extract + Documentação Inicial    │ [x] COMPLETO    │
+│ 2   │ 02/12/2025 │ Extract + Documentação Inicial    │ [x] COMPLETO    │
 │ Seg │            │ - pysus download AC Jan/2024      │                 │
 │     │            │ - Decode DBC -> DataFrame         │                 │
 │     │            │ - README.md, ARCHITECTURE.md      │                 │
 │     │            │                                   │                 │
-│ 3   │ 03/12/2024 │ Transform + Docs Consolidação     │ [x] COMPLETO    │
+│ 3   │ 03/12/2025 │ Transform + Docs Consolidação     │ [x] COMPLETO    │
 │ Ter │            │ - Limpeza dados                   │                 │
 │     │            │ - Validações                      │                 │
 │     │            │ - Enriquecimento                  │                 │
 │     │            │ - DATA_GUIDE.md, ROADMAP.md       │                 │
 │     │            │                                   │                 │
-│ 4   │ 04/12/2024 │ Load + Testes                     │ [ ] PLANEJADO   │
+│ 4   │ 04/12/2025 │ Load + Testes                     │ [ ] PLANEJADO   │
 │ Qua │            │ - Salvar CSV + Parquet            │                 │
 │     │            │ - Testar leitura                  │                 │
 │     │            │ - Validar metadata                │                 │
 │     │            │                                   │                 │
-│ 5   │ 05/12/2024 │ Analytics + KPIs                  │ [ ] PLANEJADO   │
+│ 5   │ 05/12/2025 │ Analytics + KPIs                  │ [ ] PLANEJADO   │
 │ Qui │            │ - Calcular 5 KPIs                 │                 │
 │     │            │ - Jupyter Notebook                │                 │
 │     │            │ - Análise exploratória            │                 │
 │     │            │                                   │                 │
-│ 6   │ 06/12/2024 │ Visualizações                     │ [ ] PLANEJADO   │
+│ 6   │ 06/12/2025 │ Visualizações                     │ [ ] PLANEJADO   │
 │ Sex │            │ - 4-6 gráficos matplotlib         │                 │
 │     │            │ - Exportar PNG 300 DPI            │                 │
 │     │            │ - Formatação apresentação         │                 │
 │     │            │                                   │                 │
-│ 7   │ 07/12/2024 │ Revisão + Decisão GO/NO-GO        │ [ ] PLANEJADO   │
+│ 7   │ 22/12/2025 │ Revisão + Decisão GO/NO-GO        │ [ ] PLANEJADO   │
 │ Sáb │            │ - Review documentação             │                 │
 │     │            │ - Validar entregas                │                 │
 │     │            │ - Decisão: avançar MVP ou revisar │                 │
@@ -480,8 +480,8 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~1.5 MB CSV)
 **Status:**
 
 - [ ] PLANEJADO
-- **Início previsto:** 08/12/2024
-- **Prazo:** 31/12/2024 (3-4 semanas)
+- **Início previsto:** 08/01/2026
+- **Prazo:** 31/03/2026 (3-4 semanas)
 
 ### Objetivo
 
@@ -553,22 +553,22 @@ Database:   Oracle XE 21c
 ┌────────────────────────────────────────────────────────────────────────┐
 │ SEMANA │ DATAS          │ FOCO                        │ ENTREGAS       │
 ├────────┼────────────────┼─────────────────────────────┼────────────────┤
-│ 1      │ 08-14/12/2024  │ Database + Infraestrutura   │ Oracle setup   │
+│ 1      │ 08-14/01/2026  │ Database + Infraestrutura   │ Oracle setup   │
 │        │                │ - Instalar Oracle XE        │ Schema criado  │
 │        │                │ - Criar schema, tabelas     │ Pipeline migra │
 │        │                │ - Migrar pipeline para DB   │                │
 │        │                │                             │                │
-│ 2      │ 15-21/12/2024  │ Expansão Dados + KPIs       │ 12 meses load  │
+│ 2      │ 15-21/01/2026  │ Expansão Dados + KPIs       │ 12 meses load  │
 │        │                │ - Processar 12 meses        │ 10 KPIs impl.  │
 │        │                │ - Implementar 5 KPIs novos  │ Queries SQL    │
 │        │                │ - Queries SQL complexas     │                │
 │        │                │                             │                │
-│ 3      │ 22-28/12/2024  │ Dashboard + Visualização    │ Dashboard func │
+│ 3      │ 22-28/02/2026  │ Dashboard + Visualização    │ Dashboard func │
 │        │                │ - Configurar Power BI       │ 3-5 páginas    │
 │        │                │ - Criar 3-5 páginas         │ Filtros OK     │
 │        │                │ - Implementar filtros       │                │
 │        │                │                             │                │
-│ 4      │ 29-31/12/2024  │ Qualidade + Documentação    │ Testes 87%+    │
+│ 4      │ 29-31/03/2026  │ Qualidade + Documentação    │ Testes 87%+    │
 │        │                │ - Testes unitários pytest   │ CI/CD config   │
 │        │                │ - CI/CD GitHub Actions      │ Docs completa  │
 │        │                │ - Documentação técnica      │                │
@@ -677,7 +677,7 @@ Registros:  500.000+
 ### Visão Trimestral
 
 ```
-Q4 2024 - Dezembro
+Q4 2025 - Dezembro
 ┌──────────────────────────────────────────────────────────────────┐
 │ SEMANA  │ 02-08 │ 09-15 │ 16-22 │ 23-29 │ 30-31 │                │
 │ FASE    │ POC   │ MVP   │ MVP   │ MVP   │ MVP   │                │
@@ -705,28 +705,28 @@ Q2 2025 - Abril-Junho
 ### Milestones
 
 ```
-M1: [x] Setup Completo           02/12/2024
+M1: [x] Setup Completo           02/12/2025
     - Ambiente Python 3.11
     - pysus instalado
     - Estrutura docs/
 
-M2: [ ] POC Finalizada           07/12/2024  <- PRÓXIMO
+M2: [ ] POC Finalizada           22/12/2025  <- PRÓXIMO
     - Pipeline ETL funcional
     - 5 KPIs calculados
     - Documentação completa
     - Decisão GO/NO-GO
 
-M3: [ ] Oracle Configurado       15/12/2024
+M3: [ ] Oracle Configurado       15/01/2026
     - Database instalado
     - Schema criado
     - Pipeline migrado
 
-M4: [ ] Dashboard Funcional      28/12/2024
+M4: [ ] Dashboard Funcional      28/02/2026
     - Power BI 3-5 páginas
     - 10+ KPIs interativos
     - Apresentável
 
-M5: [ ] MVP Release              31/12/2024
+M5: [ ] MVP Release              31/03/2026
     - Todos critérios MVP atendidos
     - Sistema funcional e demonstrável
     - Documentação técnica completa
@@ -959,7 +959,7 @@ Status: MITIGADO POR DESIGN
 
 ---
 
-**Última atualização:** 04/12/2024
+**Última atualização:** 24/12/2025
 
 **Veja Também:**
 

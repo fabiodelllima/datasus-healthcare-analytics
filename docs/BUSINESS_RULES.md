@@ -1,7 +1,7 @@
 # REGRAS DE NEGÓCIO
 
 - **Versão:** 1.0.0 POC
-- **Última atualização:** 11/12/2024
+- **Última atualização:** 24/12/2025
 
 **Propósito:** Single Source of Truth para **TODAS** as regras de validação, transformação e enriquecimento do pipeline ETL. Este documento é a base para especificações BDD, testes TDD e implementação de código.
 
