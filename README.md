@@ -1,8 +1,10 @@
 # DataSUS Healthcare Analytics
 
-- **Versão:** 0.1.0
+[![codecov](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics/branch/main/graph/badge.svg)](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics)
+
+- **Versão:** 0.2.0
 - **Fase:** POC (Proof of Concept)
-- **Data:** 12/12/2024
+- **Data:** 22/12/2025
 
 Sistema de analytics para gestão hospitalar utilizando dados públicos reais do Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
 

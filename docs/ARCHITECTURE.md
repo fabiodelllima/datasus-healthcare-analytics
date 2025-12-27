@@ -2,7 +2,7 @@
 
 - **Sistema:** DataSUS Healthcare Analytics
 - **Versão:** 1.0.0 POC
-- **Última Atualização:** 05/12/2024
+- **Última Atualização:** 24/12/2025
 
 **Propósito:** Single Source of Truth para decisões arquiteturais, stack técnico, requisitos de sistema e workflows de infraestrutura.
 
@@ -283,7 +283,7 @@ metadata = {
     'records': 4315,
     'csv_size_mb': 2.7,
     'parquet_size_mb': 0.32,
-    'timestamp': '2024-12-05T12:16:49'
+    'timestamp': '2025-12-05T12:16:49'
 }
 ```
 
@@ -721,3 +721,168 @@ jobs:
 - [Mypy](https://mypy.readthedocs.io/)
 - [pytest](https://docs.pytest.org/)
 - [Pre-commit](https://pre-commit.com/)
+
+---
+
+## Evolução Arquitetural
+
+### Decisão: Modular Monolith (Não Microsserviços)
+
+**Contexto:** Processamento de dados de 27 estados brasileiros, volume 10-50M registros.
+
+**Escolha:** Modular Monolith com separação clara de módulos.
+
+**Razionale:**
+
+- Volume < 100M registros (microsserviços são overkill)
+- Time pequeno (1-5 devs)
+- Domínio coeso (healthcare analytics)
+- Overhead operacional de microsserviços não justificado
+- Transações ACID necessárias
+
+**Ver:** docs/DECISION_LOG.md para detalhes completos.
+
+---
+
+### Fase 1: POC (Atual - v0.2.0)
+
+**Arquitetura:** Script-based ETL pipeline
+
+```
+DataSUS FTP → Extract → Transform → Load → CSV/Parquet
+     ↓          ↓          ↓          ↓         ↓
+   .dbc       pysus     pandas     pathlib   storage
+```
+
+**Características:**
+
+- Execução manual/script
+- Sem orquestração
+- Storage: Filesystem (CSV + Parquet)
+- Análise: Jupyter notebooks
+
+**Adequado para:**
+
+- <10k registros/dia
+- 1 desenvolvedor
+- Prototipação rápida
+
+---
+
+### Fase 2: MVP (v1.0.0 - Jan 2026)
+
+**Arquitetura:** Modular Monolith + Scheduled Jobs
+
+```
+┌─────────────────────────────────────────────┐
+│         FastAPI Application                 │
+│                                             │
+│  ┌──────────┐  ┌──────────┐  ┌───────────┐  │
+│  │   ETL    │  │   API    │  │ Analytics │  │
+│  │  Module  │  │  Module  │  │   Module  │  │
+│  └──────────┘  └──────────┘  └───────────┘  │
+│        │             │             │        │
+│        └─────────────┴─────────────┘        │
+│                      │                      │
+│               Shared Services               │
+│             (config, logging, db)           │
+└─────────────────────────────────────────────┘
+        │                    │
+   ┌────▼─────┐          ┌───▼────┐
+   │ Oracle   │          │ Redis  │
+   │ Database │          │ Cache  │
+   └──────────┘          └────────┘
+```
+
+**Stack adicional:**
+
+- Airflow: Orquestração DAGs
+- Oracle XE: RDBMS
+- Power BI: Dashboards
+- FastAPI: REST endpoints
+
+**Adequado para:**
+
+- <100k registros/dia
+- 2-5 desenvolvedores
+- SLA moderados (latência <5s)
+
+---
+
+### Fase 3: Produção (v2.0.0 - Q1 2025)
+
+**Arquitetura:** Event-Driven Batch + API
+
+```
+┌──────────┐     ┌───────────┐     ┌──────────┐
+│ Airflow  │────▶│ RabbitMQ  │────▶│ Workers  │
+│ Scheduler│     │  Queue    │     │ (Celery) │
+└──────────┘     └───────────┘     └──────────┘
+                       │                  │
+                       │                  ▼
+                       │            ┌───────────┐
+                       │            │ Data      │
+                       │            │ Lake (S3) │
+                       │            └───────────┘
+                       │                  │
+                       ▼                  ▼
+                 ┌──────────┐      ┌──────────┐
+                 │ FastAPI  │◀─────│ Oracle   │
+                 │ Workers  │      │ Database │
+                 └──────────┘      └──────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ Loki+Prometheus │
+              │    + Grafana    │
+              └─────────────────┘
+```
+
+**Stack adicional:**
+
+- RabbitMQ: Message queue
+- Celery: Distributed tasks
+- Loki + Prometheus + Grafana: Observabilidade
+- Docker: Containerização
+- Nginx: Reverse proxy
+
+**Adequado para:**
+
+- <1M registros/dia
+- 5-10 desenvolvedores
+- SLA rigorosos (latência <1s p99)
+
+---
+
+### Quando Considerar Microsserviços
+
+**Reavaliar arquitetura se:**
+
+- Volume > 100M registros/dia
+- Requisições > 100k/dia
+- SLA < 100ms p99
+- Times múltiplos independentes (>10 devs)
+- Múltiplas fontes heterogêneas
+
+**Até lá:** Modular Monolith é suficiente e mais simples.
+
+---
+
+### Observabilidade
+
+**Stack escolhida:** Loki + Prometheus + Grafana
+
+**Componentes:**
+
+- **Loki:** Logs centralizados (eventos, debugging)
+- **Prometheus:** Métricas (latency, errors, throughput)
+- **Grafana:** Dashboards unificados
+
+**Alternativas rejeitadas:**
+
+- ELK Stack: Pesado (>4GB RAM), overkill para volume inicial
+- Prometheus sozinho: Sem logs centralizados
+
+**Ver:** docs/DECISION_LOG.md para detalhes completos.
+
+---

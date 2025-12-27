@@ -18,7 +18,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
-## [0.2.0] - 2024-12-11
+## [0.2.0] - 2025-12-22
 
 ### Adicionado
 
@@ -53,7 +53,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
-## [0.1.0] - 2024-12-05
+## [0.1.0] - 2025-12-05
 
 ### Adicionado
 

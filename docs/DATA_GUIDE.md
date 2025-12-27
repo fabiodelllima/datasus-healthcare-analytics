@@ -2,7 +2,7 @@
 
 - **Sistema:** DataSUS Healthcare Analytics
 - **Versão:** 1.0.0 POC
-- **Última Atualização:** 05/12/2024
+- **Última Atualização:** 24/12/2025
 
 **Propósito:** Single Source of Truth para tudo relacionado a dados: fonte, dicionário de campos, códigos, regras de negócio, validações e workflows ETL.
 
@@ -360,10 +360,10 @@ df_raw = parquet_set.to_dataframe()
 **Logs:**
 
 ```
-[2024-12-05 12:16:47] INFO - [EXTRACT] Baixando: AC 2024/01
-[2024-12-05 12:16:47] INFO - [EXTRACT] Download concluído
-[2024-12-05 12:16:48] INFO - [EXTRACT] Registros carregados: 4,315
-[2024-12-05 12:16:48] INFO - [EXTRACT] Colunas: 115
+[2025-12-05 12:16:47] INFO - [EXTRACT] Baixando: AC 2024/01
+[2025-12-05 12:16:47] INFO - [EXTRACT] Download concluído
+[2025-12-05 12:16:48] INFO - [EXTRACT] Registros carregados: 4,315
+[2025-12-05 12:16:48] INFO - [EXTRACT] Colunas: 115
 ```
 
 ---
@@ -400,18 +400,18 @@ df_raw = parquet_set.to_dataframe()
 **Logs:**
 
 ```
-[2024-12-05 12:16:48] INFO - [TRANSFORM] Iniciado: 4,315 registros
-[2024-12-05 12:16:48] INFO - [CONVERT] Convertendo tipos...
-[2024-12-05 12:16:48] INFO - [CONVERT] Tipos convertidos
-[2024-12-05 12:16:48] INFO - [CLEAN] Iniciando limpeza...
-[2024-12-05 12:16:48] INFO - [CLEAN] Duplicatas removidas: 0
-[2024-12-05 12:16:48] INFO - [CLEAN] Registros válidos: 4,315
-[2024-12-05 12:16:48] INFO - [VALIDATE] Iniciando validações...
-[2024-12-05 12:16:48] INFO - [VALIDATE] Registros inválidos removidos: 0
-[2024-12-05 12:16:48] INFO - [VALIDATE] Taxa validação: 100.00%
-[2024-12-05 12:16:48] INFO - [ENRICH] Iniciando enriquecimento...
-[2024-12-05 12:16:48] INFO - [ENRICH] Campos adicionados: stay_days, daily_cost, age_group, death, specialty_name
-[2024-12-05 12:16:48] INFO - [TRANSFORM] Concluído: 4,315 registros
+[2025-12-05 12:16:48] INFO - [TRANSFORM] Iniciado: 4,315 registros
+[2025-12-05 12:16:48] INFO - [CONVERT] Convertendo tipos...
+[2025-12-05 12:16:48] INFO - [CONVERT] Tipos convertidos
+[2025-12-05 12:16:48] INFO - [CLEAN] Iniciando limpeza...
+[2025-12-05 12:16:48] INFO - [CLEAN] Duplicatas removidas: 0
+[2025-12-05 12:16:48] INFO - [CLEAN] Registros válidos: 4,315
+[2025-12-05 12:16:48] INFO - [VALIDATE] Iniciando validações...
+[2025-12-05 12:16:48] INFO - [VALIDATE] Registros inválidos removidos: 0
+[2025-12-05 12:16:48] INFO - [VALIDATE] Taxa validação: 100.00%
+[2025-12-05 12:16:48] INFO - [ENRICH] Iniciando enriquecimento...
+[2025-12-05 12:16:48] INFO - [ENRICH] Campos adicionados: stay_days, daily_cost, age_group, death, specialty_name
+[2025-12-05 12:16:48] INFO - [TRANSFORM] Concluído: 4,315 registros
 ```
 
 ---
@@ -446,12 +446,12 @@ metadata = {
 **Logs:**
 
 ```
-[2024-12-05 12:16:48] INFO - [LOAD] Salvando: AC 2024/01
-[2024-12-05 12:16:49] INFO - [LOAD] Salvando CSV: /path/SIH_AC_202401.csv
-[2024-12-05 12:16:49] INFO - [LOAD] Salvando Parquet: /path/SIH_AC_202401.parquet
-[2024-12-05 12:16:49] INFO - [LOAD] CSV: 2.70 MB
-[2024-12-05 12:16:49] INFO - [LOAD] Parquet: 0.32 MB
-[2024-12-05 12:16:49] INFO - [LOAD] Concluído: 4,315 registros
+[2025-12-05 12:16:48] INFO - [LOAD] Salvando: AC 2024/01
+[2025-12-05 12:16:49] INFO - [LOAD] Salvando CSV: /path/SIH_AC_202401.csv
+[2025-12-05 12:16:49] INFO - [LOAD] Salvando Parquet: /path/SIH_AC_202401.parquet
+[2025-12-05 12:16:49] INFO - [LOAD] CSV: 2.70 MB
+[2025-12-05 12:16:49] INFO - [LOAD] Parquet: 0.32 MB
+[2025-12-05 12:16:49] INFO - [LOAD] Concluído: 4,315 registros
 ```
 
 ---
