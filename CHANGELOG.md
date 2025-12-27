@@ -18,6 +18,29 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.2] - 2025-12-27
+
+### Corrigido
+
+- **Testes CI**: Implementado VCR.py para resolver 3 timeouts API
+- **BDD**: Cenários @wip pulados automaticamente via pytest config
+- **Markers**: Corrigido future_v0.3.0 -> future_v0_3_0
+
+### Adicionado
+
+- **VCR.py**: HTTP mocking para testes API (cassettes gravadas)
+- **Tenacity**: Biblioteca para retry logic (preparação futura)
+- **Cassettes**: package_list, package_show_covid_hospital_occupancy, package_show_nonexistent
+
+### Técnico
+
+- Resultado: 53 passed, 1 skipped, coverage 61%
+- pyproject.toml: Configuração pytest com markers customizados
+- conftest.py: Configuração VCR.py global
+- .gitignore: Adicionado coverage.xml
+
+---
+
 ## [0.2.1] - 2025-12-27
 
 ### Corrigido
