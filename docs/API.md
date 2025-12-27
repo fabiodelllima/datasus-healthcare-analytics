@@ -1,7 +1,7 @@
 # INTEGRAÇÕES API
 
 - **Versão:** 1.0.0 POC
-- **Última atualização:** 17/12/2024
+- **Última atualização:** 24/12/2025
 
 **Propósito:** Single Source of Truth para integrações com APIs externas do ecossistema DataSUS/Ministério da Saúde.
 
@@ -116,7 +116,7 @@ GET https://opendatasus.saude.gov.br/api/3/action/resource_search
 ```
 Status Code: 409 CONFLICT
 Mensagem: "Search index not found"
-Testado: 17/12/2024
+Testado: 17/12/2025
 Resultado: Todas queries retornam 409
 ```
 
@@ -155,7 +155,7 @@ sih = SIH().load()
 GET https://opendatasus.saude.gov.br/api/3/action/package_list
 ```
 
-**Resultado Real (17/12/2024):**
+**Resultado Real (17/12/2025):**
 
 ```python
 inspector = OpenDataSUSInspector()
@@ -234,7 +234,7 @@ headers = {
 ```
 Status: 409 CONFLICT
 Mensagem: "Search index not found"
-Testado: 17/12/2024
+Testado: 17/12/2025
 Impacto: Busca de recursos indisponível
 ```
 
@@ -355,5 +355,3 @@ tests/
 | RN-API-005 | Headers         | [OK] IMPLEMENTADO          | (no **init**)        |
 
 ---
-
-**Última atualização:** 17/12/2024
