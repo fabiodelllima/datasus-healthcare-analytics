@@ -295,10 +295,17 @@ git commit -m "feat: descrição"
 
 ### Métricas Atuais
 
-- **Cobertura Testes:** 5% (1 teste básico)
+- **Cobertura Testes:** 54% (34/39 testes passing)
 - **Type Hints:** 100% funções públicas
 - **Code Quality:** Ruff + Mypy passing
 - **Pipeline:** Funcional (4.315 registros AC processados)
+- **API Inspector:** Parcial (54% coverage, RN-API-004 pendente)
+
+### Status POC
+
+- [~] **Em Andamento**
+- Pendências: RN-API-004, retry logic, EDA completa, visualizações
+- Próxima meta: Coverage >90%, análise exploratória
 
 ### Próximos Passos
 
