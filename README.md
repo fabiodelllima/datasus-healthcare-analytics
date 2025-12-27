@@ -260,59 +260,23 @@ POC implementa 5 KPIs básicos:
 
 ---
 
-## Contribuindo
-
-### Padrões de Código
-
-- **Formatação:** Ruff (auto-fix habilitado)
-- **Type hints:** Obrigatório em funções públicas
-- **Docstrings:** Google style
-- **Commits:** Conventional Commits
-
-### Processo
-
-1. Fork o repositório
-2. Criar branch feature (`git checkout -b feat/nome`)
-3. Desenvolver com testes
-4. Commit (pre-commit roda automaticamente)
-5. Push e criar Pull Request
-
-### Executar Verificações
-
-```bash
-# Antes de commitar manualmente:
-ruff check src/ tests/ --fix
-mypy src/ tests/
-pytest tests/ -v
-
-# Ou deixar pre-commit fazer automaticamente:
-git commit -m "feat: descrição"
-```
-
----
-
 ## Status do Projeto
 
-### Métricas Atuais
+### Métricas Atuais (CI/CD Real)
 
-- **Cobertura Testes:** 54% (34/39 testes passing)
+- **Cobertura Testes:** 56% (51/57 testes passing, 5 falhas, 1 skip)
 - **Type Hints:** 100% funções públicas
 - **Code Quality:** Ruff + Mypy passing
 - **Pipeline:** Funcional (4.315 registros AC processados)
-- **API Inspector:** Parcial (54% coverage, RN-API-004 pendente)
+- **API Inspector:** Parcial (49% coverage, timeouts API externa)
+- **CI/CD:** Configurado GitHub Actions ✓
 
 ### Status POC
 
-- [~] **Em Andamento**
-- Pendências: RN-API-004, retry logic, EDA completa, visualizações
-- Próxima meta: Coverage >90%, análise exploratória
-
-### Próximos Passos
-
-1. Aumentar cobertura testes (meta: >80%)
-2. Completar análise exploratória
-3. Criar visualizações profissionais
-4. Documentar insights e limitações
+- [~] **Em Andamento** (não finalizada)
+- Falhas CI: 3 timeouts API externa, 2 step definitions BDD faltando
+- Pendências: RN-API-004, retry logic, VCR.py fixtures, EDA, visualizações
+- Próxima meta: 90% coverage, resolver timeouts, finalizar BDD
 
 ---
 
