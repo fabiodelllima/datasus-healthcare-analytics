@@ -2,9 +2,9 @@
 
 [![codecov](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics/branch/main/graph/badge.svg)](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics)
 
-- **Versão:** 0.2.0
+- **Versão:** 0.2.2
 - **Fase:** POC (Proof of Concept)
-- **Data:** 22/12/2025
+- **Data:** 27/12/2025
 
 Sistema de analytics para gestão hospitalar utilizando dados públicos reais do Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
 
@@ -238,6 +238,7 @@ POC implementa 5 KPIs básicos:
 
 - [x] Pipeline ETL funcional
 - [x] Code quality (ruff + mypy + pre-commit)
+- [x] Testes CI/CD (VCR.py para API mocking)
 - [ ] Análise exploratória (EDA)
 - [ ] Visualizações matplotlib
 - [ ] Documentação completa
@@ -264,19 +265,19 @@ POC implementa 5 KPIs básicos:
 
 ### Métricas Atuais (CI/CD Real)
 
-- **Cobertura Testes:** 56% (51/57 testes passing, 5 falhas, 1 skip)
+- **Cobertura Testes:** 61% (53 testes passing, 1 skip)
 - **Type Hints:** 100% funções públicas
 - **Code Quality:** Ruff + Mypy passing
 - **Pipeline:** Funcional (4.315 registros AC processados)
-- **API Inspector:** Parcial (49% coverage, timeouts API externa)
-- **CI/CD:** Configurado GitHub Actions ✓
+- **API Inspector:** 70% coverage (VCR.py cassettes)
+- **CI/CD:** GitHub Actions configurado
 
 ### Status POC
 
 - [~] **Em Andamento** (não finalizada)
-- Falhas CI: 3 timeouts API externa, 2 step definitions BDD faltando
-- Pendências: RN-API-004, retry logic, VCR.py fixtures, EDA, visualizações
-- Próxima meta: 90% coverage, resolver timeouts, finalizar BDD
+- Testes CI: Corrigidos com VCR.py (HTTP mocking)
+- Pendências: RN-API-004 (fancy output), EDA, visualizações
+- Próxima meta: 90% coverage, finalizar POC
 
 ---
 
@@ -297,4 +298,4 @@ Este é um projeto independente para aprendizado e portfólio profissional. Não
 
 Os dados utilizados são de domínio público e acessíveis através do portal oficial do DataSUS:
 
-> <https://datasus.saude.gov.br>
+> <https://datasus.saude.gov.br\>
