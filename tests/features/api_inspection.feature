@@ -53,14 +53,14 @@ Feature: OpenDataSUS API Inspection
   # RN-API-004: Formatação (NÃO IMPLEMENTADO - Future)
   # ====================================================================
   
-  @wip @future_v0.3.0
+  @wip @future_v0_3_0
   Scenario: Success output should have formatted box header
     Given a successful API response
     When formatting the output
     Then output should contain box drawing characters
     And output should have structured header
 
-  @wip @future_v0.3.0
+  @wip @future_v0_3_0
   Scenario: Output should not contain colored emojis
     Given any API response
     When formatting the output

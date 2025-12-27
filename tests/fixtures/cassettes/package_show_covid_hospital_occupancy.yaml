@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: "https://opendatasus.saude.gov.br/api/3/action/package_show?id=registro-de-ocupacao-hospitalar-covid-19"
+  response:
+    body:
+      string: '{"help": "https://opendatasus.saude.gov.br/api/3/action/help_show?name=package_show", "success": true, "result": {"id": "f4c97c55-5c42-46d3-8f35-34e0a04f5632", "name": "registro-de-ocupacao-hospitalar-covid-19", "title": "Registro de Ocupacao Hospitalar COVID-19", "organization": {"id": "6a98fd30-d87e-4e53-99a7-8c7a907e8bcc", "name": "ministerio-da-saude", "title": "Ministerio da Saude"}, "resources": [], "metadata_modified": "2024-11-20T15:45:30"}}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status:
+      code: 200
+      message: OK
+version: 1

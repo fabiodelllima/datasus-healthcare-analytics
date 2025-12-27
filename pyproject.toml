@@ -32,3 +32,21 @@ disallow_untyped_defs = false
 [[tool.mypy.overrides]]
 module = "requests.*"
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = [
+    "--strict-markers",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "-m", "not wip"
+]
+markers = [
+    "wip: Work in progress (not run by default)",
+    "implemented: Fully implemented scenarios",
+    "skip: Skipped tests",
+    "endpoint_disabled: API endpoint is disabled",
+    "future_v0_3_0: Planned for v0.3.0"
+]
