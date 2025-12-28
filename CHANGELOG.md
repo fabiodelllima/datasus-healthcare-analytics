@@ -18,6 +18,28 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.3] - 2025-12-28
+
+### Adicionado
+
+- **KPIs Básicos**: Módulo analytics com 5 indicadores hospitalares
+  - Taxa de ocupação (occupancy_rate)
+  - Tempo médio de permanência (average_length_of_stay)
+  - Volume de atendimentos (volume)
+  - Receita total e ticket médio (revenue, average_ticket)
+  - Distribuição demográfica (demographics)
+- **Testes KPIs**: 23 testes unitários com 95% coverage no módulo
+- **BDD KPIs**: Feature com 10 cenários Gherkin
+- **Type Overloads**: Retornos precisos para métodos com group_by
+
+### Técnico
+
+- Resultado: 76 passed, 1 skipped, coverage 68%
+- pyproject.toml: Configuração pyright para pandas .dt accessor
+- src/analytics/kpis.py: KPICalculator com typing.overload
+
+---
+
 ## [0.2.2] - 2025-12-27
 
 ### Corrigido

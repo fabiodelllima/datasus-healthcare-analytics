@@ -212,7 +212,7 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
 [3] Testes Automatizados
     [x] pytest configurado
     [x] pytest-bdd (BDD scenarios)
-    [x] Coverage 61% (53 passed, 1 skipped)
+    [x] Coverage 68% (76 passed, 1 skipped)
     [x] Testes unitários Transform
     [x] Testes BDD API Inspector
 
@@ -222,12 +222,12 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
     [x] RN-API-005: Headers HTTP
     [~] RN-API-004: Formatação output (parcial)
 
-[5] KPIs Básicos (5)
-    [ ] Taxa de ocupação
-    [ ] Tempo médio de permanência (TMP)
-    [ ] Volume de internações
-    [ ] Receita total e ticket médio
-    [ ] Distribuição demográfica
+[5] KPIs Básicos (5) - CONCLUÍDO
+    [x] Taxa de ocupação
+    [x] Tempo médio de permanência (TMP)
+    [x] Volume de internações
+    [x] Receita total e ticket médio
+    [x] Distribuição demográfica
 
 [6] Análise Exploratória
     [ ] Jupyter Notebook documentado
