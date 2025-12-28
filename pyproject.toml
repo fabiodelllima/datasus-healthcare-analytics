@@ -21,6 +21,7 @@ ignore = ["E501"]  # line too long (já tem line-length)
 
 [tool.pyright]
 reportUnknownMemberType = "none"  # Suprime warnings "partially unknown"
+reportAttributeAccessIssue = "warning"  # Falso positivo pandas .dt accessor
 
 [tool.mypy]
 python_version = "3.11"
