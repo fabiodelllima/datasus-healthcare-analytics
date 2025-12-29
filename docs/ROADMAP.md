@@ -1,7 +1,7 @@
 # ROADMAP
 
 - **Sistema:** DataSUS Healthcare Analytics
-- **Versão:** 0.2.2 POC
+- **Versão:** 0.2.4 POC
 
 **Propósito:** Single Source of Truth para planejamento do projeto, incluindo
 visão macro, fases detalhadas, cronograma, milestones e riscos.
@@ -229,10 +229,10 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
     [x] Receita total e ticket médio
     [x] Distribuição demográfica
 
-[6] Análise Exploratória
-    [ ] Jupyter Notebook documentado
-    [ ] Insights sobre os dados
-    [ ] Qualidade e limitações
+[6] Análise Exploratória - CONCLUÍDO
+    [x] Jupyter Notebook documentado
+    [x] Insights sobre os dados
+    [x] Qualidade e limitações
 
 [7] Visualizações Estáticas
     [ ] 4-6 gráficos PNG (300 DPI)
@@ -257,13 +257,13 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
 Infraestrutura:     [##########] 100%  (Pipeline, CI/CD, Testes)
 Documentação:       [##########] 100%  (Todos docs criados)
 Code Quality:       [##########] 100%  (Ruff, Mypy, Pre-commit)
-Testes:             [######----]  61%  (53 passed, meta 90%)
+Testes:             [######----]  68%  (76 passed, meta 90%)
 API Inspector:      [########--]  80%  (3/4 RNs implementadas)
-KPIs:               [----------]   0%  (Pendente)
-EDA:                [----------]   0%  (Pendente)
+KPIs:               [##########] 100%  (5 KPIs implementados)
+EDA:                [##########] 100%  (Notebook executado)
 Visualizações:      [----------]   0%  (Pendente)
 
-TOTAL POC:          [######----]  60%
+TOTAL POC:          [########--]  80%
 ```
 
 ### Critérios Sucesso POC
@@ -274,15 +274,15 @@ TOTAL POC:          [######----]  60%
 [x] Validações passam (>90% registros válidos) → 100%
 [x] CI/CD configurado e funcionando
 [x] Testes automatizados >50% coverage → 61%
-[ ] KPIs calculados corretamente
-[ ] Documentação permite reprodução completa
+[x] KPIs calculados corretamente
+[x] Documentação permite reprodução completa
 
 [DESEJÁVEL - Nice to have]
 [x] Taxa de perda dados <10% → 0%
 [x] Código organizado e comentado
-[ ] Insights interessantes sobre dados
+[x] Insights interessantes sobre dados
 [x] Zero warnings Ruff/Mypy
-[ ] Visualizações com qualidade profissional
+[ ] Visualizações (pendente)
 ```
 
 ---
@@ -406,8 +406,8 @@ M5: [ ] MVP Release              31/03/2026
 ### Próximas Tarefas POC
 
 ```
-1. [ ] Implementar cálculo dos 5 KPIs básicos
-2. [ ] Criar Jupyter Notebook EDA
+1. [x] Implementar cálculo dos 5 KPIs básicos
+2. [x] Criar Jupyter Notebook EDA
 3. [ ] Gerar visualizações matplotlib
 4. [ ] Aumentar coverage para 90%
 5. [ ] Implementar RN-API-004 (fancy output)
@@ -430,7 +430,7 @@ M5: [ ] MVP Release              31/03/2026
 [QUALIDADE]
 [x] Validações implementadas e passando
 [x] Taxa perda <10% → 0%
-[ ] KPIs corretos (validação manual)
+[x] KPIs corretos (validação manual)
 
 [TESTES]
 [x] pytest configurado
@@ -509,7 +509,7 @@ Status:        MONITORANDO
 Mitigação:
 [x] Priorizar entregas core (pipeline, testes, docs)
 [x] CI/CD implementado (acelera desenvolvimento)
-[ ] KPIs e EDA pendentes
+[x] KPIs e EDA concluídos
 ```
 
 ---
@@ -526,4 +526,4 @@ Mitigação:
 
 ---
 
-**Última atualização:** 27/12/2025
+**Última atualização:** 29/12/2025
