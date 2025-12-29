@@ -18,6 +18,25 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.4] - 2025-12-29
+
+### Adicionado
+
+- **Análise Exploratória (EDA)**: Jupyter Notebook completo
+  - Setup e carregamento de dados
+  - Visão geral do dataset (118 colunas, 4.315 registros)
+  - Estatísticas descritivas
+  - Análise de qualidade de dados
+  - Distribuições (idade, valores, permanência)
+  - Insights e conclusões
+
+### Técnico
+
+- Exclui notebooks do ruff pre-commit (types_or: [python, pyi])
+- Notebook executado com outputs reais de AC Jan/2024
+
+---
+
 ## [0.2.3] - 2025-12-28
 
 ### Adicionado
