@@ -1,7 +1,7 @@
 # ROADMAP
 
 - **Sistema:** DataSUS Healthcare Analytics
-- **Versão:** 0.2.5 POC
+- **Versão:** 0.2.6 POC
 
 **Propósito:** Single Source of Truth para planejamento do projeto, incluindo
 visão macro, fases detalhadas, cronograma, milestones e riscos.
@@ -170,7 +170,7 @@ Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 
 ## POC - Detalhamento
 
-**Status:** [~] EM ANDAMENTO
+**Status:** [x] CONCLUÍDA
 
 - **Início:** 01/12/2025
 - **Previsão conclusão:** 31/12/2025
@@ -212,7 +212,7 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
 [3] Testes Automatizados
     [x] pytest configurado
     [x] pytest-bdd (BDD scenarios)
-    [x] Coverage 68% (76 passed, 1 skipped)
+    [x] Coverage 97% (128 passed, 1 skipped)
     [x] Testes unitários Transform
     [x] Testes BDD API Inspector
 
@@ -220,7 +220,7 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
     [x] RN-API-001: package_show
     [x] RN-API-003: package_list
     [x] RN-API-005: Headers HTTP
-    [~] RN-API-004: Formatação output (parcial)
+    [x] RN-API-004: Formatação output
 
 [5] KPIs Básicos (5) - CONCLUÍDO
     [x] Taxa de ocupação
@@ -257,13 +257,13 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
 Infraestrutura:     [##########] 100%  (Pipeline, CI/CD, Testes)
 Documentação:       [##########] 100%  (Todos docs criados)
 Code Quality:       [##########] 100%  (Ruff, Mypy, Pre-commit)
-Testes:             [######----]  68%  (76 passed, meta 90%)
-API Inspector:      [########--]  80%  (3/4 RNs implementadas)
+Testes:             [##########]  97%  (128 passed)
+API Inspector:      [##########] 100%  (4/4 RNs implementadas)
 KPIs:               [##########] 100%  (5 KPIs implementados)
 EDA:                [##########] 100%  (Notebook executado)
 Visualizações:      [##########] 100%  (6 gráficos)
 
-TOTAL POC:          [##########]  95%
+TOTAL POC:          [##########] 100%
 ```
 
 ### Critérios Sucesso POC
@@ -386,7 +386,7 @@ M2: [x] CI/CD & Testes           27/12/2025
     - Coverage 61% ✓
     - Documentação completa ✓
 
-M3: [ ] POC Finalizada           31/12/2025  <- PRÓXIMO
+M3: [x] POC Finalizada           31/12/2025
     - KPIs calculados
     - EDA notebook
     - Visualizações
@@ -409,9 +409,9 @@ M5: [ ] MVP Release              31/03/2026
 1. [x] Implementar cálculo dos 5 KPIs básicos
 2. [x] Criar Jupyter Notebook EDA
 3. [x] Gerar visualizações matplotlib
-4. [ ] Aumentar coverage para 90%
-5. [ ] Implementar RN-API-004 (fancy output)
-6. [ ] Decisão GO/NO-GO para MVP
+4. [x] Coverage 97% (128 testes)
+5. [x] Implementar RN-API-004 (fancy output)
+6. [x] Decisão GO/NO-GO para MVP → GO!
 ```
 
 ---
@@ -435,7 +435,7 @@ M5: [ ] MVP Release              31/03/2026
 [TESTES]
 [x] pytest configurado
 [x] Coverage >50% → 61%
-[ ] Coverage 90% (meta final)
+[x] Coverage 97% (superou meta)
 ```
 
 ### Técnicos - MVP
@@ -504,7 +504,7 @@ Descobertas:
 ```
 Probabilidade: MÉDIA
 Impacto:       MÉDIO
-Status:        MONITORANDO
+Status:        RESOLVIDO
 
 Mitigação:
 [x] Priorizar entregas core (pipeline, testes, docs)

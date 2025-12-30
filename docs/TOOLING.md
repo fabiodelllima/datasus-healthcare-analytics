@@ -143,7 +143,7 @@ markers = [
 
 **Coverage mínimo:**
 
-- POC: >50% (atual: 61%)
+- POC: >50% (atual: 97%)
 - MVP: >90%
 - Produção: >95%
 

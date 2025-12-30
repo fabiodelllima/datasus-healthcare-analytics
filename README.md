@@ -1,8 +1,6 @@
 # DataSUS Healthcare Analytics
 
-[![codecov](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics/branch/main/graph/badge.svg)](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics)
-
-- **Versão:** 0.2.5
+- **Versão:** 0.2.6
 - **Fase:** POC (Proof of Concept)
 - **Data:** 30/12/2025
 
@@ -241,7 +239,7 @@ POC implementa 5 KPIs básicos:
 - [x] Testes CI/CD (VCR.py para API mocking)
 - [x] Análise exploratória (EDA)
 - [x] Visualizações matplotlib (6 gráficos)
-- [ ] Documentação completa
+- [x] Documentação completa
 
 ### MVP (3-4 semanas)
 
@@ -265,19 +263,19 @@ POC implementa 5 KPIs básicos:
 
 ### Métricas Atuais (CI/CD Real)
 
-- **Cobertura Testes:** 68% (76 testes passing, 1 skip)
+- **Cobertura Testes:** 97% (128 testes passing, 1 skip)
 - **Type Hints:** 100% funções públicas
 - **Code Quality:** Ruff + Mypy passing
 - **Pipeline:** Funcional (4.315 registros AC processados)
-- **API Inspector:** 70% coverage (VCR.py cassettes)
+- **API Inspector:** 97% coverage (VCR.py cassettes)
 - **CI/CD:** GitHub Actions configurado
 
 ### Status POC
 
-- [~] **Em Andamento** (não finalizada)
+- [x] **CONCLUÍDA**
 - Testes CI: Corrigidos com VCR.py (HTTP mocking)
-- Pendências: coverage 90%
-- Próxima meta: 90% coverage, finalizar POC
+- POC concluída com sucesso
+- POC 100% - Pronto para MVP
 
 ---
 

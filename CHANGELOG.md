@@ -18,6 +18,30 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.6] - 2025-12-30
+
+### Adicionado
+
+- **RN-API-004 Formatação Terminal**: TerminalFormatter com output fancy
+
+  - Cores ANSI (verde, vermelho, amarelo, azul)
+  - Box drawing (┌ ┐ └ ┘ ─ │)
+  - Status tags ([OK], [ERROR], [WARNING])
+  - Métodos display\_\*: package_info, packages_list, status
+
+- **Testes Coverage 97%**: 27 novos testes
+  - test_visualizations.py: 12 testes (ChartGenerator)
+  - test_main.py: 3 testes (pipeline ETL)
+  - test_coverage_gaps.py: 12 testes (edge cases)
+
+### Técnico
+
+- Coverage: 48% → 97% (superou meta de 90%)
+- Total: 128 passed, 1 skipped
+- KPICalculator, OpenDataSUSInspector, DataSUSExtractor com 100% coverage
+
+---
+
 ## [0.2.5] - 2025-12-30
 
 ### Adicionado
