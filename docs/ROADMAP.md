@@ -1,7 +1,7 @@
 # ROADMAP
 
 - **Sistema:** DataSUS Healthcare Analytics
-- **Versão:** 0.2.4 POC
+- **Versão:** 0.2.5 POC
 
 **Propósito:** Single Source of Truth para planejamento do projeto, incluindo
 visão macro, fases detalhadas, cronograma, milestones e riscos.
@@ -234,10 +234,10 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
     [x] Insights sobre os dados
     [x] Qualidade e limitações
 
-[7] Visualizações Estáticas
-    [ ] 4-6 gráficos PNG (300 DPI)
-    [ ] matplotlib + seaborn
-    [ ] Prontos para apresentação
+[7] Visualizações Estáticas - CONCLUÍDO
+    [x] 6 gráficos PNG (300 DPI)
+    [x] matplotlib
+    [x] Prontos para apresentação
 
 [8] Documentação
     [x] README.md (entry point)
@@ -261,9 +261,9 @@ Testes:             [######----]  68%  (76 passed, meta 90%)
 API Inspector:      [########--]  80%  (3/4 RNs implementadas)
 KPIs:               [##########] 100%  (5 KPIs implementados)
 EDA:                [##########] 100%  (Notebook executado)
-Visualizações:      [----------]   0%  (Pendente)
+Visualizações:      [##########] 100%  (6 gráficos)
 
-TOTAL POC:          [########--]  80%
+TOTAL POC:          [##########]  95%
 ```
 
 ### Critérios Sucesso POC
@@ -282,7 +282,7 @@ TOTAL POC:          [########--]  80%
 [x] Código organizado e comentado
 [x] Insights interessantes sobre dados
 [x] Zero warnings Ruff/Mypy
-[ ] Visualizações (pendente)
+[x] Visualizações com qualidade profissional
 ```
 
 ---
@@ -408,7 +408,7 @@ M5: [ ] MVP Release              31/03/2026
 ```
 1. [x] Implementar cálculo dos 5 KPIs básicos
 2. [x] Criar Jupyter Notebook EDA
-3. [ ] Gerar visualizações matplotlib
+3. [x] Gerar visualizações matplotlib
 4. [ ] Aumentar coverage para 90%
 5. [ ] Implementar RN-API-004 (fancy output)
 6. [ ] Decisão GO/NO-GO para MVP
@@ -526,4 +526,4 @@ Mitigação:
 
 ---
 
-**Última atualização:** 29/12/2025
+**Última atualização:** 30/12/2025
