@@ -18,6 +18,115 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.6] - 2025-12-30
+
+### Adicionado
+
+- **RN-API-004 Formatação Terminal**: TerminalFormatter com output fancy
+
+  - Cores ANSI (verde, vermelho, amarelo, azul)
+  - Box drawing (┌ ┐ └ ┘ ─ │)
+  - Status tags ([OK], [ERROR], [WARNING])
+  - Métodos display\_\*: package_info, packages_list, status
+
+- **Testes Coverage 97%**: 27 novos testes
+  - test_visualizations.py: 12 testes (ChartGenerator)
+  - test_main.py: 3 testes (pipeline ETL)
+  - test_coverage_gaps.py: 12 testes (edge cases)
+
+### Técnico
+
+- Coverage: 48% → 97% (superou meta de 90%)
+- Total: 128 passed, 1 skipped
+- KPICalculator, OpenDataSUSInspector, DataSUSExtractor com 100% coverage
+
+---
+
+## [0.2.5] - 2025-12-30
+
+### Adicionado
+
+- **Visualizações Estáticas**: Módulo ChartGenerator com 6 gráficos
+  - Distribuição por faixa etária
+  - Receita por especialidade
+  - Tempo médio permanência por especialidade
+  - Top 10 diagnósticos (CID-10)
+  - Volume diário de internações
+  - Distribuição por sexo
+- **Gráficos PNG**: 300 DPI prontos para apresentação
+
+### Técnico
+
+- src/visualizations/charts.py: ChartGenerator reutilizável
+- Type hints completos com cast para matplotlib
+- Ruff + mypy passing
+
+---
+
+## [0.2.4] - 2025-12-29
+
+### Adicionado
+
+- **Análise Exploratória (EDA)**: Jupyter Notebook completo
+  - Setup e carregamento de dados
+  - Visão geral do dataset (118 colunas, 4.315 registros)
+  - Estatísticas descritivas
+  - Análise de qualidade de dados
+  - Distribuições (idade, valores, permanência)
+  - Insights e conclusões
+
+### Técnico
+
+- Exclui notebooks do ruff pre-commit (types_or: [python, pyi])
+- Notebook executado com outputs reais de AC Jan/2024
+
+---
+
+## [0.2.3] - 2025-12-28
+
+### Adicionado
+
+- **KPIs Básicos**: Módulo analytics com 5 indicadores hospitalares
+  - Taxa de ocupação (occupancy_rate)
+  - Tempo médio de permanência (average_length_of_stay)
+  - Volume de atendimentos (volume)
+  - Receita total e ticket médio (revenue, average_ticket)
+  - Distribuição demográfica (demographics)
+- **Testes KPIs**: 23 testes unitários com 95% coverage no módulo
+- **BDD KPIs**: Feature com 10 cenários Gherkin
+- **Type Overloads**: Retornos precisos para métodos com group_by
+
+### Técnico
+
+- Resultado: 76 passed, 1 skipped, coverage 68%
+- pyproject.toml: Configuração pyright para pandas .dt accessor
+- src/analytics/kpis.py: KPICalculator com typing.overload
+
+---
+
+## [0.2.2] - 2025-12-27
+
+### Corrigido
+
+- **Testes CI**: Implementado VCR.py para resolver 3 timeouts API
+- **BDD**: Cenários @wip pulados automaticamente via pytest config
+- **Markers**: Corrigido future_v0.3.0 -> future_v0_3_0
+
+### Adicionado
+
+- **VCR.py**: HTTP mocking para testes API (cassettes gravadas)
+- **Tenacity**: Biblioteca para retry logic (preparação futura)
+- **Cassettes**: package_list, package_show_covid_hospital_occupancy, package_show_nonexistent
+
+### Técnico
+
+- Resultado: 53 passed, 1 skipped, coverage 61%
+- pyproject.toml: Configuração pytest com markers customizados
+- conftest.py: Configuração VCR.py global
+- .gitignore: Adicionado coverage.xml
+
+---
+
 ## [0.2.1] - 2025-12-27
 
 ### Corrigido

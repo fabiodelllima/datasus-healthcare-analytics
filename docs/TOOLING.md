@@ -1,6 +1,6 @@
 # Ferramentas de Qualidade e CI/CD
 
-**Última atualização:** 24/12/2025
+**Última atualização:** 27/12/2025
 
 ## Índice
 
@@ -54,8 +54,8 @@ ignore = ["E501"]  # Line too long (delegado ao formatter)
 
 **Referências:**
 
-- Docs: <https://docs.astral.sh/ruff/>
-- GitHub: <https://github.com/astral-sh/ruff>
+- Docs: <https://docs.astral.sh/ruff/\>
+- GitHub: <https://github.com/astral-sh/ruff\>
 
 ---
 
@@ -96,7 +96,7 @@ ignore_missing_imports = True
 
 **Referências:**
 
-- Docs: <https://mypy.readthedocs.io/>
+- Docs: <https://mypy.readthedocs.io/\>
 - PEP 484: Type Hints
 
 ---
@@ -122,7 +122,15 @@ addopts = [
     "--strict-markers",
     "--cov=src",
     "--cov-report=term-missing",
-    "--cov-report=xml"
+    "--cov-report=xml",
+    "-m", "not wip"
+]
+markers = [
+    "wip: Work in progress (not run by default)",
+    "implemented: Fully implemented scenarios",
+    "skip: Skipped tests",
+    "endpoint_disabled: API endpoint is disabled",
+    "future_v0_3_0: Planned for v0.3.0"
 ]
 ```
 
@@ -135,7 +143,7 @@ addopts = [
 
 **Coverage mínimo:**
 
-- POC: >50% (atual: 54%)
+- POC: >50% (atual: 97%)
 - MVP: >90%
 - Produção: >95%
 
@@ -186,6 +194,60 @@ pre-commit install
 
 ---
 
+### VCR.py (HTTP Mocking)
+
+**O que é:** Biblioteca para gravar e reproduzir interações HTTP.
+
+**Por que usar:**
+
+- Evita timeouts em testes CI (API externa indisponível)
+- Testes determinísticos e rápidos
+- Grava cassettes YAML com requests/responses reais
+- Replay automático nas execuções seguintes
+
+**Configuração:**
+
+```python
+# tests/conftest.py
+import vcr
+
+vcr_config = vcr.VCR(
+    cassette_library_dir="tests/fixtures/cassettes",
+    record_mode="none",  # Apenas replay
+    match_on=["uri", "method"],
+    filter_headers=["User-Agent"],
+    decode_compressed_response=True,
+)
+```
+
+**Uso em testes:**
+
+```python
+@pytest.fixture
+def api_vcr():
+    def _api_vcr(cassette_name):
+        return vcr_config.use_cassette(f"{cassette_name}.yaml")
+    return _api_vcr
+
+def test_api_call(api_vcr):
+    with api_vcr("package_list"):
+        response = inspector.list_packages()
+        assert len(response) > 0
+```
+
+**Cassettes criadas:**
+
+- `package_list.yaml`: Lista de packages OpenDataSUS
+- `package_show_covid_hospital_occupancy.yaml`: Metadados package válido
+- `package_show_nonexistent.yaml`: Resposta 404 para package inexistente
+
+**Referências:**
+
+- Docs: <https://vcrpy.readthedocs.io/\>
+- GitHub: <https://github.com/kevin1024/vcrpy\>
+
+---
+
 ### Codecov (Coverage Tracking)
 
 **O que é:** Plataforma de tracking de code coverage.
@@ -232,6 +294,37 @@ coverage:
 
 ## Ferramentas Futuras
 
+### Tenacity (Retry Logic) - MVP
+
+**O que é:** Biblioteca para retry com backoff exponencial.
+
+**Quando usar:** MVP (já instalada, não implementada).
+
+**Por que usar:**
+
+- Retry automático em falhas de rede
+- Backoff exponencial configurável
+- Decorators simples
+
+**Exemplo:**
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=60)
+)
+def call_api():
+    return requests.get(url, timeout=30)
+```
+
+**Referências:**
+
+- Docs: <https://tenacity.readthedocs.io/\>
+
+---
+
 ### Bandit (Security Scanner) - MVP
 
 **O que é:** Scanner de vulnerabilidades de segurança Python.
@@ -271,8 +364,8 @@ tests:
 
 **Referências:**
 
-- Docs: <https://bandit.readthedocs.io/>
-- PyCQA: <https://github.com/PyCQA/bandit>
+- Docs: <https://bandit.readthedocs.io/\>
+- PyCQA: <https://github.com/PyCQA/bandit\>
 
 ---
 
@@ -306,8 +399,8 @@ tests:
 
 **Referências:**
 
-- Docs: <https://pyup.io/safety/>
-- Database: <https://github.com/pyupio/safety-db>
+- Docs: <https://pyup.io/safety/\>
+- Database: <https://github.com/pyupio/safety-db\>
 
 ---
 
@@ -342,8 +435,8 @@ tests:
 
 **Referências:**
 
-- Docs: <https://radon.readthedocs.io/>
-- McCabe: <https://en.wikipedia.org/wiki/Cyclomatic_complexity>
+- Docs: <https://radon.readthedocs.io/\>
+- McCabe: <https://en.wikipedia.org/wiki/Cyclomatic_complexity\>
 
 ---
 
@@ -390,8 +483,8 @@ sonar.python.version=3.11
 
 **Referências:**
 
-- Docs: <https://docs.sonarqube.org/>
-- SonarCloud: <https://sonarcloud.io/>
+- Docs: <https://docs.sonarqube.org/\>
+- SonarCloud: <https://sonarcloud.io/\>
 
 ---
 
@@ -433,8 +526,8 @@ CMD ["python", "-m", "src.main"]
 
 **Referências:**
 
-- Best practices: <https://docs.docker.com/develop/dev-best-practices/>
-- Multi-stage: <https://docs.docker.com/build/building/multi-stage/>
+- Best practices: <https://docs.docker.com/develop/dev-best-practices/\>
+- Multi-stage: <https://docs.docker.com/build/building/multi-stage/\>
 
 ---
 
@@ -442,19 +535,20 @@ CMD ["python", "-m", "src.main"]
 
 ### Ordem de Implementação
 
-**POC (Atual - v0.2.0):**
+**POC (Atual - v0.2.2):**
 
 - [x] Ruff
 - [x] Mypy
 - [x] Pytest
 - [x] Pre-commit
-- [ ] Codecov
+- [x] VCR.py
+- [x] Codecov
 
 **MVP (v1.0.0):**
 
+- [ ] Tenacity (retry logic)
 - [ ] Bandit
 - [ ] Safety
-- [ ] Codecov (se não feito antes)
 
 **Produção (v2.0.0):**
 
@@ -466,14 +560,14 @@ CMD ["python", "-m", "src.main"]
 
 ## CI/CD Pipeline Completo
 
-### POC (Mínimo)
+### POC (Atual)
 
 ```yaml
 jobs:
   test:
     - Ruff check/format
     - Mypy
-    - Pytest + coverage
+    - Pytest + coverage (VCR.py cassettes)
     - Codecov upload
 ```
 
@@ -520,9 +614,9 @@ jobs:
 
 ## Referências
 
-- Python Packaging Authority: <https://www.pypa.io/>
-- PEP 8 Style Guide: <https://peps.python.org/pep-0008/>
-- GitHub Actions: <https://docs.github.com/en/actions>
-- Docker Best Practices: <https://docs.docker.com/develop/dev-best-practices/>
+- Python Packaging Authority: <https://www.pypa.io/\>
+- PEP 8 Style Guide: <https://peps.python.org/pep-0008/\>
+- GitHub Actions: <https://docs.github.com/en/actions\>
+- Docker Best Practices: <https://docs.docker.com/develop/dev-best-practices/\>
 
 ---

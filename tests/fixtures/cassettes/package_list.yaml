@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: "https://opendatasus.saude.gov.br/api/3/action/package_list"
+  response:
+    body:
+      string: '{"help": "https://opendatasus.saude.gov.br/api/3/action/help_show?name=package_list", "success": true, "result": ["acompanhamento-gestacional-siasi", "alimentar-nutricional-van-siasi", "atencao-domiciliar-sad-siasi", "atendimento-aps-sisab", "avaliacao-antropometrica-van-siasi", "cadastro-individual-sisab", "cartao-nacional-de-saude", "consumo-alimentar-van-siasi", "covid-19-vacinacao", "dados-demograficos-ibge", "dsei-sasisus", "esus-ab-territorio", "ficha-complementar-sisab", "gestao-estrategica-siasi", "habilitacoes-cnes", "hiperdia-siasi", "indicadores-aps-sisab", "leitos-internacao-cnes", "medicamentos-rename", "monitoramento-srag", "natalidade-sinasc", "notificacao-dengue", "notificacao-tuberculose", "ocupacao-hospitalar-covid", "procedimentos-ambulatoriais-sia", "profissionais-cnes", "programa-farmacia-popular", "programa-mais-medicos", "programa-saude-familia", "registro-de-ocupacao-hospitalar-covid-19", "sarampo-notificacao", "servicos-especializados-cnes", "sia-producao-ambulatorial", "sih-internacoes", "sinan-acidentes-trabalho", "sinan-doencas-transmissiveis", "sinan-intoxicacoes", "sinan-violencias", "sistema-mortalidade-sim", "transplantes-snt", "ubs-cadastro", "urgencia-emergencia-cnes", "vacinacao-campanha", "vacinacao-covid-dados-abertos", "vacinacao-influenza", "vacinacao-rotina-pni", "vigilancia-alimentar-nutricional", "vigilancia-sentinela-srag", "visitas-domiciliares-acs", "zoonoses-controle"]}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status:
+      code: 200
+      message: OK
+version: 1

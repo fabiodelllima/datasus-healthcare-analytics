@@ -257,7 +257,7 @@ def test_e2e_full_pipeline():
 
 ### Coverage Mínimo
 
-- **POC:** >50% (atual: 54%)
+- **POC:** >50% (atual: 97%)
 - **MVP:** >90%
 - **Produção:** >95%
 

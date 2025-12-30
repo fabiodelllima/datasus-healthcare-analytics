@@ -37,6 +37,10 @@ pytest-bdd>=6.1.1         # BDD testing (Gherkin)
 python-dotenv>=1.0.0
 requests>=2.31.0
 
+# Testes - HTTP Mocking
+vcrpy>=6.0.0
+tenacity>=8.2.0           # Retry logic
+
 # ============================================================================
 # MVP - Adicionar quando necessário
 # ============================================================================
@@ -53,3 +57,4 @@ requests>=2.31.0
 # pyjwt>=2.8.0               # JWT auth
 # prometheus-client>=0.19.0  # Monitoramento
 # python-multipart>=0.0.6    # File uploads
+

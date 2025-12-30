@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+    method: GET
+    uri: "https://opendatasus.saude.gov.br/api/3/action/package_show?id=nonexistent-package-xyz"
+  response:
+    body:
+      string: '{"help": "https://opendatasus.saude.gov.br/api/3/action/help_show?name=package_show", "success": false, "error": {"message": "Not found", "__type": "Not Found Error"}}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status:
+      code: 404
+      message: Not Found
+version: 1

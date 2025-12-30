@@ -181,7 +181,7 @@ packages = inspector.list_packages()
 
 ### RN-API-004: Formatação de Output Terminal
 
-**Status:** [PARCIAL] Código funcional, formatação fancy não implementada
+**Status:** [✓] IMPLEMENTADO - TerminalFormatter com cores ANSI e box drawing
 
 **Símbolos Permitidos:**
 
@@ -346,12 +346,12 @@ tests/
 
 ### Status de Implementação
 
-| RN-API     | Endpoint        | Status                     | Método               |
-| ---------- | --------------- | -------------------------- | -------------------- |
-| RN-API-001 | package_show    | [OK] IMPLEMENTADO          | `get_package_info()` |
-| RN-API-002 | resource_search | [SKIP] DESABILITADO        | -                    |
-| RN-API-003 | package_list    | [OK] IMPLEMENTADO          | `list_packages()`    |
-| RN-API-004 | Formatação      | [PARTIAL] Código sem fancy | -                    |
-| RN-API-005 | Headers         | [OK] IMPLEMENTADO          | (no **init**)        |
+| RN-API     | Endpoint        | Status              | Método               |
+| ---------- | --------------- | ------------------- | -------------------- |
+| RN-API-001 | package_show    | [OK] IMPLEMENTADO   | `get_package_info()` |
+| RN-API-002 | resource_search | [SKIP] DESABILITADO | -                    |
+| RN-API-003 | package_list    | [OK] IMPLEMENTADO   | `list_packages()`    |
+| RN-API-004 | Formatação      | [OK] IMPLEMENTADO   | `TerminalFormatter`  |
+| RN-API-005 | Headers         | [OK] IMPLEMENTADO   | (no **init**)        |
 
 ---
