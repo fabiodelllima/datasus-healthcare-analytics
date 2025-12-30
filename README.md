@@ -2,9 +2,9 @@
 
 [![codecov](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics/branch/main/graph/badge.svg)](https://codecov.io/gh/fabiodelllima/datasus-healthcare-analytics)
 
-- **Versão:** 0.2.4
+- **Versão:** 0.2.5
 - **Fase:** POC (Proof of Concept)
-- **Data:** 29/12/2025
+- **Data:** 30/12/2025
 
 Sistema de analytics para gestão hospitalar utilizando dados públicos reais do Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
 
@@ -240,7 +240,7 @@ POC implementa 5 KPIs básicos:
 - [x] Code quality (ruff + mypy + pre-commit)
 - [x] Testes CI/CD (VCR.py para API mocking)
 - [x] Análise exploratória (EDA)
-- [ ] Visualizações matplotlib
+- [x] Visualizações matplotlib (6 gráficos)
 - [ ] Documentação completa
 
 ### MVP (3-4 semanas)
@@ -276,7 +276,7 @@ POC implementa 5 KPIs básicos:
 
 - [~] **Em Andamento** (não finalizada)
 - Testes CI: Corrigidos com VCR.py (HTTP mocking)
-- Pendências: visualizações
+- Pendências: coverage 90%
 - Próxima meta: 90% coverage, finalizar POC
 
 ---

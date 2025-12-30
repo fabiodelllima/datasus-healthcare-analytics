@@ -18,6 +18,27 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [0.2.5] - 2025-12-30
+
+### Adicionado
+
+- **Visualizações Estáticas**: Módulo ChartGenerator com 6 gráficos
+  - Distribuição por faixa etária
+  - Receita por especialidade
+  - Tempo médio permanência por especialidade
+  - Top 10 diagnósticos (CID-10)
+  - Volume diário de internações
+  - Distribuição por sexo
+- **Gráficos PNG**: 300 DPI prontos para apresentação
+
+### Técnico
+
+- src/visualizations/charts.py: ChartGenerator reutilizável
+- Type hints completos com cast para matplotlib
+- Ruff + mypy passing
+
+---
+
 ## [0.2.4] - 2025-12-29
 
 ### Adicionado
