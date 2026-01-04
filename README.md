@@ -8,8 +8,8 @@
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 > Sistema que transforma dados brutos de internações hospitalares do SUS em análises úteis para gestão hospitalar. O projeto processa arquivos do Ministério da Saúde (formato proprietário .dbc), limpa e valida os dados, e gera indicadores de desempenho hospitalar.
-
-Hospitais e gestores de saúde precisam de dados confiáveis para tomar decisões. Os dados públicos do SUS estão disponíveis, mas em formato difícil de usar. Este projeto resolve esse problema, entregando dados limpos e KPIs prontos para análise.
+>
+> Hospitais e gestores de saúde precisam de dados confiáveis para tomar decisões. Os dados públicos do SUS estão disponíveis, mas em formato difícil de usar. Este projeto resolve esse problema, entregando dados limpos e KPIs prontos para análise.
 
 **Resultados concretos:**
 
@@ -92,9 +92,7 @@ O sistema gera automaticamente 6 gráficos em alta resolução (300 DPI), pronto
 
 ## Stack Tecnológico
 
-### Core
-
-Cada ferramenta foi escolhida com propósito específico:
+### Pipeline
 
 | Tecnologia       | Função                 | Justificativa                                         |
 | ---------------- | ---------------------- | ----------------------------------------------------- |
@@ -102,10 +100,8 @@ Cada ferramenta foi escolhida com propósito específico:
 | **pandas/numpy** | Processamento de dados | Padrão da indústria para data wrangling               |
 | **pysus**        | Acesso ao DataSUS      | Biblioteca da Fiocruz que abstrai complexidade do FTP |
 | **pyarrow**      | Storage eficiente      | Parquet oferece compressão 8x menor que CSV           |
-| **pytest**       | Testes automatizados   | Framework robusto com suporte a BDD                   |
-| **ruff**         | Qualidade de código    | 10-100x mais rápido que alternativas                  |
 
-### Ferramentas de Qualidade
+### Qualidade e Testes
 
 | Ferramenta          | Função                                       |
 | ------------------- | -------------------------------------------- |
