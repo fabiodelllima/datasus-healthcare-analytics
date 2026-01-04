@@ -4,31 +4,179 @@
 - **Fase:** POC Concluída
 - **Última atualização:** 03/01/2026
 
-Sistema de analytics para gestão hospitalar utilizando dados públicos do Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde brasileiro.
+---
+
+## Sobre o projeto
+
+Sistema que transforma dados brutos de internações hospitalares do SUS em análises úteis para gestão hospitalar. O projeto processa arquivos do Ministério da Saúde (formato proprietário .dbc), limpa e valida os dados, e gera indicadores de desempenho hospitalar.
+
+> Hospitais e gestores de saúde precisam de dados confiáveis para tomar decisões. Os dados públicos do SUS estão disponíveis, mas em formato difícil de usar. Este projeto resolve esse problema, entregando dados limpos e KPIs prontos para análise.
+
+**Resultados concretos:**
+
+| Métrica                 | Valor                          |
+| ----------------------- | ------------------------------ |
+| Internações processadas | 4.315 registros                |
+| Taxa de validação       | 100% dos dados                 |
+| KPIs calculados         | 5 indicadores hospitalares     |
+| Cobertura de testes     | 97% (128 testes automatizados) |
+| Visualizações           | 6 gráficos profissionais       |
 
 ---
 
-## Documentação
+## Arquitetura
 
-A documentação está organizada em módulos específicos para facilitar navegação e manutenção.
+O sistema segue uma arquitetura ETL (Extract, Transform, Load) clássica, processando dados em etapas bem definidas:
 
-### Documentos Principais
+```
+DataSUS FTP ──> EXTRACT ──> TRANSFORM ──> LOAD ──> Analytics
+                  |            |           |           |
+                pysus        pandas    CSV/Parquet  Jupyter
+              (Fiocruz)      numpy                  matplotlib
+```
 
-| Documento                                   | Descrição                            | Quando Consultar                  |
-| ------------------------------------------- | ------------------------------------ | --------------------------------- |
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md)     | Stack técnico, ADRs, diagramas       | Setup inicial, decisões técnicas  |
-| [DATA_GUIDE.md](docs/DATA_GUIDE.md)         | Dicionário de dados, pipeline ETL    | Análise de dados, desenvolvimento |
-| [BUSINESS_RULES.md](docs/BUSINESS_RULES.md) | Regras de validação e enriquecimento | Implementação, testes             |
-| [ROADMAP.md](docs/ROADMAP.md)               | Planejamento, cronograma, milestones | Acompanhamento do projeto         |
-| [CHANGELOG.md](CHANGELOG.md)                | Histórico de versões                 | Release notes                     |
+**Como funciona:**
 
-### Documentos Complementares
+1. **Extract:** Baixa arquivos .dbc do servidor FTP do Ministério da Saúde
+2. **Transform:** Converte tipos, remove duplicatas, valida regras de negócio, enriquece com campos calculados
+3. **Load:** Salva em dois formatos (CSV para análise manual, Parquet para performance)
+4. **Analytics:** Calcula KPIs e gera visualizações
 
-| Documento                             | Descrição                                     |
-| ------------------------------------- | --------------------------------------------- |
-| [API.md](docs/API.md)                 | Integração OpenDataSUS, regras de negócio API |
-| [METHODOLOGY.md](docs/METHODOLOGY.md) | Workflow de desenvolvimento, TDD, Git         |
-| [TOOLING.md](docs/TOOLING.md)         | Ferramentas de qualidade e CI/CD              |
+**Detalhes técnicos:** [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+---
+
+## KPIs Implementados
+
+Os indicadores foram escolhidos por sua relevância na gestão hospitalar real:
+
+| KPI                        | O que mede                    | Relevância              |
+| -------------------------- | ----------------------------- | ----------------------- |
+| Taxa de Ocupação           | Utilização de leitos          | Otimização de recursos  |
+| Tempo Médio de Permanência | Dias de internação            | Eficiência operacional  |
+| Volume de Internações      | Total por período             | Planejamento de demanda |
+| Receita Total              | Valores reembolsados pelo SUS | Saúde financeira        |
+| Distribuição Demográfica   | Perfil etário dos pacientes   | Adequação de serviços   |
+
+**Detalhes e fórmulas:** [DATA_GUIDE.md](docs/DATA_GUIDE.md)
+
+---
+
+## Visualizações
+
+O sistema gera automaticamente 6 gráficos em alta resolução (300 DPI), prontos para apresentações:
+
+1. Distribuição por faixa etária
+2. Receita por especialidade médica
+3. Tempo médio de permanência por especialidade
+4. Top 10 diagnósticos (CID-10)
+5. Volume diário de internações
+6. Distribuição por sexo
+
+**Localização:** `outputs/charts/`
+
+---
+
+## Stack Tecnológico
+
+### Core
+
+Cada ferramenta foi escolhida com propósito específico:
+
+| Tecnologia       | Função                 | Justificativa                                         |
+| ---------------- | ---------------------- | ----------------------------------------------------- |
+| **Python 3.11**  | Linguagem principal    | Compatibilidade com biblioteca de acesso ao DataSUS   |
+| **pandas/numpy** | Processamento de dados | Padrão da indústria para data wrangling               |
+| **pysus**        | Acesso ao DataSUS      | Biblioteca da Fiocruz que abstrai complexidade do FTP |
+| **pyarrow**      | Storage eficiente      | Parquet oferece compressão 8x menor que CSV           |
+| **pytest**       | Testes automatizados   | Framework robusto com suporte a BDD                   |
+| **ruff**         | Qualidade de código    | 10-100x mais rápido que alternativas                  |
+
+### Ferramentas de Qualidade
+
+| Ferramenta          | Função                                       |
+| ------------------- | -------------------------------------------- |
+| ruff                | Linter + formatter (substitui 4 ferramentas) |
+| mypy                | Verificação de tipos estáticos               |
+| pytest + pytest-bdd | Testes unitários e comportamentais           |
+| pre-commit          | Validação automática antes de commits        |
+| VCR.py              | Mock de requisições HTTP para testes         |
+| GitHub Actions      | CI/CD automatizado                           |
+
+---
+
+## Dados
+
+### Fonte
+
+Os dados vêm do **Sistema de Informações Hospitalares (SIH)** do DataSUS/Ministério da Saúde. São dados públicos que registram todas as internações realizadas em hospitais do SUS no Brasil.
+
+O acesso é feito via FTP utilizando a biblioteca pysus, desenvolvida pela Fiocruz (projeto AlertaDengue).
+
+### Dataset Atual
+
+| Estado    | Período      | Registros | Tamanho       |
+| --------- | ------------ | --------- | ------------- |
+| Acre (AC) | Janeiro/2024 | 4.315     | ~2.7 MB (CSV) |
+
+### Principais Campos
+
+| Categoria     | Campos               | Descrição                                |
+| ------------- | -------------------- | ---------------------------------------- |
+| Identificação | N_AIH, CNES          | Número da internação, código do hospital |
+| Temporal      | DT_INTER, DT_SAIDA   | Datas de entrada e saída                 |
+| Financeiro    | VAL_TOT, VAL_UTI     | Valores reembolsados pelo SUS            |
+| Clínico       | DIAG_PRINC, PROC_REA | Diagnóstico (CID-10), procedimento       |
+| Demográfico   | IDADE, SEXO          | Perfil do paciente                       |
+
+**Dicionário completo:** [DATA_GUIDE.md](docs/DATA_GUIDE.md)
+
+---
+
+## Estrutura do Projeto
+
+Organização modular seguindo boas práticas de engenharia de software:
+
+```
+datasus-healthcare-analytics/
+├── src/
+│   ├── extract/           # Download via FTP
+│   ├── transform/         # Limpeza e validação
+│   ├── load/              # Persistência
+│   ├── analytics/         # Cálculo de KPIs
+│   ├── visualizations/    # Gráficos
+│   ├── api/               # Integração OpenDataSUS
+│   └── main.py            # Orquestração
+├── tests/                 # 128 testes automatizados
+├── notebooks/             # Análise exploratória
+├── data/                  # Dados brutos e processados
+├── outputs/               # Visualizações geradas
+└── docs/                  # 8 documentos técnicos
+```
+
+---
+
+## Status e Roadmap
+
+### POC Concluída
+
+| Entrega                 | Status |
+| ----------------------- | ------ |
+| Pipeline ETL funcional  | ✓      |
+| 5 KPIs implementados    | ✓      |
+| 6 visualizações         | ✓      |
+| 97% cobertura de testes | ✓      |
+| Documentação completa   | ✓      |
+| CI/CD configurado       | ✓      |
+
+### Próximas Fases
+
+| Fase         | Entregas Planejadas                                      |
+| ------------ | -------------------------------------------------------- |
+| **MVP**      | Oracle Database, Dashboard interativo, múltiplos estados |
+| **Produção** | Apache Airflow, API REST, monitoramento em tempo real    |
+
+**Planejamento detalhado:** [ROADMAP.md](docs/ROADMAP.md)
 
 ---
 
@@ -61,14 +209,9 @@ pre-commit install
 # 5. Rodar pipeline ETL
 python -m src.main --state AC --year 2024 --month 1
 
-# 6. Verificar outputs
-ls data/processed/
-# SIH_AC_202401.csv e SIH_AC_202401.parquet
+# 6. Verificar resultados
+ls data/processed/  # SIH_AC_202401.csv e .parquet
 ```
-
----
-
-## Desenvolvimento
 
 ### Executar Testes
 
@@ -76,179 +219,24 @@ ls data/processed/
 # Todos os testes
 pytest tests/ -v
 
-# Com cobertura
+# Com relatório de cobertura
 pytest tests/ --cov=src --cov-report=term-missing
-
-# Cobertura HTML
-pytest tests/ --cov=src --cov-report=html
-# Abrir: htmlcov/index.html
-```
-
-### Qualidade de Código
-
-```bash
-# Lint + format
-ruff check src/ tests/ --fix
-ruff format src/ tests/
-
-# Type checking
-mypy src/
-
-# Todas verificações (pre-commit)
-pre-commit run --all-files
 ```
 
 ---
 
-## Arquitetura
+## Documentação
 
-```
-DataSUS FTP ──→ EXTRACT ──→ TRANSFORM ──→ LOAD ──→ Analytics
-                  │            │           │          │
-                pysus        pandas   CSV/Parquet  Jupyter
-              (Fiocruz)      numpy                matplotlib
-```
-
-O pipeline ETL processa arquivos .dbc (formato proprietário DataSUS) e gera datasets limpos para análise.
-
-**Detalhes:** [ARCHITECTURE.md](docs/ARCHITECTURE.md)
-
----
-
-## Estrutura do Projeto
-
-```
-datasus-healthcare-analytics/
-├── src/
-│   ├── extract/           # Download via FTP (pysus)
-│   ├── transform/         # Limpeza, validação, enriquecimento
-│   ├── load/              # Salvamento CSV/Parquet
-│   ├── analytics/         # Cálculo de KPIs
-│   ├── visualizations/    # Geração de gráficos
-│   ├── api/               # API Inspector OpenDataSUS
-│   ├── utils/             # Logger e helpers
-│   ├── config.py          # Configurações
-│   └── main.py            # Pipeline principal
-├── tests/                 # Testes pytest + BDD
-├── notebooks/             # Jupyter notebooks EDA
-├── data/
-│   ├── raw/               # Dados brutos (.dbc)
-│   └── processed/         # Dados processados (CSV/Parquet)
-├── outputs/
-│   └── charts/            # Visualizações PNG
-├── docs/                  # Documentação
-└── logs/                  # Logs de execução
-```
-
----
-
-## Stack Tecnológico
-
-### Core
-
-| Componente | Tecnologia    | Descrição                                        |
-| ---------- | ------------- | ------------------------------------------------ |
-| Runtime    | Python 3.11   | Compatibilidade com pysus                        |
-| Extract    | pysus         | Biblioteca da Fiocruz para acesso ao FTP DataSUS |
-| Transform  | pandas, numpy | Manipulação e validação de dados                 |
-| Load       | pyarrow       | Storage Parquet comprimido                       |
-
-### Qualidade
-
-| Ferramenta | Função                   |
-| ---------- | ------------------------ |
-| ruff       | Linter + formatter       |
-| mypy       | Type checking            |
-| pytest     | Testes + cobertura       |
-| pre-commit | Git hooks automáticos    |
-| VCR.py     | HTTP mocking para testes |
-
-### Visualização
-
-| Ferramenta | Função                         |
-| ---------- | ------------------------------ |
-| matplotlib | Gráficos estáticos             |
-| jupyter    | Notebooks análise exploratória |
-
----
-
-## Dados
-
-### Fonte
-
-**Sistema de Informações Hospitalares (SIH)** do DataSUS/Ministério da Saúde.
-
-Acesso via FTP utilizando a biblioteca pysus (desenvolvida pela Fiocruz/AlertaDengue).
-
-### Dataset POC
-
-| Estado | Período      | Registros | Arquivo       |
-| ------ | ------------ | --------- | ------------- |
-| AC     | Janeiro/2024 | 4.315     | SIH_AC_202401 |
-
-### Campos Principais
-
-| Categoria     | Campos                            |
-| ------------- | --------------------------------- |
-| Identificação | N_AIH, CGC_HOSP, CNES, MUNIC_RES  |
-| Datas         | DT_INTER, DT_SAIDA                |
-| Valores       | VAL_TOT, VAL_UTI, VAL_SH, VAL_SP  |
-| Clínica       | DIAG_PRINC, PROC_REA, IDADE, SEXO |
-
-**Dicionário completo:** [DATA_GUIDE.md](docs/DATA_GUIDE.md)
-
----
-
-## KPIs Implementados
-
-| KPI                     | Descrição            | Método                             |
-| ----------------------- | -------------------- | ---------------------------------- |
-| Taxa de Ocupação        | Utilização de leitos | pacientes_dia / leitos_disponíveis |
-| Tempo Médio Permanência | Dias de internação   | stay_days.mean()                   |
-| Volume                  | Total de internações | count por período                  |
-| Receita                 | Valores SUS          | VAL_TOT.sum()                      |
-| Demografia              | Distribuição etária  | age_group.value_counts()           |
-
-**Detalhes:** [DATA_GUIDE.md](docs/DATA_GUIDE.md)
-
----
-
-## Visualizações
-
-O módulo `ChartGenerator` produz 6 gráficos em PNG (300 DPI):
-
-1. Distribuição por faixa etária
-2. Receita por especialidade
-3. Tempo médio de permanência por especialidade
-4. Top 10 diagnósticos (CID-10)
-5. Volume diário de internações
-6. Distribuição por sexo
-
-**Localização:** `outputs/charts/`
-
----
-
-## Status do Projeto
-
-### POC Concluída
-
-| Métrica             | Valor                          |
-| ------------------- | ------------------------------ |
-| Cobertura de testes | 97% (128 testes)               |
-| Type hints          | 100% funções públicas          |
-| Pipeline            | 4.315 registros AC processados |
-| Visualizações       | 6 gráficos PNG                 |
-| Documentação        | 8 documentos SSOT              |
-
-### Roadmap
-
-| Fase     | Status    | Entregas                                      |
-| -------- | --------- | --------------------------------------------- |
-| POC      | Concluída | Pipeline ETL, KPIs, visualizações, testes 97% |
-| MVP      | Planejado | Oracle Database, Dashboard, multi-estado      |
-| Produção | Futuro    | Airflow, API REST, monitoramento              |
-
-**Planejamento detalhado:** [ROADMAP.md](docs/ROADMAP.md)
+| Documento                                   | Conteúdo                                |
+| ------------------------------------------- | --------------------------------------- |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md)     | Stack técnico, decisões arquiteturais   |
+| [DATA_GUIDE.md](docs/DATA_GUIDE.md)         | Dicionário de dados, KPIs, pipeline ETL |
+| [BUSINESS_RULES.md](docs/BUSINESS_RULES.md) | Regras de validação e transformação     |
+| [ROADMAP.md](docs/ROADMAP.md)               | Planejamento e cronograma               |
+| [METHODOLOGY.md](docs/METHODOLOGY.md)       | Workflow de desenvolvimento             |
+| [TOOLING.md](docs/TOOLING.md)               | Ferramentas de qualidade e CI/CD        |
+| [API.md](docs/API.md)                       | Integração com OpenDataSUS              |
+| [CHANGELOG.md](CHANGELOG.md)                | Histórico de versões                    |
 
 ---
 
@@ -260,8 +248,8 @@ Projeto de código aberto para fins educacionais e de portfólio.
 
 ## Disclaimer
 
-Este é um projeto independente para aprendizado e demonstração de habilidades em Data Analytics/Engineering. Não há vínculo oficial com o Ministério da Saúde ou DATASUS.
+Projeto independente para aprendizado e demonstração de habilidades em Data Analytics/Engineering. Não há vínculo oficial com o Ministério da Saúde ou DATASUS.
 
-A biblioteca pysus utilizada para acesso aos dados é desenvolvida pelo projeto AlertaDengue da Fiocruz.
+A biblioteca pysus utilizada é desenvolvida pelo projeto AlertaDengue da Fiocruz.
 
-Os dados são de domínio público e acessíveis através do portal oficial: https://datasus.saude.gov.br
+Dados de domínio público: <https://datasus.saude.gov.br>
