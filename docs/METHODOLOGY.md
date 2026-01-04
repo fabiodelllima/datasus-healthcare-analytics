@@ -1,6 +1,6 @@
 # Metodologia de Desenvolvimento - DataSUS Analytics
 
-**Última atualização:** 24/12/2025
+**Última atualização:** 03/01/2026
 
 ## Índice
 
@@ -164,7 +164,7 @@ feat(api): Adiciona retry logic para OpenDataSUS
 - Implementa HTTPAdapter com backoff exponencial
 - Aumenta timeout padrão para 60s
 - Adiciona 3 tentativas automáticas
-- Coverage: 54% → 67%
+- Coverage: 97% (128 testes)
 
 Refs: docs/API.md RN-API-001
 ```
@@ -212,8 +212,8 @@ status = "✗ Falhou"            # emoji
 
 ```
 ┌─────────────────────────────────┐
-│           E2E Tests             │  Poucos, lentos, caros
-│          (End-to-End)           │  Sistema completo
+│      E2E Tests                  │  Poucos, lentos, caros
+│      (End-to-End)               │  Sistema completo
 └─────────────────────────────────┘
          ▲
          │
@@ -342,4 +342,4 @@ Ver detalhes em: docs/TOOLING.md
 
 ---
 
-**Última atualização:** 24/12/2025
+**Última atualização:** 03/01/2026
