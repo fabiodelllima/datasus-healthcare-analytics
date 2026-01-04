@@ -11,10 +11,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### Planejado
 
-- Processamento estado ES (validação multi-estado)
-- Análise exploratória completa (AC + ES)
-- Dashboard Power BI inicial
+- Dashboard Power BI ou Streamlit
 - Integração Oracle Database (MVP)
+- Processamento multi-estado
+- Independência do pysus (extração FTP própria)
 
 ---
 
@@ -22,14 +22,16 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
-- **RN-API-004 Formatação Terminal**: TerminalFormatter com output fancy
+- **RN-API-004 Formatação Terminal**: TerminalFormatter com output formatado
 
-  - Cores ANSI (verde, vermelho, amarelo, azul)
-  - Box drawing (┌ ┐ └ ┘ ─ │)
-  - Status tags ([OK], [ERROR], [WARNING])
+  - Cores ANSI (verde, vermelho, amarelo, azul, cyan)
+  - Box drawing (┌ ┐ └ ┘ ─ │ ├ ┤)
+  - Status tags ([OK], [ERROR], [WARNING], [INFO])
   - Métodos display\_\*: package_info, packages_list, status
+  - Cálculo de largura visual (ignora códigos ANSI no padding)
 
-- **Testes Coverage 97%**: 27 novos testes
+- **Testes Coverage 97%**: 52 novos testes
+  - test_terminal_formatter.py: 25 testes (TerminalFormatter + display methods)
   - test_visualizations.py: 12 testes (ChartGenerator)
   - test_main.py: 3 testes (pipeline ETL)
   - test_coverage_gaps.py: 12 testes (edge cases)
@@ -38,7 +40,8 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 - Coverage: 48% → 97% (superou meta de 90%)
 - Total: 128 passed, 1 skipped
-- KPICalculator, OpenDataSUSInspector, DataSUSExtractor com 100% coverage
+- API Inspector: 59% → 97% coverage
+- KPICalculator, DataSUSExtractor: 100% coverage
 
 ---
 
@@ -115,7 +118,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### Adicionado
 
 - **VCR.py**: HTTP mocking para testes API (cassettes gravadas)
-- **Tenacity**: Biblioteca para retry logic (preparação futura)
 - **Cassettes**: package_list, package_show_covid_hospital_occupancy, package_show_nonexistent
 
 ### Técnico
@@ -141,7 +143,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - Testes BDD: 2 step definitions faltando em api_inspection.feature
 - API Inspector coverage: 49% (timeouts reduzem métrica)
 - Necessário VCR.py para fixtures de testes API
-- Necessário retry logic com exponential backoff
 
 ### Técnico
 
@@ -192,7 +193,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### Adicionado
 
 - Pipeline ETL completo (Extract, Transform, Load)
-- Integração pysus para download dados DataSUS
+- Integração com FTP DataSUS via biblioteca pysus (Fiocruz/AlertaDengue)
 - Transformações: limpeza, validação, enriquecimento
 - Salvamento dual-format (CSV + Parquet)
 - Sistema logging estruturado
@@ -218,14 +219,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - Formatação: aplicado ruff em toda codebase
 
 ### Técnico
-
-**Commits principais:**
-
-- `b976ea0`: Renomear projeto para Healthcare Analytics
-- `1d032ee`: Implementar ruff + mypy + pre-commit
-- `3cc9826`: Remover black e flake8
-
-**Métricas:**
 
 - Cobertura testes: 5% (1/1 teste passando)
 - Pipeline: 4.315 registros AC processados com sucesso

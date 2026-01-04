@@ -1,7 +1,7 @@
 # ROADMAP
 
 - **Sistema:** DataSUS Healthcare Analytics
-- **Versão:** 0.2.6 POC
+- **Versão:** 0.2.6
 
 **Propósito:** Single Source of Truth para planejamento do projeto, incluindo
 visão macro, fases detalhadas, cronograma, milestones e riscos.
@@ -50,14 +50,13 @@ Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde bra
 
 **Escopo:**
 
-- Processamento ETL
-- Análise de KPIs operacionais
-- Visualização de métricas hospitalares utilizando dados reais de internações do SUS
+- Processamento ETL de arquivos .dbc (formato proprietário DataSUS)
+- Análise de KPIs operacionais hospitalares
+- Visualização de métricas utilizando dados reais de internações do SUS
 
 **Diferenciais técnicos:**
 
-- Processamento de formato proprietário DBC (compressão específica DataSUS)
-- Dados governamentais reais (~2k-500k+ registros dependendo da fase)
+- Dados governamentais reais (~4k registros POC → 500k+ Produção)
 - Evolução arquitetural progressiva (POC → MVP → Produção)
 - Stack completo: ETL, database, dashboard, orquestração, API
 
@@ -73,9 +72,6 @@ Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde bra
 │ Analistas            │ Estudos epidemiológicos    │ Dados históricos    │
 │ Saúde Pública        │ Análise regional           │ Multi-UF            │
 │                      │                            │                     │
-│ DataSUS/Ministério   │ Fonte dados públicos       │ Uso ético           │
-│ da Saúde             │ Transparência SUS          │ Conformidade LGPD   │
-│                      │                            │                     │
 │ Desenvolvedores      │ Integração sistemas        │ API REST            │
 │                      │ Extensibilidade            │ Documentação        │
 └──────────────────────┴────────────────────────────┴─────────────────────┘
@@ -85,9 +81,10 @@ Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde bra
 
 **Dados:**
 
-- Fonte governamental oficial (DataSUS/Ministério da Saúde)
-- Volume real: 2k (POC) → 30k (MVP) → 500k+ (Produção)
-- Formato proprietário DBC (descompressão via pyreaddbc)
+- Fonte: SIH/DataSUS (Ministério da Saúde)
+- Acesso: FTP via biblioteca pysus (Fiocruz/AlertaDengue)
+- Volume: 4k (POC) → 30k (MVP) → 500k+ (Produção)
+- Formato: .dbc (DBF comprimido, proprietário DataSUS)
 
 **Arquitetura:**
 
@@ -99,7 +96,7 @@ Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde bra
 
 - Sistema de saúde brasileiro (SUS)
 - Tabelas SIGTAP, CID-10, especialidades médicas
-- Conformidade LGPD (dados públicos anonimizados)
+- Dados públicos anonimizados
 
 **Classificação do Projeto:**
 
@@ -114,20 +111,20 @@ Sistema de Informações Hospitalares (SIH/DataSUS) do Ministério da Saúde bra
 ### Visão Macro
 
 ```
-POC (Em Andamento)        MVP (3-4 semanas)        Produção (4-6 semanas)
+POC (Concluída)           MVP (3-4 semanas)        Produção (4-6 semanas)
 ┌────────────────┐       ┌──────────────────┐     ┌────────────────────┐
 │ Validar        │       │ Produto          │     │ Sistema            │
 │ Viabilidade    │──────>│ Funcional        │────>│ Production-Ready   │
 │                │       │ Demonstrável     │     │ Robusto            │
 │ - 1 estado     │       │                  │     │                    │
-│ - 1 mês        │       │ - 2 estados      │     │ - Multi-fonte      │
+│ - 1 mês        │       │ - Multi-estado   │     │ - Multi-fonte      │
 │ - CSV/Parquet  │       │ - 12 meses       │     │ - Orquestração     │
 │ - KPIs básicos │       │ - Oracle DB      │     │ - API REST         │
 │ - Jupyter      │       │ - Dashboard      │     │ - Monitoramento    │
-│ - Testes 61%+  │       │ - Testes 90%+    │     │ - Multi-estado     │
+│ - Testes 97%   │       │ - Testes 90%+    │     │ - Escala           │
 └────────────────┘       └──────────────────┘     └────────────────────┘
-
-Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
+      ✓
+   GO para MVP         Decisão DEPLOY         Decisão SCALE
 ```
 
 ### Comparativo entre Fases
@@ -136,9 +133,9 @@ Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ ASPECTO          │ POC           │ MVP               │ PRODUÇÃO         │
 ├──────────────────┼───────────────┼───────────────────┼──────────────────┤
-│ Duração          │ 2-3 semanas   │ 3-4 semanas       │ 4-6 semanas      │
+│ Duração          │ 4 semanas     │ 3-4 semanas       │ 4-6 semanas      │
 │                  │               │                   │                  │
-│ Dataset          │ AC Jan/2024   │ AC/ES 2024        │ Multi-UF         │
+│ Dataset          │ AC Jan/2024   │ Multi-estado      │ Multi-UF         │
 │                  │ 1 mês         │ 12 meses          │ Múltiplos anos   │
 │                  │               │                   │                  │
 │ Registros        │ ~4k           │ ~20-30k           │ 500k+            │
@@ -151,7 +148,7 @@ Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 │                  │               │                   │                  │
 │ KPIs             │ 5 básicos     │ 10+ completos     │ 15+ avançados    │
 │                  │               │                   │                  │
-│ Testes           │ pytest 61%+   │ pytest 90%+       │ pytest 95%+      │
+│ Testes           │ pytest 97%    │ pytest 90%+       │ pytest 95%+      │
 │                  │               │                   │                  │
 │ CI/CD            │ GitHub Actions│ GitHub Actions    │ Full pipeline    │
 │                  │               │                   │                  │
@@ -160,7 +157,7 @@ Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 │ API              │ Inspector     │ Não               │ FastAPI + JWT    │
 │                  │               │                   │                  │
 │ Monitoramento    │ Logs básicos  │ Logs estruturados │ Prometheus +     │
-│                  │               │                   │ Grafana + ELK    │
+│                  │               │                   │ Grafana          │
 │                  │               │                   │                  │
 │ Multi-fonte      │ Apenas SIH    │ Apenas SIH        │ SIH+CNES+SIM     │
 └──────────────────┴───────────────┴───────────────────┴──────────────────┘
@@ -172,16 +169,19 @@ Decisão GO/NO-GO       Decisão DEPLOY         Decisão SCALE
 
 **Status:** [x] CONCLUÍDA
 
-- **Início:** 01/12/2025
-- **Previsão conclusão:** 31/12/2025
+- **Início:** 05/12/2025
+- **Conclusão:** 30/12/2025
+- **Decisão:** GO para MVP
 
 ### Objetivo
 
-Validar viabilidade técnica de processar DataSUS e gerar analytics úteis
+Validar viabilidade técnica de processar dados do DataSUS e gerar analytics úteis
 **ANTES** de investir tempo no MVP.
 
 **Pergunta central:** É viável processar dados reais do DataSUS e gerar
 KPIs úteis para gestão hospitalar?
+
+**Resposta:** SIM - Pipeline funcional, 4.315 registros processados, 5 KPIs implementados.
 
 ### Dataset POC
 
@@ -189,15 +189,16 @@ KPIs úteis para gestão hospitalar?
 Estado:     Acre (AC)
 Período:    Janeiro/2024
 Tipo:       RD (Dados Reduzidos)
-Registros:  ~4.300
-Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
+Registros:  4.315
+Arquivo:    RDAC2401.dbc (~500 KB comprimido)
+Output:     SIH_AC_202401.csv (~2.7 MB) + .parquet (~320 KB)
 ```
 
 ### Entregas POC
 
 ```
 [1] Pipeline ETL Funcional
-    [x] Extract: pysus + FTP DataSUS
+    [x] Extract: FTP DataSUS via pysus (Fiocruz)
     [x] Transform: limpeza + validação + enriquecimento
     [x] Load: CSV + Parquet dual-format
 
@@ -213,28 +214,28 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
     [x] pytest configurado
     [x] pytest-bdd (BDD scenarios)
     [x] Coverage 97% (128 passed, 1 skipped)
-    [x] Testes unitários Transform
+    [x] Testes unitários completos
     [x] Testes BDD API Inspector
 
 [4] API Inspector (OpenDataSUS)
     [x] RN-API-001: package_show
     [x] RN-API-003: package_list
+    [x] RN-API-004: Formatação terminal (TerminalFormatter)
     [x] RN-API-005: Headers HTTP
-    [x] RN-API-004: Formatação output
 
-[5] KPIs Básicos (5) - CONCLUÍDO
+[5] KPIs Básicos (5)
     [x] Taxa de ocupação
     [x] Tempo médio de permanência (TMP)
     [x] Volume de internações
     [x] Receita total e ticket médio
     [x] Distribuição demográfica
 
-[6] Análise Exploratória - CONCLUÍDO
+[6] Análise Exploratória
     [x] Jupyter Notebook documentado
     [x] Insights sobre os dados
     [x] Qualidade e limitações
 
-[7] Visualizações Estáticas - CONCLUÍDO
+[7] Visualizações Estáticas
     [x] 6 gráficos PNG (300 DPI)
     [x] matplotlib
     [x] Prontos para apresentação
@@ -251,13 +252,13 @@ Arquivo:    RDAC2401.dbc (~500 KB comprimido, ~2.7 MB CSV)
     [x] CHANGELOG.md (histórico)
 ```
 
-### Progresso Atual
+### Progresso Final POC
 
 ```
 Infraestrutura:     [##########] 100%  (Pipeline, CI/CD, Testes)
-Documentação:       [##########] 100%  (Todos docs criados)
+Documentação:       [##########] 100%  (8 documentos SSOT)
 Code Quality:       [##########] 100%  (Ruff, Mypy, Pre-commit)
-Testes:             [##########]  97%  (128 passed)
+Testes:             [##########]  97%  (128 passed, 1 skipped)
 API Inspector:      [##########] 100%  (4/4 RNs implementadas)
 KPIs:               [##########] 100%  (5 KPIs implementados)
 EDA:                [##########] 100%  (Notebook executado)
@@ -273,7 +274,7 @@ TOTAL POC:          [##########] 100%
 [x] Pipeline ETL sem erros críticos
 [x] Validações passam (>90% registros válidos) → 100%
 [x] CI/CD configurado e funcionando
-[x] Testes automatizados >50% coverage → 61%
+[x] Testes automatizados >50% coverage → 97%
 [x] KPIs calculados corretamente
 [x] Documentação permite reprodução completa
 
@@ -302,7 +303,7 @@ automatizados 90%+.
 ### Dataset MVP
 
 ```
-Estados:    Acre (AC) + Espírito Santo (ES)
+Estados:    Multi-estado (a definir)
 Período:    Janeiro-Dezembro 2024 (12 meses)
 Registros:  ~20.000-30.000
 Database:   Oracle XE 21c
@@ -327,12 +328,17 @@ Database:   Oracle XE 21c
     [ ] 10+ KPIs
 
 [4] Testes 90%+
-    [ ] Coverage 90%+
+    [ ] Manter coverage >90%
     [ ] Testes integração DB
 
 [5] Segurança
     [ ] Bandit (security scan)
     [ ] Safety (dependency check)
+
+[6] Independência pysus (opcional)
+    [ ] Extração FTP própria
+    [ ] Decode DBC próprio
+    [ ] Compatibilidade Python 3.12+
 ```
 
 ---
@@ -362,7 +368,7 @@ Database:   Oracle XE 21c
 
 [4] Monitoramento
     [ ] Prometheus + Grafana
-    [ ] ELK Stack (logs)
+    [ ] Logs estruturados
     [ ] Alertas 24/7
 ```
 
@@ -374,23 +380,24 @@ Database:   Oracle XE 21c
 
 ```
 M1: [x] Setup Completo           05/12/2025
-    - Ambiente Python 3.11 ✓
-    - pysus instalado ✓
-    - Pipeline ETL funcional ✓
-    - Documentação inicial ✓
+    - Ambiente Python 3.11
+    - pysus instalado
+    - Pipeline ETL funcional
+    - Documentação inicial
 
 M2: [x] CI/CD & Testes           27/12/2025
-    - GitHub Actions ✓
-    - Codecov integration ✓
-    - VCR.py HTTP mocking ✓
-    - Coverage 61% ✓
-    - Documentação completa ✓
+    - GitHub Actions
+    - Codecov integration
+    - VCR.py HTTP mocking
+    - Coverage 61%
+    - Documentação completa
 
-M3: [x] POC Finalizada           31/12/2025
+M3: [x] POC Finalizada           30/12/2025
     - KPIs calculados
     - EDA notebook
     - Visualizações
-    - Decisão GO/NO-GO
+    - Coverage 97%
+    - Decisão GO para MVP
 
 M4: [ ] Oracle Configurado       15/01/2026
     - Database instalado
@@ -403,39 +410,27 @@ M5: [ ] MVP Release              31/03/2026
     - Sistema demonstrável
 ```
 
-### Próximas Tarefas POC
-
-```
-1. [x] Implementar cálculo dos 5 KPIs básicos
-2. [x] Criar Jupyter Notebook EDA
-3. [x] Gerar visualizações matplotlib
-4. [x] Coverage 97% (128 testes)
-5. [x] Implementar RN-API-004 (fancy output)
-6. [x] Decisão GO/NO-GO para MVP → GO!
-```
-
 ---
 
 ## Critérios de Sucesso
 
-### Técnicos - POC
+### Técnicos - POC (Concluído)
 
 ```
 [PIPELINE]
 [x] Extract: pysus baixa DBC sem erros
-[x] Transform: 90%+ registros válidos → 100%
+[x] Transform: 100% registros válidos
 [x] Load: CSV + Parquet salvos corretamente
-[x] Performance: <10 min total
+[x] Performance: <1 min total
 
 [QUALIDADE]
 [x] Validações implementadas e passando
-[x] Taxa perda <10% → 0%
+[x] Taxa perda: 0%
 [x] KPIs corretos (validação manual)
 
 [TESTES]
 [x] pytest configurado
-[x] Coverage >50% → 61%
-[x] Coverage 97% (superou meta)
+[x] Coverage 97% (128 testes)
 ```
 
 ### Técnicos - MVP
@@ -470,19 +465,25 @@ Status:        MITIGADO
 Mitigação implementada:
 [x] VCR.py para testes (evita dependência FTP em CI)
 [x] Cache local arquivos baixados
-[ ] Retry logic com tenacity (MVP)
+[ ] Retry logic com backoff exponencial (MVP)
 ```
 
-### RISCO-02: Python 3.12+ Incompatível com pysus
+### RISCO-02: Dependência pysus / Python 3.11
 
 ```
 Probabilidade: ALTA
 Impacto:       MÉDIO
-Status:        RESOLVIDO
+Status:        MONITORANDO
 
-Solução:
-[x] Usar Python 3.11.x
-[x] Documentar versão obrigatória
+Situação:
+- pysus não suporta Python 3.12+
+- Biblioteca mantida pela Fiocruz (AlertaDengue)
+- Sem previsão de atualização
+
+Mitigação planejada (MVP):
+[ ] Implementar extração FTP própria
+[ ] Implementar decode DBC próprio (blast-dbf ou similar)
+[ ] Eliminar dependência do pysus
 ```
 
 ### RISCO-03: API OpenDataSUS Limitações
@@ -496,7 +497,7 @@ Descobertas:
 [x] resource_search desabilitado (409)
 [x] SIH tradicional não disponível via API
 [x] Apenas metadados via CKAN API
-[x] Dados reais apenas via FTP/pysus
+[x] Dados reais apenas via FTP
 ```
 
 ### RISCO-04: Tempo Insuficiente POC
@@ -506,10 +507,10 @@ Probabilidade: MÉDIA
 Impacto:       MÉDIO
 Status:        RESOLVIDO
 
-Mitigação:
-[x] Priorizar entregas core (pipeline, testes, docs)
-[x] CI/CD implementado (acelera desenvolvimento)
-[x] KPIs e EDA concluídos
+Resultado:
+[x] POC concluída em 4 semanas
+[x] Todos critérios obrigatórios atendidos
+[x] Coverage superou meta (97% vs 50%)
 ```
 
 ---
@@ -526,4 +527,4 @@ Mitigação:
 
 ---
 
-**Última atualização:** 30/12/2025
+**Última atualização:** 03/01/2026

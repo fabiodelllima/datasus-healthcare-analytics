@@ -1,11 +1,11 @@
 # INTEGRAÇÕES API
 
-- **Versão:** 1.0.0 POC
-- **Última atualização:** 24/12/2025
+- **Versão:** 0.2.6
+- **Última atualização:** 03/01/2026
 
 **Propósito:** Single Source of Truth para integrações com APIs externas do ecossistema DataSUS/Ministério da Saúde.
 
-**IMPORTANTE:** A API OpenDataSUS disponibiliza apenas datasets publicados no portal. Dados SIH tradicionais (internações) estão disponíveis exclusivamente via FTP através da biblioteca pysus.
+**IMPORTANTE:** A API OpenDataSUS disponibiliza apenas datasets publicados no portal. Dados SIH tradicionais (internações) estão disponíveis exclusivamente via FTP através da biblioteca pysus (Fiocruz/AlertaDengue).
 
 ---
 
@@ -36,7 +36,7 @@ API OpenDataSUS (CKAN):
 ├── Exemplo: "Dataset COVID-19 tem 10 recursos"
 └── Uso: Descoberta de novos datasets
 
-FTP DataSUS (via pysus):
+FTP DataSUS (via pysus - Fiocruz):
 ├── Retorna: DADOS BRUTOS (arquivos .dbc)
 ├── Formato: DBC (DBF comprimido)
 ├── Exemplo: 4.315 registros de internações AC Jan/2024
@@ -123,7 +123,7 @@ Resultado: Todas queries retornam 409
 **Impacto:**
 
 - Não é possível buscar recursos específicos via API
-- Workaround: Usar FTP direto via pysus para dados SIH
+- Workaround: Usar FTP direto via pysus (Fiocruz) para dados SIH
 
 **Decisão de Implementação:**
 
@@ -137,7 +137,7 @@ Resultado: Todas queries retornam 409
 # Ao invés de buscar via API
 # results = inspector.search_resources('RDAC')
 
-# Usar pysus diretamente
+# Usar pysus (Fiocruz) diretamente
 from pysus.online_data import SIH
 sih = SIH().load()
 # Listar arquivos disponíveis via FTP
@@ -183,13 +183,29 @@ packages = inspector.list_packages()
 
 **Status:** [✓] IMPLEMENTADO - TerminalFormatter com cores ANSI e box drawing
 
+**Classe:** `TerminalFormatter` (src/api/datasus_inspector.py)
+
+**Funcionalidades:**
+
+- Cores ANSI: verde (sucesso), vermelho (erro), amarelo (warning), azul (info), cyan
+- Box drawing: ┌ ┐ └ ┘ ─ │ ├ ┤
+- Status tags: [OK], [ERROR], [WARNING], [INFO]
+- Check marks: ✓ (sucesso), ✗ (falha)
+- Cálculo de largura visual (ignora códigos ANSI no padding)
+
+**Métodos de Display:**
+
+- `display_package_info(package_id)`: Exibe info de package em box formatado
+- `display_packages_list(limit)`: Exibe lista de packages formatada
+- `display_status()`: Exibe status de conexão com a API
+
 **Símbolos Permitidos:**
 
 ```
 Status: ✓ ✗
-Box Drawing: ┌ ┐ └ ┘ ─ │
-Tags: [OK] [ERROR] [WARNING]
-ANSI Colors: \033[92m \033[91m
+Box Drawing: ┌ ┐ └ ┘ ─ │ ├ ┤
+Tags: [OK] [ERROR] [WARNING] [INFO]
+ANSI Colors: \033[92m \033[91m \033[93m \033[94m \033[96m
 ```
 
 **Símbolos Proibidos:**
@@ -215,7 +231,7 @@ Exemplos proibidos: checkmark colorido, rocket, package, warning triangle
 
 ```python
 headers = {
-    'User-Agent': 'DataSUS-Healthcare-Analytics/0.2.0 (Educational Project; Python/3.11)',
+    'User-Agent': 'DataSUS-Healthcare-Analytics/0.2.6 (Educational Project; Python/3.11)',
     'Accept': 'application/json',
     'Accept-Encoding': 'gzip, deflate',
 }
@@ -246,7 +262,7 @@ Impacto: Busca de recursos indisponível
 Package ID esperado: sihsus
 Status: NÃO EXISTE
 Disponibilidade: Apenas FTP
-Acesso: Via pysus
+Acesso: Via pysus (Fiocruz)
 ```
 
 **3. Datasets Históricos**
@@ -308,7 +324,7 @@ Documentar: Limitação conhecida
 **Impacto:** NENHUM (zero)
 
 - API independente do pipeline
-- Pipeline usa FTP via pysus
+- Pipeline usa FTP via pysus (Fiocruz)
 - Falha de API não afeta ETL
 
 ### Descoberta de Datasets
@@ -332,26 +348,27 @@ Documentar: Limitação conhecida
 ```
 src/api/
 ├── __init__.py
-└── datasus_inspector.py    # 2 métodos implementados
+└── datasus_inspector.py    # OpenDataSUSInspector + TerminalFormatter
 ```
 
 ### Testes
 
 ```
 tests/
-├── test_api_inspector.py
-└── manual/
-    └── test_api_final.py
+├── test_api_inspector.py      # Testes unitários API
+├── test_terminal_formatter.py # Testes formatação terminal (25 testes)
+├── steps/test_api_steps.py    # BDD steps
+└── fixtures/cassettes/        # VCR.py HTTP mocks
 ```
 
 ### Status de Implementação
 
-| RN-API     | Endpoint        | Status              | Método               |
-| ---------- | --------------- | ------------------- | -------------------- |
-| RN-API-001 | package_show    | [OK] IMPLEMENTADO   | `get_package_info()` |
-| RN-API-002 | resource_search | [SKIP] DESABILITADO | -                    |
-| RN-API-003 | package_list    | [OK] IMPLEMENTADO   | `list_packages()`    |
-| RN-API-004 | Formatação      | [OK] IMPLEMENTADO   | `TerminalFormatter`  |
-| RN-API-005 | Headers         | [OK] IMPLEMENTADO   | (no **init**)        |
+| RN-API     | Endpoint        | Status              | Implementação                    |
+| ---------- | --------------- | ------------------- | -------------------------------- |
+| RN-API-001 | package_show    | [OK] IMPLEMENTADO   | `get_package_info()`             |
+| RN-API-002 | resource_search | [SKIP] DESABILITADO | -                                |
+| RN-API-003 | package_list    | [OK] IMPLEMENTADO   | `list_packages()`                |
+| RN-API-004 | Formatação      | [OK] IMPLEMENTADO   | `TerminalFormatter`, display\_\* |
+| RN-API-005 | Headers         | [OK] IMPLEMENTADO   | `__init__` headers               |
 
 ---

@@ -1,8 +1,8 @@
 # ARCHITECTURE
 
 - **Sistema:** DataSUS Healthcare Analytics
-- **Versão:** 1.0.0 POC
-- **Última Atualização:** 24/12/2025
+- **Versão:** 0.2.6
+- **Última Atualização:** 03/01/2026
 
 **Propósito:** Single Source of Truth para decisões arquiteturais, stack técnico, requisitos de sistema e workflows de infraestrutura.
 
@@ -44,10 +44,12 @@ Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/D
 | Componente    | Tecnologia | Versão   | Justificativa                             |
 | ------------- | ---------- | -------- | ----------------------------------------- |
 | **Runtime**   | Python     | 3.11.x   | Compatibilidade pysus (não suporta 3.12+) |
-| **Extract**   | pysus      | >=0.11.0 | Biblioteca oficial DataSUS, decode DBC    |
+| **Extract**   | pysus      | >=0.11.0 | Biblioteca Fiocruz para FTP DataSUS       |
 | **Transform** | pandas     | >=2.1.4  | Padrão indústria para data wrangling      |
 | **Transform** | numpy      | >=1.26.2 | Operações numéricas otimizadas            |
 | **Load**      | pyarrow    | >=14.0.1 | Parquet format, compressão eficiente      |
+
+**Nota sobre pysus:** Biblioteca desenvolvida pela Fiocruz (projeto AlertaDengue), não é oficial do DataSUS. Abstrai acesso ao FTP e decode de arquivos .dbc.
 
 ### Qualidade de Código
 
@@ -71,16 +73,17 @@ Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/D
 | --------------- | -------- | ---------------- |
 | **pytest**      | >=8.0.0  | Framework testes |
 | **pytest-cov**  | >=6.0.0  | Cobertura código |
+| **pytest-bdd**  | >=7.0.0  | BDD scenarios    |
 | **pytest-mock** | >=3.14.0 | Mocking          |
+| **VCR.py**      | >=6.0.0  | HTTP mocking     |
 
 ### Visualização e Análise
 
-| Componente      | Tecnologia | Versão   | Uso                     |
-| --------------- | ---------- | -------- | ----------------------- |
-| **Gráficos**    | matplotlib | >=3.8.2  | Visualizações estáticas |
-| **Estatística** | seaborn    | >=0.13.0 | Gráficos estatísticos   |
-| **Notebooks**   | jupyter    | >=1.0.0  | Análise exploratória    |
-| **Kernel**      | ipykernel  | >=6.27.1 | Runtime notebooks       |
+| Componente    | Tecnologia | Versão   | Uso                     |
+| ------------- | ---------- | -------- | ----------------------- |
+| **Gráficos**  | matplotlib | >=3.8.2  | Visualizações estáticas |
+| **Notebooks** | jupyter    | >=1.0.0  | Análise exploratória    |
+| **Kernel**    | ipykernel  | >=6.27.1 | Runtime notebooks       |
 
 ### Utilities
 
@@ -91,9 +94,9 @@ Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/D
 
 ### Stack MVP (Planejado)
 
-- **Database:** Oracle 19c (compatibilidade sistemas hospitalares)
-- **BI:** Power BI Desktop → Power BI Service
-- **Data Lake:** Azure Data Lake Storage Gen2 (Parquet)
+- **Database:** Oracle XE 21c
+- **BI:** Power BI Desktop ou Streamlit
+- **Data Lake:** Parquet files
 
 ### Stack Produção (Planejado)
 
@@ -118,7 +121,7 @@ Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/D
                   │
                   ▼
 ┌────────────────────────────────────────────────────────────────┐
-│                        EXTRACT (pysus)                         │
+│                   EXTRACT (pysus - Fiocruz)                    │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │ DataSUSExtractor                                         │  │
 │  │ - download(state, year, month, groups='RD')              │  │
@@ -155,7 +158,7 @@ Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/D
         ▼                   ▼
 ┌───────────────┐   ┌───────────────┐
 │   CSV Files   │   │ Parquet Files │
-│  (2.7 MB)     │   │  (320 KB)     │
+│  (~2.7 MB)    │   │  (~320 KB)    │
 │  Human-read   │   │  Compressed   │
 └───────┬───────┘   └───────┬───────┘
         │                   │
@@ -192,7 +195,7 @@ df = parquet_set.to_dataframe()
 
 **Características:**
 
-- API pysus abstrai FTP + decode DBC
+- pysus (Fiocruz) abstrai FTP + decode DBC
 - Retorna ParquetSet (não lista de arquivos)
 - Método `.to_dataframe()` converte para pandas
 - Cache automático em `~/pysus/`
@@ -400,7 +403,9 @@ df = cast(pd.DataFrame, df[df['IDADE'] > 0])
 **pytest** com plugins:
 
 - `pytest-cov`: relatórios cobertura
+- `pytest-bdd`: BDD scenarios (Gherkin)
 - `pytest-mock`: mocking/patching
+- `VCR.py`: HTTP request mocking (cassettes)
 
 ### Executar Testes
 
@@ -416,38 +421,48 @@ pytest tests/ --cov=src --cov-report=html
 # Ver: htmlcov/index.html
 ```
 
-### Métricas Atuais
+### Métricas Atuais (POC Concluída)
 
 ```
-Cobertura: 5% (182 stmts, 173 miss)
+Cobertura: 97% (546 stmts, 18 miss)
+Testes: 128 passed, 1 skipped
 
 Módulos:
-├── src/extract/extractor.py      42%  (19 stmts, 11 miss)
-├── src/transform/transformer.py   0%  (67 stmts, 67 miss)
-├── src/load/loader.py             0%  (27 stmts, 27 miss)
-├── src/main.py                    0%  (38 stmts, 38 miss)
-└── src/utils/logger.py            0%  (20 stmts, 20 miss)
-
-Testes:
-└── tests/test_extractor.py     1 teste PASS
+├── src/extract/extractor.py      100%
+├── src/transform/transformer.py   94%
+├── src/load/loader.py            100%
+├── src/analytics/kpis.py         100%
+├── src/visualizations/charts.py   84%
+├── src/api/datasus_inspector.py   97%
+├── src/main.py                    84%
+└── src/utils/logger.py            84%
 ```
 
-**Meta POC:** >50% coverage
-**Meta MVP:** >80% coverage
+**Meta POC:** >50% coverage → Atingido: 97%
+**Meta MVP:** >90% coverage
 
 ### Estrutura Testes
 
-```python
-# tests/test_extractor.py
-def test_extractor_init():
-    """Testa inicialização do extractor"""
-    extractor = DataSUSExtractor()
-    assert isinstance(extractor, DataSUSExtractor)
-
-# TODO: Adicionar
-# - test_transformer.py
-# - test_loader.py
-# - test_pipeline_integration.py
+```
+tests/
+├── features/                    # BDD Gherkin
+│   ├── hospitalization_validation.feature
+│   ├── api_inspection.feature
+│   └── kpis.feature
+├── steps/                       # Step definitions
+│   └── test_api_steps.py
+├── fixtures/
+│   └── cassettes/               # VCR.py HTTP mocks
+├── test_extractor.py
+├── test_transformer.py
+├── test_loader.py
+├── test_kpis.py
+├── test_visualizations.py
+├── test_terminal_formatter.py
+├── test_api_inspector.py
+├── test_main.py
+├── test_coverage_gaps.py
+└── conftest.py                  # Fixtures compartilhadas
 ```
 
 ---
@@ -455,11 +470,7 @@ def test_extractor_init():
 ## Estrutura do Projeto
 
 ```
-datasus-test/
-├── .git/                       # Controle versão
-├── .pytest_cache/              # Cache pytest
-├── venv/                       # Ambiente virtual
-│
+datasus-healthcare-analytics/
 ├── src/                        # Código fonte
 │   ├── __init__.py
 │   ├── config.py               # Configurações globais
@@ -477,38 +488,61 @@ datasus-test/
 │   │   ├── __init__.py
 │   │   └── loader.py           # DataLoader
 │   │
+│   ├── analytics/              # Módulo Analytics
+│   │   ├── __init__.py
+│   │   └── kpis.py             # KPICalculator
+│   │
+│   ├── visualizations/         # Módulo Visualizações
+│   │   ├── __init__.py
+│   │   └── charts.py           # ChartGenerator
+│   │
+│   ├── api/                    # Módulo API
+│   │   ├── __init__.py
+│   │   └── datasus_inspector.py # OpenDataSUSInspector
+│   │
 │   └── utils/                  # Utilitários
 │       ├── __init__.py
 │       └── logger.py           # Setup logging
 │
-├── tests/                      # Testes pytest
-│   ├── __init__.py
-│   └── test_extractor.py
+├── tests/                      # Testes pytest + BDD
+│   ├── features/               # Gherkin scenarios
+│   ├── steps/                  # Step definitions
+│   ├── fixtures/cassettes/     # VCR.py mocks
+│   └── test_*.py               # Testes unitários
 │
-├── data/                       # Dados (git-ignored)
+├── data/                       # Dados (git-ignored parcialmente)
 │   ├── raw/                    # Dados brutos
 │   └── processed/              # Dados processados
 │       ├── SIH_AC_202401.csv
 │       └── SIH_AC_202401.parquet
 │
+├── outputs/                    # Outputs gerados
+│   └── charts/                 # Visualizações PNG
+│
 ├── logs/                       # Logs (git-ignored)
-│   └── pipeline_YYYYMMDD_HHMMSS.log
 │
 ├── notebooks/                  # Jupyter notebooks
-│   └── 01_analise_exploratoria.ipynb
+│   └── 01_exploratory_analysis.ipynb
 │
 ├── docs/                       # Documentação
 │   ├── ARCHITECTURE.md         # Este arquivo
 │   ├── DATA_GUIDE.md           # Dicionário dados
+│   ├── BUSINESS_RULES.md       # Regras de negócio
+│   ├── API.md                  # Integrações API
+│   ├── METHODOLOGY.md          # Workflow dev
+│   ├── TOOLING.md              # Ferramentas CI/CD
 │   └── ROADMAP.md              # Planejamento
 │
-├── .gitignore                  # Arquivos ignorados
-├── .pre-commit-config.yaml     # Hooks pre-commit
-├── mypy.ini                    # Config mypy
-├── pyproject.toml              # Config ruff + pytest
-├── requirements.txt            # Dependências
-├── CHANGELOG.md                # Histórico versões
-└── README.md                   # Documentação principal
+├── .github/workflows/          # CI/CD
+│   └── ci.yml
+│
+├── .gitignore
+├── .pre-commit-config.yaml
+├── mypy.ini
+├── pyproject.toml
+├── requirements.txt
+├── CHANGELOG.md
+└── README.md
 ```
 
 ---
@@ -519,7 +553,7 @@ datasus-test/
 
 **Status:** Aceito
 
-**Contexto:** pysus (biblioteca oficial DataSUS) não suporta Python 3.12+
+**Contexto:** pysus (biblioteca Fiocruz) não suporta Python 3.12+
 
 **Decisão:** Usar Python 3.11.x
 
@@ -528,6 +562,8 @@ datasus-test/
 - ✓ Compatibilidade garantida com pysus
 - ✓ Suporte pandas/numpy maduro
 - ✗ Sem features Python 3.12+
+
+**Mitigação planejada (MVP):** Implementar extração FTP própria para eliminar dependência.
 
 ---
 
@@ -608,20 +644,38 @@ datasus-test/
 
 ---
 
+### ADR-006: VCR.py para HTTP Mocking
+
+**Status:** Aceito
+
+**Contexto:** Testes de API falhavam por timeout/instabilidade FTP
+
+**Decisão:** Usar VCR.py para gravar e reproduzir respostas HTTP
+
+**Consequências:**
+
+- ✓ Testes determinísticos
+- ✓ CI/CD não depende de serviços externos
+- ✓ Execução rápida
+- ✗ Cassettes precisam ser atualizadas se API mudar
+
+---
+
 ## Workflows
 
 ### Desenvolvimento Local
 
 ```bash
 # 1. Setup inicial
-git clone <repo>
-cd datasus-test
+git clone https://github.com/fabiodelllima/datasus-healthcare-analytics.git
+cd datasus-healthcare-analytics
 python3.11 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 pre-commit install
 
 # 2. Criar feature branch
+git checkout develop
 git checkout -b feat/nome-feature
 
 # 3. Desenvolver
@@ -634,7 +688,7 @@ mypy src/
 
 # 5. Commit (pre-commit roda automaticamente)
 git add .
-git commit -m "feat: descrição"
+git commit -m "feat(scope): Descrição em português"
 
 # Se pre-commit falhar:
 # - Corrige automaticamente
@@ -644,10 +698,12 @@ git commit -m "feat: descrição"
 # 6. Push
 git push origin feat/nome-feature
 
-# 7. Pull Request para develop
+# 7. Merge para develop (--no-ff)
+git checkout develop
+git merge feat/nome-feature --no-ff
 ```
 
-### CI/CD (Planejado MVP)
+### CI/CD (GitHub Actions)
 
 ```yaml
 # .github/workflows/ci.yml
@@ -707,20 +763,9 @@ jobs:
 
 ### Plataformas Suportadas
 
-- ✓ Linux (testado: Fedora 43)
+- ✓ Linux (testado: Ubuntu, Fedora)
 - ✓ macOS (não testado, deve funcionar)
 - ✓ Windows (não testado, deve funcionar)
-
----
-
-## Referências
-
-- [pysus Documentation](https://github.com/AlertaDengue/PySUS)
-- [DataSUS FTP](ftp://ftp.datasus.gov.br)
-- [Ruff](https://docs.astral.sh/ruff/)
-- [Mypy](https://mypy.readthedocs.io/)
-- [pytest](https://docs.pytest.org/)
-- [Pre-commit](https://pre-commit.com/)
 
 ---
 
@@ -744,7 +789,7 @@ jobs:
 
 ---
 
-### Fase 1: POC (Atual - v0.2.0)
+### Fase 1: POC (Concluída - v0.2.6)
 
 **Arquitetura:** Script-based ETL pipeline
 
@@ -759,7 +804,7 @@ DataSUS FTP → Extract → Transform → Load → CSV/Parquet
 - Execução manual/script
 - Sem orquestração
 - Storage: Filesystem (CSV + Parquet)
-- Análise: Jupyter notebooks
+- Análise: Jupyter notebooks + matplotlib
 
 **Adequado para:**
 
@@ -769,13 +814,13 @@ DataSUS FTP → Extract → Transform → Load → CSV/Parquet
 
 ---
 
-### Fase 2: MVP (v1.0.0 - Jan 2026)
+### Fase 2: MVP (Planejado - Q1 2026)
 
 **Arquitetura:** Modular Monolith + Scheduled Jobs
 
 ```
 ┌─────────────────────────────────────────────┐
-│         FastAPI Application                 │
+│              Application                    │
 │                                             │
 │  ┌──────────┐  ┌──────────┐  ┌───────────┐  │
 │  │   ETL    │  │   API    │  │ Analytics │  │
@@ -787,19 +832,18 @@ DataSUS FTP → Extract → Transform → Load → CSV/Parquet
 │               Shared Services               │
 │             (config, logging, db)           │
 └─────────────────────────────────────────────┘
-        │                    │
-   ┌────▼─────┐          ┌───▼────┐
-   │ Oracle   │          │ Redis  │
-   │ Database │          │ Cache  │
-   └──────────┘          └────────┘
+        │
+   ┌────▼─────┐
+   │ Oracle   │
+   │ Database │
+   └──────────┘
 ```
 
 **Stack adicional:**
 
-- Airflow: Orquestração DAGs
-- Oracle XE: RDBMS
-- Power BI: Dashboards
-- FastAPI: REST endpoints
+- Oracle XE 21c: RDBMS
+- Power BI ou Streamlit: Dashboards
+- cron: Agendamento
 
 **Adequado para:**
 
@@ -809,42 +853,34 @@ DataSUS FTP → Extract → Transform → Load → CSV/Parquet
 
 ---
 
-### Fase 3: Produção (v2.0.0 - Q1 2025)
+### Fase 3: Produção (Planejado - Q2 2026)
 
 **Arquitetura:** Event-Driven Batch + API
 
 ```
-┌──────────┐     ┌───────────┐     ┌──────────┐
-│ Airflow  │────▶│ RabbitMQ  │────▶│ Workers  │
-│ Scheduler│     │  Queue    │     │ (Celery) │
-└──────────┘     └───────────┘     └──────────┘
-                       │                  │
-                       │                  ▼
-                       │            ┌───────────┐
-                       │            │ Data      │
-                       │            │ Lake (S3) │
-                       │            └───────────┘
-                       │                  │
-                       ▼                  ▼
-                 ┌──────────┐      ┌──────────┐
-                 │ FastAPI  │◀─────│ Oracle   │
-                 │ Workers  │      │ Database │
-                 └──────────┘      └──────────┘
+┌───────────┐     ┌───────────┐     ┌──────────┐
+│ Airflow   │────▶│ Message   │────▶│ Workers  │
+│ Scheduler │     │  Queue    │     │          │
+└───────────┘     └───────────┘     └──────────┘
+                       │                 │
+                       ▼                 ▼
+                 ┌──────────┐      ┌───────────┐
+                 │ FastAPI  │◀─────│  Oracle   │
+                 │ Workers  │      │  Database │
+                 └──────────┘      └───────────┘
                        │
                        ▼
               ┌─────────────────┐
-              │ Loki+Prometheus │
-              │    + Grafana    │
+              │   Prometheus    │
+              │   + Grafana     │
               └─────────────────┘
 ```
 
 **Stack adicional:**
 
-- RabbitMQ: Message queue
-- Celery: Distributed tasks
-- Loki + Prometheus + Grafana: Observabilidade
+- Airflow: Orquestração DAGs
+- Prometheus + Grafana: Observabilidade
 - Docker: Containerização
-- Nginx: Reverse proxy
 
 **Adequado para:**
 
@@ -868,21 +904,12 @@ DataSUS FTP → Extract → Transform → Load → CSV/Parquet
 
 ---
 
-### Observabilidade
+## Referências
 
-**Stack escolhida:** Loki + Prometheus + Grafana
-
-**Componentes:**
-
-- **Loki:** Logs centralizados (eventos, debugging)
-- **Prometheus:** Métricas (latency, errors, throughput)
-- **Grafana:** Dashboards unificados
-
-**Alternativas rejeitadas:**
-
-- ELK Stack: Pesado (>4GB RAM), overkill para volume inicial
-- Prometheus sozinho: Sem logs centralizados
-
-**Ver:** docs/DECISION_LOG.md para detalhes completos.
-
----
+- [pysus Documentation](https://github.com/AlertaDengue/PySUS) (Fiocruz)
+- [DataSUS FTP](ftp://ftp.datasus.gov.br)
+- [Ruff](https://docs.astral.sh/ruff/)
+- [Mypy](https://mypy.readthedocs.io/)
+- [pytest](https://docs.pytest.org/)
+- [Pre-commit](https://pre-commit.com/)
+- [VCR.py](https://vcrpy.readthedocs.io/)

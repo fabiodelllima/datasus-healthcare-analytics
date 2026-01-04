@@ -1,8 +1,8 @@
 # DATA GUIDE
 
 - **Sistema:** DataSUS Healthcare Analytics
-- **Versão:** 1.0.0 POC
-- **Última Atualização:** 24/12/2025
+- **Versão:** 0.2.6
+- **Última Atualização:** 03/01/2026
 
 **Propósito:** Single Source of Truth para tudo relacionado a dados: fonte, dicionário de campos, códigos, regras de negócio, validações e workflows ETL.
 
@@ -27,9 +27,11 @@
 
 **Origem:** Ministério da Saúde - DATASUS
 
-**URL:** <https://datasus.saude.gov.br/\>
+**URL:** https://datasus.saude.gov.br
 
 **FTP:** ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801\_/Dados/
+
+**Acesso:** Via biblioteca pysus (desenvolvida pela Fiocruz/AlertaDengue)
 
 ### Descrição
 
@@ -44,9 +46,9 @@ O SIH/SUS registra todas as internações realizadas em hospitais públicos e co
 
 ### Formato Original
 
-**Extensão:** `.dbc` (DBF comprimido)  
-**Encoding:** CP850 (DOS Latin 1)  
-**Estrutura:** DBF (dBase III+)  
+**Extensão:** `.dbc` (DBF comprimido)
+**Encoding:** CP850 (DOS Latin 1)
+**Estrutura:** DBF (dBase III+)
 **Compressão:** Proprietária Microsoft
 
 **Nomenclatura arquivos:**
@@ -75,14 +77,11 @@ Exemplo: RDAC2401.dbc
 
 ## Dataset POC
 
-### Estados Selecionados
+### Estado Selecionado
 
-**Justificativa Técnica:**
-
-| Estado | Volume Jan/2024   | Razão Escolha                       |
-| ------ | ----------------- | ----------------------------------- |
-| **AC** | ~4.300 registros  | Dataset pequeno para testes rápidos |
-| **ES** | ~15.000 registros | Validação pipeline com volume médio |
+| Estado | Período      | Registros | Arquivo      | Razão Escolha                       |
+| ------ | ------------ | --------- | ------------ | ----------------------------------- |
+| **AC** | Janeiro/2024 | 4.315     | RDAC2401.dbc | Dataset pequeno para testes rápidos |
 
 **Exclusões:**
 
@@ -92,11 +91,11 @@ Exemplo: RDAC2401.dbc
 ### Volume de Dados
 
 ```
-POC (AC + ES, Jan 2024):
-├── Registros: ~19.300
-├── CSV total: ~8 MB
-├── Parquet total: ~1 MB
-└── Tempo proc: <10s
+POC (AC, Jan 2024):
+├── Registros: 4.315
+├── CSV: ~2.7 MB
+├── Parquet: ~320 KB
+└── Tempo proc: <1 min
 
 Comparação Nacional (Jan 2024):
 └── Total Brasil: ~1.2M registros/mês
@@ -158,13 +157,13 @@ Comparação Nacional (Jan 2024):
 
 #### Valores Financeiros
 
-| Campo      | Tipo Original    | Tipo Convertido               | Descrição | Validação |
-| ---------- | ---------------- | ----------------------------- | --------- | --------- |
-| `VAL_TOT`  | String → float64 | Valor total AIH               | >= 0      |
-| `VAL_UTI`  | String → float64 | Valor diárias UTI             | >= 0      |
-| `VAL_SH`   | String → float64 | Valor serviços hospitalares   | >= 0      |
-| `VAL_SP`   | String → float64 | Valor serviços profissionais  | >= 0      |
-| `VAL_SADT` | String → float64 | Valor SADT (diagnose/terapia) | >= 0      |
+| Campo      | Tipo Original    | Tipo Convertido | Descrição                     | Validação |
+| ---------- | ---------------- | --------------- | ----------------------------- | --------- |
+| `VAL_TOT`  | String → float64 | float64         | Valor total AIH               | >= 0      |
+| `VAL_UTI`  | String → float64 | float64         | Valor diárias UTI             | >= 0      |
+| `VAL_SH`   | String → float64 | float64         | Valor serviços hospitalares   | >= 0      |
+| `VAL_SP`   | String → float64 | float64         | Valor serviços profissionais  | >= 0      |
+| `VAL_SADT` | String → float64 | float64         | Valor SADT (diagnose/terapia) | >= 0      |
 
 **Fórmula:** `VAL_TOT = VAL_SH + VAL_SP + VAL_SADT + VAL_UTI + outros componentes`
 
@@ -188,18 +187,15 @@ Comparação Nacional (Jan 2024):
 
 ---
 
-#### 4. Métricas Qualidade
+### Campos Calculados (Enriquecimento)
 
-**AC Janeiro 2024:**
-
-```
-Registros iniciais:    4,315
-Duplicatas removidas:      0
-Nulos críticos:            0
-Validações falhadas:       0
-Registros finais:      4,315
-Taxa validação:       100.0%
-```
+| Campo            | Tipo     | Cálculo                                   | Descrição            |
+| ---------------- | -------- | ----------------------------------------- | -------------------- |
+| `stay_days`      | int      | `(DT_SAIDA - DT_INTER).days`              | Dias de internação   |
+| `daily_cost`     | float    | `VAL_TOT / stay_days.replace(0, 1)`       | Custo por dia        |
+| `age_group`      | category | `pd.cut(IDADE, bins=[0,18,30,45,60,120])` | Faixa etária         |
+| `death`          | bool     | `MORTE == 1`                              | Flag óbito           |
+| `specialty_name` | str      | `ESPEC.astype(str)`                       | Código especialidade |
 
 ---
 
@@ -318,8 +314,6 @@ receita_total = df['VAL_TOT'].sum()
 receita_por_especialidade = df.groupby('ESPEC')['VAL_TOT'].sum()
 ```
 
-**AC Jan/2024:** R$ 1.021.234,50 (exemplo)
-
 **Uso:** Planejamento financeiro, análise rentabilidade
 
 ---
@@ -344,6 +338,7 @@ demografia = df['age_group'].value_counts()
 
 - **Input:** Parâmetros (state, year, month)
 - **Output:** DataFrame raw
+- **Ferramenta:** pysus (Fiocruz/AlertaDengue)
 
 ```python
 from pysus.online_data.SIH import download
@@ -360,10 +355,10 @@ df_raw = parquet_set.to_dataframe()
 **Logs:**
 
 ```
-[2025-12-05 12:16:47] INFO - [EXTRACT] Baixando: AC 2024/01
-[2025-12-05 12:16:47] INFO - [EXTRACT] Download concluído
-[2025-12-05 12:16:48] INFO - [EXTRACT] Registros carregados: 4,315
-[2025-12-05 12:16:48] INFO - [EXTRACT] Colunas: 115
+[EXTRACT] Baixando: AC 2024/01
+[EXTRACT] Download concluído
+[EXTRACT] Registros carregados: 4,315
+[EXTRACT] Colunas: 115
 ```
 
 ---
@@ -400,18 +395,12 @@ df_raw = parquet_set.to_dataframe()
 **Logs:**
 
 ```
-[2025-12-05 12:16:48] INFO - [TRANSFORM] Iniciado: 4,315 registros
-[2025-12-05 12:16:48] INFO - [CONVERT] Convertendo tipos...
-[2025-12-05 12:16:48] INFO - [CONVERT] Tipos convertidos
-[2025-12-05 12:16:48] INFO - [CLEAN] Iniciando limpeza...
-[2025-12-05 12:16:48] INFO - [CLEAN] Duplicatas removidas: 0
-[2025-12-05 12:16:48] INFO - [CLEAN] Registros válidos: 4,315
-[2025-12-05 12:16:48] INFO - [VALIDATE] Iniciando validações...
-[2025-12-05 12:16:48] INFO - [VALIDATE] Registros inválidos removidos: 0
-[2025-12-05 12:16:48] INFO - [VALIDATE] Taxa validação: 100.00%
-[2025-12-05 12:16:48] INFO - [ENRICH] Iniciando enriquecimento...
-[2025-12-05 12:16:48] INFO - [ENRICH] Campos adicionados: stay_days, daily_cost, age_group, death, specialty_name
-[2025-12-05 12:16:48] INFO - [TRANSFORM] Concluído: 4,315 registros
+[TRANSFORM] Iniciado: 4,315 registros
+[CONVERT] Convertendo tipos...
+[CLEAN] Duplicatas removidas: 0
+[VALIDATE] Taxa validação: 100.00%
+[ENRICH] Campos adicionados: stay_days, daily_cost, age_group, death, specialty_name
+[TRANSFORM] Concluído: 4,315 registros
 ```
 
 ---
@@ -439,19 +428,16 @@ metadata = {
     'parquet_path': '/path/to/SIH_AC_202401.parquet',
     'csv_size_mb': 2.7,
     'parquet_size_mb': 0.32,
-    'timestamp': '2024-12-05T12:16:49'
 }
 ```
 
 **Logs:**
 
 ```
-[2025-12-05 12:16:48] INFO - [LOAD] Salvando: AC 2024/01
-[2025-12-05 12:16:49] INFO - [LOAD] Salvando CSV: /path/SIH_AC_202401.csv
-[2025-12-05 12:16:49] INFO - [LOAD] Salvando Parquet: /path/SIH_AC_202401.parquet
-[2025-12-05 12:16:49] INFO - [LOAD] CSV: 2.70 MB
-[2025-12-05 12:16:49] INFO - [LOAD] Parquet: 0.32 MB
-[2025-12-05 12:16:49] INFO - [LOAD] Concluído: 4,315 registros
+[LOAD] Salvando: AC 2024/01
+[LOAD] CSV: 2.70 MB
+[LOAD] Parquet: 0.32 MB
+[LOAD] Concluído: 4,315 registros
 ```
 
 ---
@@ -465,7 +451,7 @@ Completude:
 ├─ N_AIH:        100% (4,315/4,315)
 ├─ DT_INTER:     100% (4,315/4,315)
 ├─ DT_SAIDA:     100% (4,315/4,315)
-├─ IDADE:         99% (estimado)
+├─ IDADE:        100% (4,315/4,315)
 └─ VAL_TOT:      100% (4,315/4,315)
 
 Acurácia:
@@ -538,15 +524,25 @@ df['specialty_name'] = df['ESPEC'].map(specialty_map)  # "Clínica Médica"
 
 **Problema:** Arquivos .dbc em CP850 (DOS Latin 1)
 
-**Solução:** pysus já converte para UTF-8 automaticamente
+**Solução:** pysus (Fiocruz) já converte para UTF-8 automaticamente
 
-**Impacto POC:** Zero (abstrado pela biblioteca)
+**Impacto POC:** Zero (abstraído pela biblioteca)
 
 ---
 
-### 5. Volume POC Limitado
+### 5. Dependência pysus
 
-**Problema:** Apenas AC+ES (~19k registros) vs Brasil completo (~1.2M/mês)
+**Problema:** pysus não suporta Python 3.12+
+
+**Impacto:** Projeto limitado ao Python 3.11
+
+**Solução MVP (planejada):** Implementar extração FTP própria
+
+---
+
+### 6. Volume POC Limitado
+
+**Problema:** Apenas AC (~4k registros) vs Brasil completo (~1.2M/mês)
 
 **Impacto:**
 
@@ -568,7 +564,7 @@ df['specialty_name'] = df['ESPEC'].map(specialty_map)  # "Clínica Médica"
 
 ### Técnicas
 
-- [pysus GitHub](https://github.com/AlertaDengue/PySUS)
+- [pysus GitHub](https://github.com/AlertaDengue/PySUS) (Fiocruz/AlertaDengue)
 - [Pandas Documentation](https://pandas.pydata.org/docs/)
 - [Parquet Format](https://parquet.apache.org/)
 
