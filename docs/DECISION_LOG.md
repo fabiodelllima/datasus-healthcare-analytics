@@ -35,11 +35,11 @@ Volume projetado: 10-50M registros, 5-20 GB processados.
 
 **Consequências:**
 
-- [ + ] Menor complexidade operacional
-- [ + ] Deploy e rollback simples
-- [ + ] Transações ACID mantidas
-- [ - ] Escala limitada a vertical scaling
-- [ - ] Acoplamento entre módulos
+- [+] Menor complexidade operacional
+- [+] Deploy e rollback simples
+- [+] Transações ACID mantidas
+- [-] Escala limitada a vertical scaling
+- [-] Acoplamento entre módulos
 
 **Revisão:** Q1 2026 se volume exceder 50M registros ou 100k requests/dia.
 
@@ -53,7 +53,7 @@ Volume projetado: 10-50M registros, 5-20 GB processados.
 ## 2025-12-22: Stack Observabilidade - Loki + Prometheus + Grafana
 
 **Contexto:**
-Definir stack de monitoramento para Produção (v2.0.0).
+Definir stack de monitoramento para Produção.
 
 **Decisão:** Loki + Prometheus + Grafana (stack coesa).
 
@@ -84,10 +84,10 @@ Definir stack de monitoramento para Produção (v2.0.0).
 
 **Consequências:**
 
-- [ + ] Stack leve e integrada
-- [ + ] Menor curva de aprendizado
-- [ + ] Cost-effective
-- [ - ] Menos poderoso que ELK para search complexo
+- [+] Stack leve e integrada
+- [+] Menor curva de aprendizado
+- [+] Cost-effective
+- [-] Menos poderoso que ELK para search complexo
 
 **Revisão:** Se precisar full-text search avançado em logs, considerar ELK.
 
@@ -120,10 +120,10 @@ TDD incremental por regra de negócio:
 
 **Consequências:**
 
-- [ + ] TDD real (RED → GREEN → REFACTOR por feature)
-- [ + ] Progresso incremental visível
-- [ + ] Testes sempre verdes (exceto durante REphase)
-- [ - ] Specs menos antecipadas (tradeoff aceitável)
+- [+] TDD real (RED → GREEN → REFACTOR por feature)
+- [+] Progresso incremental visível
+- [+] Testes sempre verdes (exceto durante RED phase)
+- [-] Specs menos antecipadas (tradeoff aceitável)
 
 **Revisão:** Avaliar efetividade em v0.3.0.
 
@@ -143,7 +143,7 @@ Escolher versão Python para o projeto.
 
 **Razionale:**
 
-- pysus (biblioteca oficial DataSUS) não suporta Python 3.12+
+- pysus (biblioteca da Fiocruz/AlertaDengue) não suporta Python 3.12+
 - Python 3.11 é estável e tem bom suporte de bibliotecas
 - Type hints modernos disponíveis (PEP 604: `dict[str, Any]` nativo)
 
@@ -154,11 +154,48 @@ Escolher versão Python para o projeto.
 
 **Consequências:**
 
-- [ + ] Compatibilidade total com pysus
-- [ + ] Type hints modernos
-- [ - ] Não usa features Python 3.12+ (PEP 695 generic syntax)
+- [+] Compatibilidade total com pysus
+- [+] Type hints modernos
+- [-] Não usa features Python 3.12+ (PEP 695 generic syntax)
 
-**Revisão:** Quando pysus suportar 3.12+.
+**Revisão:** Quando pysus suportar 3.12+ ou quando implementarmos extração FTP própria.
+
+---
+
+## 2025-12-30: VCR.py para HTTP Mocking
+
+**Contexto:**
+Testes de API falhavam por timeout/instabilidade do servidor OpenDataSUS.
+
+**Decisão:** Usar VCR.py para gravar e reproduzir respostas HTTP.
+
+**Alternativas consideradas:**
+
+1. **Mock manual (unittest.mock)** (rejeitado)
+
+   - Prós: Sem dependências extras
+   - Contras: Muito trabalho manual, não captura requests reais
+   - Por que não: Propenso a erros, respostas fake
+
+2. **responses** (rejeitado)
+
+   - Prós: Simples para casos básicos
+   - Contras: Não grava automaticamente
+   - Por que não: Preferimos capturar respostas reais
+
+3. **VCR.py** (escolhido)
+   - Prós: Grava requests reais em cassettes YAML, reproduz deterministicamente
+   - Contras: Cassettes precisam ser atualizadas se API mudar
+   - Por que sim: Testes determinísticos, rápidos, não dependem de rede
+
+**Consequências:**
+
+- [+] Testes determinísticos (não falham por rede)
+- [+] CI/CD não depende de serviços externos
+- [+] Execução rápida (sem I/O de rede)
+- [-] Cassettes precisam ser regravadas se API mudar
+
+**Revisão:** Se API mudar frequentemente, considerar mock manual para endpoints críticos.
 
 ---
 
@@ -181,8 +218,8 @@ Escolher versão Python para o projeto.
 
 **Consequências:**
 
-- [ + ] Vantagem 1
-- [ - ] Desvantagem 1
+- [+] Vantagem 1
+- [-] Desvantagem 1
 
 **Revisão:** [Quando reavaliar]
 
@@ -193,4 +230,4 @@ Escolher versão Python para o projeto.
 
 ---
 
-**Última atualização:** 24/12/2025
+**Última atualização:** 03/01/2026

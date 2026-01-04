@@ -1,6 +1,6 @@
 # Ferramentas de Qualidade e CI/CD
 
-**Última atualização:** 27/12/2025
+**Última atualização:** 03/01/2026
 
 ## Índice
 
@@ -535,7 +535,7 @@ CMD ["python", "-m", "src.main"]
 
 ### Ordem de Implementação
 
-**POC (Atual - v0.2.2):**
+**POC (Concluída - v0.2.6):**
 
 - [x] Ruff
 - [x] Mypy
@@ -544,7 +544,7 @@ CMD ["python", "-m", "src.main"]
 - [x] VCR.py
 - [x] Codecov
 
-**MVP (v1.0.0):**
+**MVP (Planejado):**
 
 - [ ] Tenacity (retry logic)
 - [ ] Bandit
