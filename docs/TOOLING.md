@@ -54,8 +54,8 @@ ignore = ["E501"]  # Line too long (delegado ao formatter)
 
 **Referências:**
 
-- Docs: <https://docs.astral.sh/ruff/\>
-- GitHub: <https://github.com/astral-sh/ruff\>
+- Docs: <https://docs.astral.sh/ruff>
+- GitHub: <https://github.com/astral-sh/ruff>
 
 ---
 
@@ -96,7 +96,7 @@ ignore_missing_imports = True
 
 **Referências:**
 
-- Docs: <https://mypy.readthedocs.io/\>
+- Docs: <https://mypy.readthedocs.io>
 - PEP 484: Type Hints
 
 ---
@@ -243,8 +243,8 @@ def test_api_call(api_vcr):
 
 **Referências:**
 
-- Docs: <https://vcrpy.readthedocs.io/\>
-- GitHub: <https://github.com/kevin1024/vcrpy\>
+- Docs: <https://vcrpy.readthedocs.io>
+- GitHub: <https://github.com/kevin1024/vcrpy>
 
 ---
 
@@ -321,7 +321,7 @@ def call_api():
 
 **Referências:**
 
-- Docs: <https://tenacity.readthedocs.io/\>
+- Docs: <https://tenacity.readthedocs.io>
 
 ---
 
@@ -364,8 +364,8 @@ tests:
 
 **Referências:**
 
-- Docs: <https://bandit.readthedocs.io/\>
-- PyCQA: <https://github.com/PyCQA/bandit\>
+- Docs: <https://bandit.readthedocs.io>
+- PyCQA: <https://github.com/PyCQA/bandit>
 
 ---
 
@@ -399,8 +399,8 @@ tests:
 
 **Referências:**
 
-- Docs: <https://pyup.io/safety/\>
-- Database: <https://github.com/pyupio/safety-db\>
+- Docs: <https://pyup.io/safety>
+- Database: <https://github.com/pyupio/safety-db>
 
 ---
 
@@ -435,8 +435,8 @@ tests:
 
 **Referências:**
 
-- Docs: <https://radon.readthedocs.io/\>
-- McCabe: <https://en.wikipedia.org/wiki/Cyclomatic_complexity\>
+- Docs: <https://radon.readthedocs.io>
+- McCabe: <https://en.wikipedia.org/wiki/Cyclomatic_complexity>
 
 ---
 
@@ -483,8 +483,8 @@ sonar.python.version=3.11
 
 **Referências:**
 
-- Docs: <https://docs.sonarqube.org/\>
-- SonarCloud: <https://sonarcloud.io/\>
+- Docs: <https://docs.sonarqube.org>
+- SonarCloud: <https://sonarcloud.io>
 
 ---
 
@@ -526,8 +526,8 @@ CMD ["python", "-m", "src.main"]
 
 **Referências:**
 
-- Best practices: <https://docs.docker.com/develop/dev-best-practices/\>
-- Multi-stage: <https://docs.docker.com/build/building/multi-stage/\>
+- Best practices: <https://docs.docker.com/develop/dev-best-practices>
+- Multi-stage: <https://docs.docker.com/build/building/multi-stage>
 
 ---
 
@@ -614,9 +614,9 @@ jobs:
 
 ## Referências
 
-- Python Packaging Authority: <https://www.pypa.io/\>
-- PEP 8 Style Guide: <https://peps.python.org/pep-0008/\>
-- GitHub Actions: <https://docs.github.com/en/actions\>
-- Docker Best Practices: <https://docs.docker.com/develop/dev-best-practices/\>
+- Python Packaging Authority: <https://www.pypa.io>
+- PEP 8 Style Guide: <https://peps.python.org/pep-0008>
+- GitHub Actions: <https://docs.github.com/en/actions>
+- Docker Best Practices: <https://docs.docker.com/develop/dev-best-practices>
 
 ---

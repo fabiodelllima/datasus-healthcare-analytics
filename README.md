@@ -1,16 +1,15 @@
 # DataSUS Healthcare Analytics
 
-- **Versão:** 0.2.6
-- **Fase:** POC Concluída
-- **Última atualização:** 03/01/2026
+![Status](https://img.shields.io/badge/POC-Conclu%C3%ADda-brightgreen)
+![Slides](https://img.shields.io/badge/Slides-Em%20Progresso-yellow)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Coverage](https://img.shields.io/badge/Coverage-97%25-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-128%20passed-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
----
+> Sistema que transforma dados brutos de internações hospitalares do SUS em análises úteis para gestão hospitalar. O projeto processa arquivos do Ministério da Saúde (formato proprietário .dbc), limpa e valida os dados, e gera indicadores de desempenho hospitalar.
 
-## Sobre o projeto
-
-Sistema que transforma dados brutos de internações hospitalares do SUS em análises úteis para gestão hospitalar. O projeto processa arquivos do Ministério da Saúde (formato proprietário .dbc), limpa e valida os dados, e gera indicadores de desempenho hospitalar.
-
-> Hospitais e gestores de saúde precisam de dados confiáveis para tomar decisões. Os dados públicos do SUS estão disponíveis, mas em formato difícil de usar. Este projeto resolve esse problema, entregando dados limpos e KPIs prontos para análise.
+Hospitais e gestores de saúde precisam de dados confiáveis para tomar decisões. Os dados públicos do SUS estão disponíveis, mas em formato difícil de usar. Este projeto resolve esse problema, entregando dados limpos e KPIs prontos para análise.
 
 **Resultados concretos:**
 
@@ -21,6 +20,20 @@ Sistema que transforma dados brutos de internações hospitalares do SUS em aná
 | KPIs calculados         | 5 indicadores hospitalares     |
 | Cobertura de testes     | 97% (128 testes automatizados) |
 | Visualizações           | 6 gráficos profissionais       |
+
+---
+
+## Índice
+
+- [Arquitetura](#arquitetura)
+- [KPIs Implementados](#kpis-implementados)
+- [Visualizações](#visualizações)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Dados](#dados)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Status e Roadmap](#status-e-roadmap)
+- [Quick Start](#quick-start)
+- [Documentação](#documentação)
 
 ---
 

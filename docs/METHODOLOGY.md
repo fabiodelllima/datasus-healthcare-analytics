@@ -184,24 +184,21 @@ Refs: docs/API.md RN-API-001
 - BDD Gherkin: Inglês (padrão internacional)
 - Commit messages: Português
 
-**Gramática:**
-
-- ✓ "em vez de" (substituição)
-- ✗ "ao invés de" (arcaico, evitar)
-
 ### Símbolos
 
-**NUNCA usar emojis. Usar ASCII/Unicode:**
+**NUNCA usar emojis coloridos. Usar ASCII/Unicode:**
 
 ```python
-# Correto
-status = "[OK] Teste passou"
-status = "[FAIL] Teste falhou"
+# Correto - Unicode symbols
+status = "✓ Teste passou"
+status = "✗ Teste falhou"
+status = "[OK] Processo concluído"
 status = "[WARN] Aviso"
 
-# Incorreto (NUNCA)
-status = "✓ Teste passou"      # emoji
-status = "✗ Falhou"            # emoji
+# Incorreto - Emojis coloridos (NUNCA)
+status = "✅ Teste passou"      # emoji
+status = "❌ Falhou"            # emoji
+status = "🚀 Deploy"            # emoji
 ```
 
 ---
@@ -338,7 +335,7 @@ Ver detalhes em: docs/TOOLING.md
 - Martin Fowler: "Refactoring"
 - Vaughn Vernon: "Implementing Domain-Driven Design"
 - PEP 8: Python Style Guide
-- Conventional Commits: <https://www.conventionalcommits.org/>
+- Conventional Commits: <https://www.conventionalcommits.org>
 
 ---
 

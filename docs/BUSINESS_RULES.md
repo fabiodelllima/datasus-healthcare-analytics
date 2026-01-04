@@ -1420,6 +1420,6 @@ receita = df['VAL_TOT'].sum()
 
 ### Externo
 
-- DataSUS: <http://sihd.datasus.gov.br/>
+- DataSUS: <http://sihd.datasus.gov.br>
 - Pandas cut(): <https://pandas.pydata.org/docs/reference/api/pandas.cut.html>
-- OMS benchmarks: <https://www.who.int/>
+- OMS benchmarks: <https://www.who.int>

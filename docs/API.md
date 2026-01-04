@@ -368,7 +368,7 @@ tests/
 | RN-API-001 | package_show    | [OK] IMPLEMENTADO   | `get_package_info()`             |
 | RN-API-002 | resource_search | [SKIP] DESABILITADO | -                                |
 | RN-API-003 | package_list    | [OK] IMPLEMENTADO   | `list_packages()`                |
-| RN-API-004 | Formatação      | [OK] IMPLEMENTADO   | `TerminalFormatter`, display\_\* |
+| RN-API-004 | Formatação      | [OK] IMPLEMENTADO   | `TerminalFormatter`, display_\* |
 | RN-API-005 | Headers         | [OK] IMPLEMENTADO   | `__init__` headers               |
 
 ---

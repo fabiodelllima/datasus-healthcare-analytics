@@ -93,8 +93,8 @@ Definir stack de monitoramento para Produção.
 
 **Referências:**
 
-- Grafana Loki: <https://grafana.com/oss/loki/>
-- Prometheus: <https://prometheus.io/>
+- Grafana Loki: <https://grafana.com/oss/loki>
+- Prometheus: <https://prometheus.io>
 
 ---
 

@@ -27,7 +27,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Cores ANSI (verde, vermelho, amarelo, azul, cyan)
   - Box drawing (┌ ┐ └ ┘ ─ │ ├ ┤)
   - Status tags ([OK], [ERROR], [WARNING], [INFO])
-  - Métodos display\_\*: package_info, packages_list, status
+  - Métodos display_\*: package_info, packages_list, status
   - Cálculo de largura visual (ignora códigos ANSI no padding)
 
 - **Testes Coverage 97%**: 52 novos testes

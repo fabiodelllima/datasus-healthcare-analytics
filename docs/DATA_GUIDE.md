@@ -29,7 +29,7 @@
 
 **URL:** https://datasus.saude.gov.br
 
-**FTP:** ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801\_/Dados/
+**FTP:** ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801_/Dados/
 
 **Acesso:** Via biblioteca pysus (desenvolvida pela Fiocruz/AlertaDengue)
 
