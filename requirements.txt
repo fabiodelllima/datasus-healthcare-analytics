@@ -35,7 +35,7 @@ pytest-bdd>=6.1.1         # BDD testing (Gherkin)
 
 # Utilities
 python-dotenv>=1.0.0
-requests>=2.31.0
+requests>=2.32.0
 
 # Testes - HTTP Mocking
 vcrpy>=6.0.0
@@ -58,3 +58,7 @@ tenacity>=8.2.0           # Retry logic
 # prometheus-client>=0.19.0  # Monitoramento
 # python-multipart>=0.0.6    # File uploads
 
+
+# Security pins
+urllib3>=2.3.0
+tqdm>=4.66.5
