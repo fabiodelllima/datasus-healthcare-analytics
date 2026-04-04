@@ -61,5 +61,4 @@ tenacity>=8.2.0           # Retry logic
 
 # Security pins
 urllib3==2.6.3
-tqdm==4.66.5
 Pygments==2.20.0
