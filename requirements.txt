@@ -35,7 +35,7 @@ pytest-bdd>=6.1.1         # BDD testing (Gherkin)
 
 # Utilities
 python-dotenv>=1.0.0
-requests>=2.32.0
+requests>=2.33.0
 
 # Testes - HTTP Mocking
 vcrpy>=6.0.0
@@ -60,5 +60,6 @@ tenacity>=8.2.0           # Retry logic
 
 
 # Security pins
-urllib3>=2.3.0
+urllib3>=2.6.3
 tqdm>=4.66.5
+Pygments>=2.20.0
