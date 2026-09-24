@@ -118,30 +118,45 @@ class TestOpenDataSUSInspectorEdgeCases:
 class TestExtractorEdgeCases:
     """Testes para casos edge do Extractor."""
 
-    @patch("src.extract.extractor.download")
-    def test_extract_success(self, mock_download: MagicMock) -> None:
+    @patch("src.extract.extractor.ftp")
+    def test_extract_success(self, mock_ftp: MagicMock) -> None:
         """Verifica extração bem-sucedida."""
         from src.extract.extractor import DataSUSExtractor
 
-        # Mock do ParquetSet
-        mock_parquet_set = MagicMock()
-        mock_parquet_set.to_dataframe.return_value = pd.DataFrame(
+        # A API 2.x devolve o DataFrame direto quando as_dataframe=True,
+        # sem o ParquetSet intermediario da serie 0.x.
+        mock_ftp.sih.return_value = pd.DataFrame(
             {"N_AIH": [1, 2, 3], "VAL_TOT": [100, 200, 300]}
         )
-        mock_download.return_value = mock_parquet_set
 
         extractor = DataSUSExtractor()
         result = extractor.extract(state="AC", year=2024, month=1)
 
         assert len(result) == 3
-        mock_download.assert_called_once_with(states="AC", years=2024, months=1, groups="RD")
+        mock_ftp.sih.assert_called_once_with(
+            "AC", 2024, 1, group="RD", as_dataframe=True
+        )
 
-    @patch("src.extract.extractor.download")
-    def test_extract_exception(self, mock_download: MagicMock) -> None:
+    @patch("src.extract.extractor.ftp")
+    def test_extract_rejects_non_dataframe(self, mock_ftp: MagicMock) -> None:
+        """Verifica que retorno fora do contrato falha cedo."""
+        from src.extract.extractor import DataSUSExtractor
+
+        # Com download=False a API devolve caminhos, nao DataFrame. O
+        # extractor deve recusar em vez de propagar o tipo errado adiante.
+        mock_ftp.sih.return_value = ["public/data/ftp/sih/RD/2024/01/AC/RDAC2401.parquet"]
+
+        extractor = DataSUSExtractor()
+
+        with pytest.raises(TypeError, match="Esperado DataFrame"):
+            extractor.extract(state="AC", year=2024, month=1)
+
+    @patch("src.extract.extractor.ftp")
+    def test_extract_exception(self, mock_ftp: MagicMock) -> None:
         """Verifica tratamento de exceção no extract."""
         from src.extract.extractor import DataSUSExtractor
 
-        mock_download.side_effect = Exception("FTP error")
+        mock_ftp.sih.side_effect = Exception("FTP error")
 
         extractor = DataSUSExtractor()
 

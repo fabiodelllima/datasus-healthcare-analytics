@@ -2,9 +2,7 @@
 
 ![Status](https://img.shields.io/badge/POC-Conclu%C3%ADda-brightgreen)
 ![Slides](https://img.shields.io/badge/Slides-Em%20Progresso-yellow)
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![Coverage](https://img.shields.io/badge/Coverage-97%25-brightgreen)
-![Tests](https://img.shields.io/badge/Tests-128%20passed-brightgreen)
+![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 > Sistema que transforma dados brutos de internações hospitalares do SUS em análises úteis para gestão hospitalar. O projeto processa arquivos do Ministério da Saúde (formato proprietário .dbc), limpa e valida os dados, e gera indicadores de desempenho hospitalar.
@@ -18,7 +16,7 @@
 | Internações processadas | 4.315 registros                |
 | Taxa de validação       | 100% dos dados                 |
 | KPIs calculados         | 5 indicadores hospitalares     |
-| Cobertura de testes     | 97% (128 testes automatizados) |
+| Cobertura de testes     | Publicada pelo CI a cada execução |
 | Visualizações           | 6 gráficos profissionais       |
 
 ---
@@ -96,7 +94,7 @@ O sistema gera automaticamente 6 gráficos em alta resolução (300 DPI), pronto
 
 | Tecnologia       | Função                 | Justificativa                                         |
 | ---------------- | ---------------------- | ----------------------------------------------------- |
-| **Python 3.11**  | Linguagem principal    | Compatibilidade com biblioteca de acesso ao DataSUS   |
+| **Python 3.11+** | Linguagem principal    | Teto em 3.14 herdado do pysus                         |
 | **pandas/numpy** | Processamento de dados | Padrão da indústria para data wrangling               |
 | **pysus**        | Acesso ao DataSUS      | Biblioteca da Fiocruz que abstrai complexidade do FTP |
 | **pyarrow**      | Storage eficiente      | Parquet oferece compressão 8x menor que CSV           |
@@ -156,7 +154,7 @@ datasus-healthcare-analytics/
 │   ├── visualizations/    # Gráficos
 │   ├── api/               # Integração OpenDataSUS
 │   └── main.py            # Orquestração
-├── tests/                 # 128 testes automatizados
+├── tests/                 # Testes unitários e BDD
 ├── notebooks/             # Análise exploratória
 ├── data/                  # Dados brutos e processados
 ├── outputs/               # Visualizações geradas
@@ -174,7 +172,7 @@ datasus-healthcare-analytics/
 | Pipeline ETL funcional  | ✓      |
 | 5 KPIs implementados    | ✓      |
 | 6 visualizações         | ✓      |
-| 97% cobertura de testes | ✓      |
+| Suíte automatizada      | ✓      |
 | Documentação completa   | ✓      |
 | CI/CD configurado       | ✓      |
 
@@ -193,7 +191,7 @@ datasus-healthcare-analytics/
 
 ### Pré-requisitos
 
-- Python 3.11.x (obrigatório - pysus não suporta 3.12+)
+- Python >= 3.11 e < 3.14 (restrição herdada do pysus 2.x)
 - pip >= 23.0
 - Git
 
@@ -221,6 +219,14 @@ python -m src.main --state AC --year 2024 --month 1
 # 6. Verificar resultados
 ls data/processed/  # SIH_AC_202401.csv e .parquet
 ```
+
+### Reprodução dos artefatos
+
+Os arquivos em `data/processed/` não são versionados (ver `.gitignore`), mas
+os gráficos em `outputs/charts/` e o notebook de análise exploratória derivam
+deles. Após clonar, execute o pipeline do passo 5 antes de abrir o notebook ou
+regenerar as visualizações; sem isso, `notebooks/01_exploratory_analysis.ipynb`
+não encontra o Parquet de origem.
 
 ### Executar Testes
 

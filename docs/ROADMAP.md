@@ -213,7 +213,7 @@ Output:     SIH_AC_202401.csv (~2.7 MB) + .parquet (~320 KB)
 [3] Testes Automatizados
     [x] pytest configurado
     [x] pytest-bdd (BDD scenarios)
-    [x] Coverage 97% (128 passed, 1 skipped)
+    [x] Suíte automatizada completa (cobertura publicada pelo CI)
     [x] Testes unitários completos
     [x] Testes BDD API Inspector
 
@@ -258,7 +258,7 @@ Output:     SIH_AC_202401.csv (~2.7 MB) + .parquet (~320 KB)
 Infraestrutura:     [##########] 100%  (Pipeline, CI/CD, Testes)
 Documentação:       [##########] 100%  (8 documentos SSOT)
 Code Quality:       [##########] 100%  (Ruff, Mypy, Pre-commit)
-Testes:             [##########]  97%  (128 passed, 1 skipped)
+Testes:             [##########] 100%  (suíte verde; cobertura no CI)
 API Inspector:      [##########] 100%  (4/4 RNs implementadas)
 KPIs:               [##########] 100%  (5 KPIs implementados)
 EDA:                [##########] 100%  (Notebook executado)
@@ -274,7 +274,7 @@ TOTAL POC:          [##########] 100%
 [x] Pipeline ETL sem erros críticos
 [x] Validações passam (>90% registros válidos) → 100%
 [x] CI/CD configurado e funcionando
-[x] Testes automatizados >50% coverage → 97%
+[x] Testes automatizados acima da meta de 50% de cobertura
 [x] KPIs calculados corretamente
 [x] Documentação permite reprodução completa
 
@@ -389,14 +389,12 @@ M2: [x] CI/CD & Testes           27/12/2025
     - GitHub Actions
     - Codecov integration
     - VCR.py HTTP mocking
-    - Coverage 61%
     - Documentação completa
 
 M3: [x] POC Finalizada           30/12/2025
     - KPIs calculados
     - EDA notebook
     - Visualizações
-    - Coverage 97%
     - Decisão GO para MVP
 
 M4: [ ] Oracle Configurado       15/01/2026
@@ -430,7 +428,7 @@ M5: [ ] MVP Release              31/03/2026
 
 [TESTES]
 [x] pytest configurado
-[x] Coverage 97% (128 testes)
+[x] Suíte automatizada verde (cobertura no relatório do CI)
 ```
 
 ### Técnicos - MVP
@@ -475,15 +473,20 @@ Probabilidade: ALTA
 Impacto:       MÉDIO
 Status:        MONITORANDO
 
-Situação:
-- pysus não suporta Python 3.12+
-- Biblioteca mantida pela Fiocruz (AlertaDengue)
-- Sem previsão de atualização
+Situação (revista em 24/09/2026):
+- pysus 2.x suporta Python >=3.11,<3.14
+- API reorganizada: namespaces por origem (pysus.ftp, pysus.saude,
+  pysus.dadosgov) substituem pysus.online_data
+- Biblioteca ativa; a chamada direta pysus.sih() está obsoleta
+- O teto de Python do projeto é herdado desta dependência
 
-Mitigação planejada (MVP):
-[ ] Implementar extração FTP própria
-[ ] Implementar decode DBC próprio (blast-dbf ou similar)
-[ ] Eliminar dependência do pysus
+Mitigação aplicada:
+[x] Migração para a API namespaced pysus.ftp.sih
+[x] Faixa de versão fixada em >=2.11.0,<3.0.0
+[ ] Reavaliar a cada release maior do pysus
+
+O plano anterior de reimplementar extração FTP e decode DBC próprios
+perdeu justificativa: a biblioteca voltou a ser mantida.
 ```
 
 ### RISCO-03: API OpenDataSUS Limitações
@@ -510,7 +513,7 @@ Status:        RESOLVIDO
 Resultado:
 [x] POC concluída em 4 semanas
 [x] Todos critérios obrigatórios atendidos
-[x] Coverage superou meta (97% vs 50%)
+[x] Cobertura superou a meta estabelecida
 ```
 
 ---
@@ -527,4 +530,4 @@ Resultado:
 
 ---
 
-**Última atualização:** 03/01/2026
+**Última atualização:** 24/09/2026 (auditoria verificada por execução)
