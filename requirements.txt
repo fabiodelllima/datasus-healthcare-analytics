@@ -4,7 +4,10 @@
 # ============================================================================
 
 # ETL - Extract
-pysus>=0.11.0
+# pysus 2.x exige Python >=3.11,<3.14 e serve de um catalogo DuckLake/S3.
+# Em 3.14 o resolvedor desce ate a 0.11.0, que exige cffi==1.15.1 e nao
+# compila. O teto de versao de Python do projeto vem desta dependencia.
+pysus>=2.11.0,<3.0.0
 
 # ETL - Transform
 pandas>=2.1.4
