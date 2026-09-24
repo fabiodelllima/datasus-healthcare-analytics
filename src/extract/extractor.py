@@ -57,9 +57,7 @@ class DataSUSExtractor:
             logger.info("[EXTRACT] Download concluído")
 
             if not isinstance(result, pd.DataFrame):
-                raise TypeError(
-                    f"Esperado DataFrame, recebido {type(result).__name__}"
-                )
+                raise TypeError(f"Esperado DataFrame, recebido {type(result).__name__}")
 
             logger.info(f"[EXTRACT] Registros carregados: {len(result):,}")
             logger.info(f"[EXTRACT] Colunas: {len(result.columns)}")

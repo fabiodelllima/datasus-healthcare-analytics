@@ -227,7 +227,9 @@ vcr_config = vcr.VCR(
 def api_vcr():
     def _api_vcr(cassette_name):
         return vcr_config.use_cassette(f"{cassette_name}.yaml")
+
     return _api_vcr
+
 
 def test_api_call(api_vcr):
     with api_vcr("package_list"):
@@ -311,10 +313,8 @@ coverage:
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-@retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=4, max=60)
-)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=60))
 def call_api():
     return requests.get(url, timeout=30)
 ```
