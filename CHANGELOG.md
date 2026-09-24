@@ -14,7 +14,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - Dashboard Power BI ou Streamlit
 - Integração Oracle Database (MVP)
 - Processamento multi-estado
-- Independência do pysus (extração FTP própria)
 
 ---
 
