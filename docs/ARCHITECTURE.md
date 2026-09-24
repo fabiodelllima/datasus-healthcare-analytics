@@ -430,9 +430,9 @@ auditoria de setembro de 2026 encontrou. Consulte o relatório do workflow
 
 Para medir localmente:
 
-````bash
+```bash
 pytest --cov=src --cov-report=term-missing
-````
+```
 
 **Meta POC:** > 50% de cobertura
 **Meta MVP:** > 90% de cobertura
