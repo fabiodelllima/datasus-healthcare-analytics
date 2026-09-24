@@ -14,7 +14,52 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - Dashboard Power BI ou Streamlit
 - Integração Oracle Database (MVP)
 - Processamento multi-estado
-- Independência do pysus (extração FTP própria)
+
+---
+
+## [0.2.7] - 2026-09-24
+
+### Corrigido
+
+- **Instalação a partir do `requirements.txt`**: a faixa `pysus>=0.11.0`
+  resolvia para a série 2.x, incompatível com o código, que importava
+  `pysus.online_data.SIH`. O projeto não instalava do zero em nenhuma máquina.
+  Faixa fixada em `>=2.11.0,<3.0.0`.
+
+- **Restrição de versão de Python**: `pysus` 2.x exige `>=3.11,<3.14`. Em
+  Python 3.14 o resolvedor descia até a 0.11.0, que depende de `cffi==1.15.1`
+  e não compila. Restrição declarada em `requirements.txt` e no README.
+
+### Alterado
+
+- **Extractor migrado para a API namespaced do pysus**: `pysus.ftp.sih`
+  substitui `pysus.online_data.SIH.download`. A chamada direta `pysus.sih()`
+  emite aviso de obsolescência. Migração validada por igualdade de resultado:
+  4.315 registros e 113 colunas para AC janeiro/2024, com os sete campos
+  consumidos pelo transform presentes.
+
+- **Métricas de cobertura removidas da documentação**: `ARCHITECTURE.md`,
+  `ROADMAP.md` e `README.md` passam a apontar para o relatório do CI. Número
+  em markdown envelhece em silêncio.
+
+- **RISCO-02 revisto**: o `pysus` voltou a ser mantido e suporta Python até
+  3.13. O plano de reimplementar extração FTP e decode DBC próprios perdeu
+  justificativa.
+
+- **Arquivos movidos**: `test_datasus_ftp.py` para `tests/`,
+  `verify_setup.py` para `scripts/`.
+
+- **Tags de status uniformizadas** em `kpis.feature`, alinhando a convenção
+  já usada em `api_inspection.feature`.
+
+### Adicionado
+
+- `docs/SESSION_CONTEXT.md`: contexto de sessão versionado, escrito contra
+  evidência de execução e sem métricas que apodrecem.
+
+- `test_extract_rejects_non_dataframe`: cobre a checagem de tipo introduzida
+  no extractor, já que a anotação do `pysus` declara `list[str] | pd.DataFrame`
+  e o retorno real varia conforme os parâmetros.
 
 ---
 
