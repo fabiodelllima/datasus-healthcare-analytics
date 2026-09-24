@@ -421,25 +421,21 @@ pytest tests/ --cov=src --cov-report=html
 # Ver: htmlcov/index.html
 ```
 
-### Métricas Atuais (POC Concluída)
+### Métricas de Cobertura
 
-```
-Cobertura: 97% (546 stmts, 18 miss)
-Testes: 128 passed, 1 skipped
+A cobertura por módulo é publicada pelo CI a cada execução e não é replicada
+aqui. Número em markdown envelhece sem avisar, e foi exatamente isso que a
+auditoria de setembro de 2026 encontrou. Consulte o relatório do workflow
+`ci.yml` na branch correspondente.
 
-Módulos:
-├── src/extract/extractor.py      100%
-├── src/transform/transformer.py   94%
-├── src/load/loader.py            100%
-├── src/analytics/kpis.py         100%
-├── src/visualizations/charts.py   84%
-├── src/api/datasus_inspector.py   97%
-├── src/main.py                    84%
-└── src/utils/logger.py            84%
-```
+Para medir localmente:
 
-**Meta POC:** >50% coverage → Atingido: 97%
-**Meta MVP:** >90% coverage
+````bash
+pytest --cov=src --cov-report=term-missing
+````
+
+**Meta POC:** > 50% de cobertura
+**Meta MVP:** > 90% de cobertura
 
 ### Estrutura Testes
 
