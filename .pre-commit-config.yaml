@@ -1,15 +1,19 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.8
+    rev: v0.16.9
     hooks:
+      # Sem types_or: o CI roda `ruff check .` e `ruff format --check .` sem
+      # filtro, alcancando blocos de codigo dentro dos .md em docs/. Restringir
+      # o hook a .py criava divergencia entre a porta local e a remota.
       - id: ruff
         args: [--fix]
-        types_or: [python, pyi]
       - id: ruff-format
-        types_or: [python, pyi]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.0
+    rev: v2.3.1
     hooks:
+      # language_version fixo: sem ele o pre-commit cria o ambiente do hook com
+      # o Python padrao do sistema, e o mypy analisa stubs de outra versao.
       - id: mypy
+        language_version: python3.11
         args: [--ignore-missing-imports]
         additional_dependencies: [pandas-stubs]

@@ -86,7 +86,7 @@ GET https://opendatasus.saude.gov.br/api/3/action/package_show?id={package_id}
 
 ```python
 inspector = OpenDataSUSInspector()
-info = inspector.get_package_info('registro-de-ocupacao-hospitalar-covid-19')
+info = inspector.get_package_info("registro-de-ocupacao-hospitalar-covid-19")
 # Retorna: {'name': '...', 'title': 'Registro de Ocupação Hospitalar COVID-19', ...}
 ```
 
@@ -139,6 +139,7 @@ Resultado: Todas queries retornam 409
 
 # Usar pysus (Fiocruz) diretamente
 from pysus.online_data import SIH
+
 sih = SIH().load()
 # Listar arquivos disponíveis via FTP
 ```
@@ -163,12 +164,14 @@ packages = inspector.list_packages()
 # Retorna: 83 packages
 
 # Exemplos:
-['acompanhamento-gestacional-siasi',
- 'alimentar-nutricional-van-siasi',
- 'arboviroses-dengue',
- 'arboviroses-febre-de-chikungunya',
- 'registro-de-ocupacao-hospitalar-covid-19',
- ...]
+[
+    "acompanhamento-gestacional-siasi",
+    "alimentar-nutricional-van-siasi",
+    "arboviroses-dengue",
+    "arboviroses-febre-de-chikungunya",
+    "registro-de-ocupacao-hospitalar-covid-19",
+    ...,
+]
 ```
 
 **Observação Importante:**
@@ -231,9 +234,9 @@ Exemplos proibidos: checkmark colorido, rocket, package, warning triangle
 
 ```python
 headers = {
-    'User-Agent': 'DataSUS-Healthcare-Analytics/0.2.6 (Educational Project; Python/3.11)',
-    'Accept': 'application/json',
-    'Accept-Encoding': 'gzip, deflate',
+    "User-Agent": "DataSUS-Healthcare-Analytics/0.2.6 (Educational Project; Python/3.11)",
+    "Accept": "application/json",
+    "Accept-Encoding": "gzip, deflate",
 }
 ```
 
@@ -285,8 +288,8 @@ Acesso: Via pysus (Fiocruz)
 ### EDGE-API-001: HTML ao invés de JSON
 
 ```python
-content_type = response.headers.get('Content-Type', '')
-if 'text/html' in content_type:
+content_type = response.headers.get("Content-Type", "")
+if "text/html" in content_type:
     raise ValueError("API returned HTML")
 ```
 

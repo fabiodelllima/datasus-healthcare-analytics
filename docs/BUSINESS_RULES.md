@@ -70,13 +70,13 @@
 **Campos afetados:**
 
 ```python
-['IDADE', 'VAL_TOT', 'VAL_UTI', 'VAL_SH', 'VAL_SP', 'VAL_SADT']
+["IDADE", "VAL_TOT", "VAL_UTI", "VAL_SH", "VAL_SP", "VAL_SADT"]
 ```
 
 **Regra:**
 
 ```python
-df[field] = pd.to_numeric(df[field], errors='coerce')
+df[field] = pd.to_numeric(df[field], errors="coerce")
 ```
 
 **Comportamento:**
@@ -133,13 +133,13 @@ Scenario: Converter valor inválido para NaN
 **Campos afetados:**
 
 ```python
-['DT_INTER', 'DT_SAIDA']
+["DT_INTER", "DT_SAIDA"]
 ```
 
 **Regra:**
 
 ```python
-df[field] = pd.to_datetime(df[field], format='%Y%m%d', errors='coerce')
+df[field] = pd.to_datetime(df[field], format="%Y%m%d", errors="coerce")
 ```
 
 **Comportamento:**
@@ -277,7 +277,7 @@ Scenario: Manter registros com 1 campo diferente
 **Campos críticos:**
 
 ```python
-['N_AIH', 'DT_INTER', 'DT_SAIDA']
+["N_AIH", "DT_INTER", "DT_SAIDA"]
 ```
 
 **Regra:**
@@ -366,7 +366,7 @@ Scenario: Manter registro com campo não-crítico nulo
 **Regra:**
 
 ```python
-df = df[df['DT_INTER'] <= df['DT_SAIDA']]
+df = df[df["DT_INTER"] <= df["DT_SAIDA"]]
 ```
 
 **Comportamento:**
@@ -459,7 +459,7 @@ Scenario: Aceitar internação mesmo dia
 **Regra:**
 
 ```python
-df = df[(df['IDADE'] >= 0) & (df['IDADE'] <= 120)]
+df = df[(df["IDADE"] >= 0) & (df["IDADE"] <= 120)]
 ```
 
 **Comportamento:**
@@ -561,7 +561,7 @@ Scenario: Aceitar recém-nascido
 **Campos afetados:**
 
 ```python
-['VAL_TOT', 'VAL_UTI', 'VAL_SH', 'VAL_SP', 'VAL_SADT']
+["VAL_TOT", "VAL_UTI", "VAL_SH", "VAL_SP", "VAL_SADT"]
 ```
 
 **Regra:**
@@ -673,7 +673,7 @@ Scenario: Validar múltiplos campos monetários
 **Regra:**
 
 ```python
-df['stay_days'] = (df['DT_SAIDA'] - df['DT_INTER']).dt.days
+df["stay_days"] = (df["DT_SAIDA"] - df["DT_INTER"]).dt.days
 ```
 
 **Comportamento:**
@@ -774,7 +774,7 @@ Scenario: stay_days em virada de ano
 **Regra:**
 
 ```python
-df['daily_cost'] = df['VAL_TOT'] / df['stay_days'].replace(0, 1)
+df["daily_cost"] = df["VAL_TOT"] / df["stay_days"].replace(0, 1)
 ```
 
 **Comportamento:**
@@ -880,10 +880,8 @@ Scenario: Custo zero válido
 **Regra:**
 
 ```python
-df['age_group'] = pd.cut(
-    df['IDADE'],
-    bins=[0, 18, 30, 45, 60, 120],
-    labels=['0-17', '18-29', '30-44', '45-59', '60+']
+df["age_group"] = pd.cut(
+    df["IDADE"], bins=[0, 18, 30, 45, 60, 120], labels=["0-17", "18-29", "30-44", "45-59", "60+"]
 )
 ```
 
@@ -1013,7 +1011,7 @@ Scenario: pd.cut right=True comportamento
 **Regra:**
 
 ```python
-df['death'] = df['MORTE'] == 1
+df["death"] = df["MORTE"] == 1
 ```
 
 **Comportamento:**
@@ -1118,7 +1116,7 @@ Scenario: Usar comparação de valor não identidade
 **Regra:**
 
 ```python
-df['specialty_name'] = df['ESPEC'].astype(str)
+df["specialty_name"] = df["ESPEC"].astype(str)
 ```
 
 **Comportamento:**
@@ -1142,15 +1140,15 @@ df['specialty_name'] = df['ESPEC'].astype(str)
 ```python
 # Futuro (MVP)
 specialty_map = {
-    '01': 'Cirurgia',
-    '02': 'Obstetrícia',
-    '03': 'Clínica Médica',
-    '04': 'Cuidados Prolongados',
-    '05': 'Psiquiatria',
-    '07': 'Tisiologia',
-    '08': 'Pediatria Clínica'
+    "01": "Cirurgia",
+    "02": "Obstetrícia",
+    "03": "Clínica Médica",
+    "04": "Cuidados Prolongados",
+    "05": "Psiquiatria",
+    "07": "Tisiologia",
+    "08": "Pediatria Clínica",
 }
-df['specialty_name'] = df['ESPEC'].map(specialty_map)
+df["specialty_name"] = df["ESPEC"].map(specialty_map)
 ```
 
 **Uso clínico:**
@@ -1316,7 +1314,7 @@ if df.empty:
 **Implementação:**
 
 ```python
-if 'IDADE' not in df.columns:
+if "IDADE" not in df.columns:
     logger.error("[VALIDATE] Campo IDADE ausente, skip validação idade")
     # Continua sem validar IDADE
 ```
@@ -1355,7 +1353,7 @@ if len(df) == 0:
 **Cálculo:**
 
 ```python
-pacientes_dia = df['stay_days'].sum()
+pacientes_dia = df["stay_days"].sum()
 ocupacao = (pacientes_dia / (leitos * dias_mes)) * 100
 ```
 
@@ -1375,7 +1373,7 @@ ocupacao = (pacientes_dia / (leitos * dias_mes)) * 100
 **Cálculo:**
 
 ```python
-tmp = df['stay_days'].mean()
+tmp = df["stay_days"].mean()
 ```
 
 **Impacto de regras:**
@@ -1394,7 +1392,7 @@ tmp = df['stay_days'].mean()
 **Cálculo:**
 
 ```python
-receita = df['VAL_TOT'].sum()
+receita = df["VAL_TOT"].sum()
 ```
 
 **Impacto de regras:**

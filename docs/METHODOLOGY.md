@@ -196,9 +196,9 @@ status = "[OK] Processo concluído"
 status = "[WARN] Aviso"
 
 # Incorreto - Emojis coloridos (NUNCA)
-status = "✅ Teste passou"      # emoji
-status = "❌ Falhou"            # emoji
-status = "🚀 Deploy"            # emoji
+status = "✅ Teste passou"  # emoji
+status = "❌ Falhou"  # emoji
+status = "🚀 Deploy"  # emoji
 ```
 
 ---
@@ -244,6 +244,7 @@ def test_integration():
     data = extractor.extract()
     result = transformer.transform(data)
     assert result.valid
+
 
 # E2E: Testa sistema completo (sem mocks)
 def test_e2e_full_pipeline():

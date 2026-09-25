@@ -185,10 +185,10 @@ Sistema de analytics para gestão hospitalar baseado em dados públicos do SIH/D
 from pysus.online_data.SIH import download
 
 parquet_set = download(
-    states='AC',
+    states="AC",
     years=2024,
     months=1,
-    groups='RD'  # AIH Reduzida
+    groups="RD",  # AIH Reduzida
 )
 df = parquet_set.to_dataframe()
 ```
@@ -217,10 +217,10 @@ df = parquet_set.to_dataframe()
 ```python
 def _convert_types(self, df: pd.DataFrame) -> pd.DataFrame:
     # Numéricos: IDADE, VAL_TOT, VAL_UTI, etc
-    df[field] = pd.to_numeric(df[field], errors='coerce')
+    df[field] = pd.to_numeric(df[field], errors="coerce")
 
     # Datas: DT_INTER, DT_SAIDA
-    df[field] = pd.to_datetime(df[field], format='%Y%m%d', errors='coerce')
+    df[field] = pd.to_datetime(df[field], format="%Y%m%d", errors="coerce")
 ```
 
 #### 2.2. Clean Data
@@ -231,7 +231,7 @@ def _clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop_duplicates()
 
     # Remove nulos em campos críticos
-    df = df.dropna(subset=['N_AIH', 'DT_INTER', 'DT_SAIDA'])
+    df = df.dropna(subset=["N_AIH", "DT_INTER", "DT_SAIDA"])
 ```
 
 #### 2.3. Validate Data
@@ -239,10 +239,10 @@ def _clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
 ```python
 def _validate_data(self, df: pd.DataFrame) -> pd.DataFrame:
     # Datas: DT_INTER <= DT_SAIDA
-    df = cast(pd.DataFrame, df[df['DT_INTER'] <= df['DT_SAIDA']])
+    df = cast(pd.DataFrame, df[df["DT_INTER"] <= df["DT_SAIDA"]])
 
     # Idade: 0-120 anos
-    df = cast(pd.DataFrame, df[(df['IDADE'] >= 0) & (df['IDADE'] <= 120)])
+    df = cast(pd.DataFrame, df[(df["IDADE"] >= 0) & (df["IDADE"] <= 120)])
 
     # Valores: >= 0
     df = cast(pd.DataFrame, df[df[col] >= 0])
@@ -253,16 +253,16 @@ def _validate_data(self, df: pd.DataFrame) -> pd.DataFrame:
 ```python
 def _enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
     # Tempo permanência
-    df['stay_days'] = (df['DT_SAIDA'] - df['DT_INTER']).dt.days
+    df["stay_days"] = (df["DT_SAIDA"] - df["DT_INTER"]).dt.days
 
     # Custo diário
-    df['daily_cost'] = df['VAL_TOT'] / df['stay_days'].replace(0, 1)
+    df["daily_cost"] = df["VAL_TOT"] / df["stay_days"].replace(0, 1)
 
     # Faixa etária
-    df['age_group'] = pd.cut(df['IDADE'], bins=[0,18,30,45,60,120])
+    df["age_group"] = pd.cut(df["IDADE"], bins=[0, 18, 30, 45, 60, 120])
 
     # Flag óbito
-    df['death'] = df['MORTE'] == 1
+    df["death"] = df["MORTE"] == 1
 ```
 
 **Taxa validação:** 100% (AC jan/2024: 4.315/4.315)
@@ -275,18 +275,18 @@ def _enrich_data(self, df: pd.DataFrame) -> pd.DataFrame:
 
 ```python
 # CSV - Human-readable
-df.to_csv(csv_path, index=False, encoding='utf-8')
+df.to_csv(csv_path, index=False, encoding="utf-8")
 
 # Parquet - Compressed
-df.to_parquet(parquet_path, index=False, engine='pyarrow')
+df.to_parquet(parquet_path, index=False, engine="pyarrow")
 
 # Metadata
 metadata = {
-    'state': 'AC',
-    'records': 4315,
-    'csv_size_mb': 2.7,
-    'parquet_size_mb': 0.32,
-    'timestamp': '2025-12-05T12:16:49'
+    "state": "AC",
+    "records": 4315,
+    "csv_size_mb": 2.7,
+    "parquet_size_mb": 0.32,
+    "timestamp": "2025-12-05T12:16:49",
 }
 ```
 
@@ -384,14 +384,14 @@ ignore_missing_imports = True
 
 ```python
 # Correto
-def extract(self, state: str, year: int, month: int) -> pd.DataFrame:
-    ...
+def extract(self, state: str, year: int, month: int) -> pd.DataFrame: ...
 
-def load(self, df: pd.DataFrame, state: str, year: int, month: int) -> dict[str, Any]:
-    ...
+
+def load(self, df: pd.DataFrame, state: str, year: int, month: int) -> dict[str, Any]: ...
+
 
 # Type casting para satisfazer mypy
-df = cast(pd.DataFrame, df[df['IDADE'] > 0])
+df = cast(pd.DataFrame, df[df["IDADE"] > 0])
 ```
 
 ---

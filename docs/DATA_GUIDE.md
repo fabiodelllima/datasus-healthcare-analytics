@@ -275,7 +275,7 @@ ocupacao = (total_pacientes_dia / leitos_disponiveis) * 100
 **Cálculo:**
 
 ```python
-tmp = df.groupby('PROC_REA')['stay_days'].mean()
+tmp = df.groupby("PROC_REA")["stay_days"].mean()
 ```
 
 **Benchmark:**
@@ -295,8 +295,8 @@ tmp = df.groupby('PROC_REA')['stay_days'].mean()
 **Cálculo:**
 
 ```python
-volume_mes = df.groupby(df['DT_INTER'].dt.month).size()
-volume_especialidade = df.groupby('ESPEC').size()
+volume_mes = df.groupby(df["DT_INTER"].dt.month).size()
+volume_especialidade = df.groupby("ESPEC").size()
 ```
 
 **Uso:** Planejamento demanda, alocação recursos
@@ -310,8 +310,8 @@ volume_especialidade = df.groupby('ESPEC').size()
 **Cálculo:**
 
 ```python
-receita_total = df['VAL_TOT'].sum()
-receita_por_especialidade = df.groupby('ESPEC')['VAL_TOT'].sum()
+receita_total = df["VAL_TOT"].sum()
+receita_por_especialidade = df.groupby("ESPEC")["VAL_TOT"].sum()
 ```
 
 **Uso:** Planejamento financeiro, análise rentabilidade
@@ -325,7 +325,7 @@ receita_por_especialidade = df.groupby('ESPEC')['VAL_TOT'].sum()
 **Cálculo:**
 
 ```python
-demografia = df['age_group'].value_counts()
+demografia = df["age_group"].value_counts()
 ```
 
 **Uso:** Planejamento serviços específicos (pediatria, geriatria)
@@ -343,12 +343,7 @@ demografia = df['age_group'].value_counts()
 ```python
 from pysus.online_data.SIH import download
 
-parquet_set = download(
-    states='AC',
-    years=2024,
-    months=1,
-    groups='RD'
-)
+parquet_set = download(states="AC", years=2024, months=1, groups="RD")
 df_raw = parquet_set.to_dataframe()
 ```
 
@@ -412,22 +407,22 @@ df_raw = parquet_set.to_dataframe()
 
 ```python
 # CSV
-df.to_csv(csv_path, index=False, encoding='utf-8')
+df.to_csv(csv_path, index=False, encoding="utf-8")
 
 # Parquet
-df.to_parquet(parquet_path, index=False, engine='pyarrow')
+df.to_parquet(parquet_path, index=False, engine="pyarrow")
 
 # Metadata
 metadata = {
-    'state': 'AC',
-    'year': 2024,
-    'month': 1,
-    'records': 4315,
-    'columns': 120,  # 115 original + 5 calculados
-    'csv_path': '/path/to/SIH_AC_202401.csv',
-    'parquet_path': '/path/to/SIH_AC_202401.parquet',
-    'csv_size_mb': 2.7,
-    'parquet_size_mb': 0.32,
+    "state": "AC",
+    "year": 2024,
+    "month": 1,
+    "records": 4315,
+    "columns": 120,  # 115 original + 5 calculados
+    "csv_path": "/path/to/SIH_AC_202401.csv",
+    "parquet_path": "/path/to/SIH_AC_202401.parquet",
+    "csv_size_mb": 2.7,
+    "parquet_size_mb": 0.32,
 }
 ```
 
@@ -491,11 +486,11 @@ Alguns campos têm nulos por design:
 
 ```python
 # Atual (POC)
-df['specialty_name'] = df['ESPEC'].astype(str)  # "03"
+df["specialty_name"] = df["ESPEC"].astype(str)  # "03"
 
 # Futuro (MVP)
-specialty_map = load_sigtap_table('especialidades')
-df['specialty_name'] = df['ESPEC'].map(specialty_map)  # "Clínica Médica"
+specialty_map = load_sigtap_table("especialidades")
+df["specialty_name"] = df["ESPEC"].map(specialty_map)  # "Clínica Médica"
 ```
 
 ---
